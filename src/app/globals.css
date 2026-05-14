@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Color Palette - Modern Chef Dark Mode */
+  --color-background: #121212;
+  --color-foreground: #E0E0E0;
+  
+  --color-card-bg: #1E1E1E;
+  --color-border-subtle: #333333;
+  --color-text-muted: #9E9E9E;
+  
+  --color-accent: #FF6D00;
+  --color-warning: #FF3B30;
+  
+  /* Typography */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom utility for precise metric displays */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
