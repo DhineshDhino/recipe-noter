@@ -3,7 +3,7 @@ export type Unit = "g" | "ml" | "count" | string;
 export interface Version {
   versionName: string; // e.g., "Mom's Version", "Grandmom's Authentic"
   author?: string;
-  timestamp: Date;
+  timestamp: string; // ISO 8601 string — Date objects are non-serializable in Redux
 }
 
 export interface IngredientTranslation {
