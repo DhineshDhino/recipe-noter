@@ -1,158 +1,223 @@
-# Project Backlog & Implementation Stories
+# Agile Implementation Backlog
 
-This document breaks down the Modular Recipe System into executable, testable Agile stories. Each story focuses on an isolated piece of functionality required to achieve the technical and design requirements.
+This document breaks down the Modular Recipe System into a comprehensive, long-term product roadmap using a strict Agile hierarchy: **Initiative -> Epic -> Feature -> Story -> Task**.
 
 ---
 
+# 🚀 INITIATIVE 1: The Core Reader Experience
+**Goal:** Deliver a flawless, mathematically sound, and interactive viewing experience for the end-user (the cook).
+
 ## Epic 1: Project Setup & Core Foundation
+**Goal:** Establish the technical foundation and baseline design system.
 
-### Story 1: Initialize Framework & State Management ✅ [COMPLETED]
-**Description:** Scaffold the Next.js project with Tailwind CSS configured for the "Modern Chef" theme, and set up Redux Toolkit loaded with the `mockRecipe.ts` data.
-**Acceptance Criteria:**
-* Next.js application runs without errors.
-* Tailwind CSS is configured for native Dark Mode (Primary Background: `#121212`, Accent: `#FF6D00`).
-* Redux Toolkit store is configured and successfully initializes with the `mockRecipe` state.
-**Testing Requirements:**
-* **Unit Testing:** Write Jest tests to verify the Redux store initializes correctly with the mock state and that basic selectors return the expected data.
-* **Integration Testing:** Use Cypress or Playwright to verify the app boots up and the root layout applies the correct global Tailwind classes.
+### Feature 1.1: Project Foundation
+#### Story 1: Initialize Framework & State Management ✅ [COMPLETED]
+**Description:** Scaffold the Next.js project with Tailwind CSS configured for the "Modern Chef" theme, and set up Redux Toolkit.
+**Tasks:**
+- Task 1: Setup Next.js application & routing.
+- Task 2: Configure Tailwind CSS for native Dark Mode (`#121212` background, `#FF6D00` accent).
+- Task 3: Setup Redux Toolkit store and initialize with `mockRecipe`.
 
-### Story 2: Implement Typography & Base UI Components ✅ [COMPLETED]
-**Description:** Create the core reusable UI components (Cards, Typography, Buttons) following the design theme.
-**Acceptance Criteria:**
-* Base text uses a modern sans-serif font (e.g., Inter).
-* All numeric displays (metrics, quantities) use tabular/monospaced fonts.
-* Create a reusable `<BlockCard>` component for Prep/Cook sections.
-**Testing Requirements:**
-* **Unit Testing:** Use React Testing Library to unit test the `<BlockCard>` and button components to ensure they accept and render children and props correctly.
-* **Integration Testing:** Use Storybook (or visual regression testing) to confirm that the monospaced numerals and background shadow tokens render as expected across different viewports.
+### Feature 1.2: Design System & Base Components
+#### Story 2: Implement Typography & Base UI Components ✅ [COMPLETED]
+**Description:** Create the core reusable UI components following the design theme.
+**Tasks:**
+- Task 1: Configure modern sans-serif font (Inter) and tabular fonts.
+- Task 2: Build reusable `<BlockCard>` component.
+- Task 3: Write component unit tests.
 
 ---
 
 ## Epic 2: The Dashboard UI Shell
+**Goal:** Build the primary user interface separating offline prep from stove-side cooking.
 
-### Story 3: Responsive Multi-Column Layout ✅ [COMPLETED]
-**Description:** Build the main dashboard layout that separates Prep, Passive, and Cook phases.
-**Acceptance Criteria:**
-* On large screens (desktop), the layout is split into two columns: Prep/Passive on the left, Active Cooking on the right.
-* On mobile screens, the layout stacks vertically in order: Prep -> Passive -> Cook.
-**Testing Requirements:**
-* **Unit Testing:** Test the layout container logic to ensure it passes the correct section data to the child columns.
-* **Integration Testing:** Write Cypress tests that resize the viewport and assert that the CSS Grid/Flexbox layout switches from row-based to column-based correctly.
+### Feature 2.1: Multi-Column Dashboard
+#### Story 3: Responsive Multi-Column Layout ✅ [COMPLETED]
+**Description:** Build the main dashboard layout.
+**Tasks:**
+- Task 1: Implement desktop two-column CSS grid.
+- Task 2: Implement mobile vertical stacking layout.
 
-### Story 4: Render Component Blocks & Atomic Steps ✅ [COMPLETED]
-**Description:** Iterate through the Redux state to render `prepBlocks`, `passiveBlocks`, and `cookBlocks` into the UI.
-**Acceptance Criteria:**
-* Each block renders its `ingredients` list at the top.
-* Each block renders its `steps` sequentially.
-* "Critical" steps highlight with a Contextual Callout or red warning color.
-**Testing Requirements:**
-* **Unit Testing:** Write tests to verify that `AtomicStep` components conditionally apply the "critical" CSS classes when `isCritical` is true.
-* **Integration Testing:** Mount the full Dashboard with the `mockRecipe` and assert that the correct number of blocks and steps are rendered into the DOM.
+#### Story 4: Render Component Blocks & Atomic Steps ✅ [COMPLETED]
+**Description:** Iterate through Redux state to render component blocks into the UI.
+**Tasks:**
+- Task 1: Render ingredient lists within block accordions.
+- Task 2: Render atomic steps sequentially.
+- Task 3: Implement warning styles for "Critical" steps.
 
-### Story 4.1: Total Time Header & Phase Split
-**Description:** At the top of the dashboard alongside the recipe name, display the overall total time required, split into Prep, Passive, and Active phases if present.
-**Acceptance Criteria:**
-* Header dynamically calculates and displays total time across all blocks.
-* Shows a breakdown (e.g., "Prep: 15m | Passive: 4h | Active: 20m").
-**Testing Requirements:**
-* **Unit Testing:** Write a test for the selector that calculates these totals from the Redux state.
+### Feature 2.2: Dashboard UI Polish
+#### Story 4.1: Total Time Header & Phase Split ✅ [COMPLETED]
+**Description:** Display the overall total time required, split into phases.
+**Tasks:**
+- Task 1: Write useMemo math to calculate total time across blocks.
+- Task 2: Build the UI header elements.
 
-### Story 4.2: Ingredient Accordions
-**Description:** Add collapsible accordions to manage the display of ingredients.
-**Acceptance Criteria:**
-* Add a global accordion above the Prep and Active columns to show *all* ingredients required for that phase.
-* Inside each component block, encapsulate its specific ingredients list within an accordion to save vertical space.
-**Testing Requirements:**
-* **Integration Testing:** Assert that clicking the accordion toggle hides and shows the ingredient list in the DOM.
+#### Story 4.2: Ingredient Accordions ✅ [COMPLETED]
+**Description:** Add collapsible accordions to manage ingredient display.
+**Tasks:**
+- Task 1: Build a global accordion for overall phase ingredients.
+- Task 2: Build local accordions inside specific blocks.
 
-### Story 4.3: Human-Readable Time Formatting
-**Description:** Convert all raw minute values into easily readable "Hours and Minutes" formats.
-**Acceptance Criteria:**
-* Build a utility function (e.g., `formatTime(mins)`) that converts `240 mins` into `4h 0m` or `4 hours`.
-* Apply this formatting to all headers, block titles, and step durations across the UI.
-**Testing Requirements:**
-* **Unit Testing:** Write robust tests for the `formatTime` helper covering edge cases like 0, 59, 60, and 125 minutes.
+#### Story 4.3: Human-Readable Time Formatting ✅ [COMPLETED]
+**Description:** Convert raw minute values into "Hours and Minutes".
+**Tasks:**
+- Task 1: Create `formatTime(mins)` pure function utility.
+- Task 2: Apply formatting globally.
 
 ---
 
 ## Epic 3: Relational Ratio Engine
+**Goal:** Mathematically sound scaling engine for global yields and specific taste tolerances.
 
-### Story 5: Global Yield Scaling
-**Description:** Implement the logic to scale ingredient quantities globally based on a "Servings" input.
-**Acceptance Criteria:**
-* A global "Yield" input exists (defaulting to the recipe's `baseYield`).
-* Continuous ingredients (`unit: "g"` or `"ml"`) scale mathematically.
-* `isOptional: true` ingredients do *not* scale, but trigger a UI warning.
-**Testing Requirements:**
-* **Unit Testing:** Write pure function tests for the math logic: `calculateScaledQuantity(baseYield, targetYield, baseQuantity)`. Test edge cases like floats and zero.
-* **Integration Testing:** Write React Testing Library tests that fire a change event on the Yield input and assert that the DOM updates the ingredient quantities correctly, and optional ingredients display the warning icon.
+### Feature 3.1: Yield & Scaling Engine
+#### Story 5: Global Yield Scaling 🔄 [IN PROGRESS]
+**Description:** Scale ingredient quantities globally based on a "Servings" input.
+**Tasks:**
+- Task 1: Add a global "Yield" input.
+- Task 2: Write pure math function `calculateScaledQuantity`.
+- Task 3: Add `setTargetYield` Redux action.
+- Task 4: Connect scaling math to UI components.
 
-### Story 6: Strict Ratio Group Validation
-**Description:** Enforce the independent ratio math defined in the `ratioGroups` registry.
-**Acceptance Criteria:**
-* If a user manually overrides an ingredient that belongs to a strict ratio group, the system flags a "Ratio Mismatch".
-* The user is prompted to either "Auto-scale Group" or "Confirm Break".
-**Testing Requirements:**
-* **Unit Testing:** Create robust unit tests for the Redux reducer that handles manual ingredient updates. It must correctly identify if the ingredient belongs to a `ratioGroup` and set a `mismatch` flag in state.
-* **Integration Testing:** Simulate a user typing a new value into an ingredient input. Assert that the "Ratio Mismatch" modal appears, and clicking "Auto-scale" dispatches the correct actions to update sister ingredients.
+#### Story 6: Strict Ratio Group Validation ⏳ [PLANNED]
+**Description:** Enforce independent ratio math defined in the `ratioGroups` registry.
+**Tasks:**
+- Task 1: Create reducer to flag "Ratio Mismatch" on manual overrides.
+- Task 2: Build UI prompt ("Auto-scale Group" vs "Confirm Break").
+- Task 3: Implement dispatch actions for auto-scaling sister ingredients.
 
-### Story 7: Tolerance Sliders (Spice/Sweetness)
-**Description:** Implement slider inputs that linearly scale ingredients tagged with "spice" or "sweet".
-**Acceptance Criteria:**
-* A "Spice Level" slider exists (Low: 50%, High: 150%).
-* Moving the slider scales *only* ingredients tagged with "spice" independently of the global yield.
-**Testing Requirements:**
-* **Unit Testing:** Test the Redux selector that calculates final displayed quantity. It must combine `globalYieldMultiplier` * `spiceToleranceMultiplier` only for tagged ingredients.
-* **Integration Testing:** Move the slider in the UI and assert that standard ingredients do not change, but "spice" tagged ingredients update in real-time.
+### Feature 3.2: Taste Profiles
+#### Story 7: Tolerance Sliders (Spice/Sweetness) ⏳ [PLANNED]
+**Description:** Slider inputs that linearly scale tagged ingredients.
+**Tasks:**
+- Task 1: Create a "Spice Level" UI slider.
+- Task 2: Write logic applying multiplier ONLY to tagged ingredients.
 
 ---
 
 ## Epic 4: Interactive Workflow & State Tracking
+**Goal:** Transform the static recipe into an interactive execution checklist.
 
-### Story 8: Step Checkboxes & Progress Tracking
-**Description:** Allow the user to check off atomic steps as they cook.
-**Acceptance Criteria:**
-* Each step has a checkbox.
-* Checking a step updates a global progress bar for that specific block (e.g., "Prep: 50% Complete").
-**Testing Requirements:**
-* **Unit Testing:** Test the Redux reducers for `toggleStepCompletion` and the selector for `calculateBlockProgress`. Ensure it handles 0 steps gracefully (avoid divide-by-zero).
-* **Integration Testing:** Click multiple checkboxes via Cypress and verify the progress bar width/percentage updates accurately in the DOM.
+### Feature 4.1: Cooking Progress
+#### Story 8: Step Checkboxes & Progress Tracking ⏳ [PLANNED]
+**Description:** Allow checking off atomic steps.
+**Tasks:**
+- Task 1: Build checkbox UI and connect to `toggleStepCompletion` Redux action.
+- Task 2: Calculate and display block-specific global progress bars.
 
-### Story 9: Step Duration Timers
-**Description:** Implement clickable timers for steps that have a defined duration.
-**Acceptance Criteria:**
-* Steps with a `totalDurationInMinutes` or step-level `duration` display a "Start Timer" button.
-* Timer uses a neon/glowing visual progress ring.
-* Triggers an alert when time hits 00:00.
-**Testing Requirements:**
-* **Unit Testing:** Use Jest fake timers (`jest.useFakeTimers()`) to test the custom `useTimer` hook. Ensure pause, resume, and reset functions work flawlessly.
-* **Integration Testing:** Click "Start" on a timer. Fast-forward the time or wait, and assert that the visual ring depletes and the completion alert is triggered in the DOM.
+### Feature 4.2: Built-in Timers
+#### Story 9: Step Duration Timers ⏳ [PLANNED]
+**Description:** Clickable timers for steps with defined durations.
+**Tasks:**
+- Task 1: Create a `useTimer` custom hook.
+- Task 2: Build glowing visual progress ring UI.
+- Task 3: Implement browser/audio alert on completion.
 
 ---
 
-## Epic 5: Backend & Database Integration
+# 🏗 INITIATIVE 2: Recipe Authoring & Content Management (CMS)
+**Goal:** Provide a robust interface for chefs to input, structure, and edit complex modular recipes.
 
-### Story 10: MongoDB Setup & Mongoose Schemas
-**Description:** Configure the MongoDB connection and define Mongoose schemas that mirror our TypeScript recipe structure.
-**Acceptance Criteria:**
-* MongoDB URI is securely configured via environment variables.
-* A robust Mongoose schema is built to perfectly validate and store the complex `Recipe` object.
-**Testing Requirements:**
-* **Integration Testing:** Write a seed script to successfully connect to a local/test MongoDB database and inject the `mockAdaiRecipe` document.
+## Epic 5: Recipe Builder Workspace
+**Goal:** A drag-and-drop UI to create recipes.
 
-### Story 11: Traditional REST API Endpoints
-**Description:** Build standard Next.js Route Handlers (`src/app/api/...`) to serve frontend requests.
-**Acceptance Criteria:**
-* `GET /api/recipes` returns a list of recipes.
-* `GET /api/recipes/[id]` fetches the full nested recipe structure.
-* `POST /api/recipes` securely saves a new recipe to MongoDB.
-**Testing Requirements:**
-* **Integration Testing:** Use Postman or automated API tests to verify endpoints return standard HTTP 200/201 statuses and correct JSON payloads.
+### Feature 5.1: Workflow Node Editor
+#### Story 10: Component Block Management ⏳ [PLANNED]
+**Description:** Interface to add, name, and order Prep/Passive/Cook blocks.
+**Tasks:**
+- Task 1: Build block creation UI.
+- Task 2: Implement drag-and-drop reordering logic.
 
-### Story 12: Wire Redux to the REST API
-**Description:** Replace the hardcoded mock data in the frontend by making standard `fetch` calls to our new API.
-**Acceptance Criteria:**
-* Redux uses `createAsyncThunk` (or RTK Query) to fetch data from `/api/recipes` on page load.
-* The frontend properly displays a Loading State or Error State during network requests.
-**Testing Requirements:**
-* **Integration Testing:** Mount the app, intercept the API call, and assert that the UI properly transitions from "Loading" to the fully populated dashboard.
+#### Story 11: Step & Ingredient Association ⏳ [PLANNED]
+**Description:** Interface to add atomic steps and link specific ingredients.
+**Tasks:**
+- Task 1: Build text editor for step descriptions.
+- Task 2: Implement dropdown to select ingredients from Master Registry.
+
+### Feature 5.2: Relational Math Setup
+#### Story 12: Ratio Group Builder ⏳ [PLANNED]
+**Description:** Allow authors to bind ingredients into mathematical groups.
+**Tasks:**
+- Task 1: UI to define ratio base (e.g., "1 part Rice : 0.5 part Dal").
+- Task 2: Redux logic to generate `ratioGroups` schema arrays.
+
+---
+
+## Epic 6: Master Ingredient Registry
+**Goal:** A centralized database of ingredients to standardize units and translations.
+
+### Feature 6.1: Centralized Dictionary
+#### Story 13: Ingredient CRUD ⏳ [PLANNED]
+**Description:** Administrative interface to manage the master ingredient list.
+**Tasks:**
+- Task 1: Form to add new ingredients (ID, default name).
+- Task 2: List view with edit/delete capabilities.
+
+#### Story 14: Conversions & Translations ⏳ [PLANNED]
+**Description:** Store standard volume-to-weight conversions and multi-language support.
+**Tasks:**
+- Task 1: Implement volume-to-weight density ratios (e.g., 1 cup flour = 120g).
+- Task 2: Implement key-value map for localized translations (e.g., Tamil, Hindi).
+
+---
+
+# 💾 INITIATIVE 3: Data Persistence & User Ecosystem
+**Goal:** Save data permanently, support user accounts, and serve APIs.
+
+## Epic 7: Backend API & Database
+**Goal:** MongoDB schema setup and RESTful endpoints.
+
+### Feature 7.1: Infrastructure & Schemas
+#### Story 15: Mongoose Schemas & MongoDB ⏳ [PLANNED]
+**Description:** Strict backend validation mapping to TypeScript interfaces.
+**Tasks:**
+- Task 1: Configure MongoDB URI and connection utility.
+- Task 2: Build `Recipe`, `Ingredient`, and `User` Mongoose models.
+
+### Feature 7.2: Data Access Layer
+#### Story 16: RESTful Next.js Route Handlers ⏳ [PLANNED]
+**Description:** Standard API for frontend consumption.
+**Tasks:**
+- Task 1: Build `GET /api/recipes`.
+- Task 2: Build `POST /api/recipes`.
+
+## Epic 8: Authentication & Profiles
+**Goal:** Secure user accounts and personalized settings.
+
+### Feature 8.1: Auth System
+#### Story 17: User Authentication ⏳ [PLANNED]
+**Description:** NextAuth integration for login/signup.
+**Tasks:**
+- Task 1: Setup NextAuth with Google/Email providers.
+- Task 2: Protect `/editor` routes with auth middleware.
+
+### Feature 8.2: Personalization
+#### Story 18: Favorites & Notes ⏳ [PLANNED]
+**Description:** Let users save recipes and add private cooking notes.
+**Tasks:**
+- Task 1: Build "Add to Favorites" toggle.
+- Task 2: Build private note text area per recipe.
+
+---
+
+# 🌟 INITIATIVE 4: Advanced Culinary Features
+**Goal:** Push the boundaries of traditional recipe applications with smart tech.
+
+## Epic 9: Hands-Free Kitchen Mode
+**Goal:** Allow users to cook without touching their devices with dirty hands.
+
+### Feature 9.1: Voice Control
+#### Story 19: Voice Command Navigation ⏳ [PLANNED]
+**Description:** Use Web Speech API for basic workflow control.
+**Tasks:**
+- Task 1: Implement SpeechRecognition for "Next Step" command.
+- Task 2: Implement "Start Timer" voice trigger.
+
+## Epic 10: Smart Grocery Planning
+**Goal:** Convert required recipe yields into shoppable lists.
+
+### Feature 10.1: Dynamic Shopping Lists
+#### Story 20: Aggregate Grocery List Generation ⏳ [PLANNED]
+**Description:** Auto-generate a grocery list based on the active target yield.
+**Tasks:**
+- Task 1: Write logic to aggregate identical ingredients across blocks.
+- Task 2: Build "Export to PDF/Notes" functionality.
