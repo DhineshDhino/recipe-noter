@@ -8,7 +8,7 @@ export const mockAdaiRecipe: Recipe = {
     {
       versionName: "Amma's Soft Version",
       author: "Amma",
-      timestamp: new Date("2023-01-01T00:00:00Z"),
+      timestamp: "2023-01-01T00:00:00Z",
     }
   ],
   masterIngredients: [

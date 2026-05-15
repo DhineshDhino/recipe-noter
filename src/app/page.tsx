@@ -1,10 +1,10 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useMemo, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/store/store';
-
-import { formatIngredientName, formatTime, getGlobalIngredients } from '@/lib/utils';
+import { setTargetYield } from '@/store/recipeSlice';
+import { formatIngredientName, formatTime, getGlobalIngredients, calculateScaledQuantity } from '@/lib/utils';
 
 // --- SUB-COMPONENTS ---
 const Badge = ({ children, variant, className = "" }: { children: React.ReactNode, variant: 'critical' | 'optional' | 'duration' | 'heat', className?: string }) => {
@@ -18,9 +18,21 @@ const Badge = ({ children, variant, className = "" }: { children: React.ReactNod
   return <span className={`${base} ${variants[variant]} ${className}`}>{children}</span>;
 };
 
-const PhaseIngredientsAccordion = ({ ingredients, title = "Phase Ingredients", isGlobal = true }: { ingredients: any[], title?: string, isGlobal?: boolean }) => {
+const PhaseIngredientsAccordion = ({
+  ingredients,
+  title = "Phase Ingredients",
+  isGlobal = true,
+  baseYield,
+  targetYield,
+}: {
+  ingredients: any[],
+  title?: string,
+  isGlobal?: boolean,
+  baseYield: number,
+  targetYield: number,
+}) => {
   if (!ingredients || ingredients.length === 0) return null;
-  const containerClass = isGlobal 
+  const containerClass = isGlobal
     ? "group mb-6 border-2 border-border-subtle rounded-xl bg-card-bg overflow-hidden shadow-sm"
     : "group mb-4 bg-background/50 border border-border-subtle rounded-lg overflow-hidden";
   const summaryClass = isGlobal
@@ -36,15 +48,22 @@ const PhaseIngredientsAccordion = ({ ingredients, title = "Phase Ingredients", i
       </summary>
       <div className={contentClass}>
         <ul className="space-y-1">
-          {ingredients.map((ing, i) => (
-            <li key={i} className="text-foreground text-sm flex justify-between border-b border-border-subtle/30 pb-1">
-              <span>
-                {formatIngredientName(ing.id || ing.ingredientId)} 
-                {ing.isOptional && <Badge variant="optional" className="ml-2">Optional</Badge>}
-              </span>
-              <span className="tabular-nums font-mono text-accent">{ing.amount || ing.quantity} {ing.unit}</span>
-            </li>
-          ))}
+          {ingredients.map((ing, i) => {
+            const rawQty = ing.amount ?? ing.quantity;
+            const scaledQty = calculateScaledQuantity(rawQty, baseYield, targetYield, ing.isOptional);
+            const hasChanged = scaledQty !== rawQty;
+            return (
+              <li key={i} className="text-foreground text-sm flex justify-between border-b border-border-subtle/30 pb-1">
+                <span>
+                  {formatIngredientName(ing.id || ing.ingredientId)}
+                  {ing.isOptional && <Badge variant="optional" className="ml-2">Optional</Badge>}
+                </span>
+                <span className={`tabular-nums font-mono ${hasChanged ? 'text-accent font-semibold' : 'text-accent'}`}>
+                  {scaledQty} {ing.unit}
+                </span>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </details>
@@ -71,7 +90,13 @@ const RecipeStep = ({ step, textSize = "text-sm", padding = "p-3" }: { step: any
 
 // --- MAIN PAGE COMPONENT ---
 export default function Home() {
+  const dispatch = useDispatch();
   const { recipe, targetYield } = useSelector((state: RootState) => state.recipe);
+
+  const handleYieldChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = parseInt(e.target.value, 10);
+    if (!isNaN(val) && val > 0) dispatch(setTargetYield(val));
+  }, [dispatch]);
 
   // Memoized derived state to prevent re-calculations on every render
   const { totalPrepTime, totalPassiveTime, totalCookTime, totalTime } = useMemo(() => {
@@ -89,6 +114,8 @@ export default function Home() {
     return <div className="min-h-screen flex items-center justify-center text-foreground">Loading Recipe...</div>;
   }
 
+  const baseYield = recipe.baseYield;
+
   return (
     <div className="min-h-screen p-4 sm:p-8 font-sans flex flex-col gap-8 max-w-7xl mx-auto">
       {/* Header Section */}
@@ -96,16 +123,29 @@ export default function Home() {
         <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-foreground">
           {recipe.name}
         </h1>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 items-center">
-          <p className="text-text-muted text-lg">
-            Yield: <span className="text-accent font-medium">{targetYield} Servings</span>
-          </p>
+        <div className="flex flex-wrap gap-x-6 gap-y-3 items-center">
+          {/* Yield Input (Story 5) */}
+          <div className="flex items-center gap-2 bg-card-bg border border-border-subtle rounded-lg px-3 py-1.5 focus-within:border-accent transition-colors">
+            <label htmlFor="yield-input" className="text-text-muted text-sm font-medium whitespace-nowrap">Servings</label>
+            <input
+              id="yield-input"
+              type="number"
+              min={1}
+              value={targetYield}
+              onChange={handleYieldChange}
+              className="w-14 bg-transparent text-accent font-bold text-lg text-center outline-none tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            {targetYield !== baseYield && (
+              <span className="text-[10px] text-text-muted font-mono">(base: {baseYield})</span>
+            )}
+          </div>
+
           <span className="text-text-muted hidden sm:inline">•</span>
-          <p className="text-text-muted text-lg">
+          <p className="text-text-muted text-sm">
             Version: <span className="text-foreground">{recipe.versionHistory[0]?.versionName || 'Original'}</span>
           </p>
           <span className="text-text-muted hidden sm:inline">•</span>
-          
+
           <div className="flex items-center gap-2 bg-card-bg border border-border-subtle rounded-md px-3 py-1">
             <span className="text-foreground font-semibold">Total: {formatTime(totalTime)}</span>
             <span className="text-text-muted">|</span>
@@ -130,19 +170,19 @@ export default function Home() {
 
       {/* Main Two-Column Layout */}
       <main className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        
+
         {/* Left Column: Prep & Passive */}
         <div className="flex flex-col gap-8">
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">Preparation</h2>
-            <PhaseIngredientsAccordion ingredients={prepIngredients} title="Phase Ingredients" isGlobal={true} />
+            <PhaseIngredientsAccordion ingredients={prepIngredients} title="Phase Ingredients" isGlobal={true} baseYield={baseYield} targetYield={targetYield} />
 
             <div className="space-y-6">
               {recipe.prepBlocks.map((block, idx) => (
                 <div key={idx} className="bg-card-bg border border-border-subtle rounded-xl p-6 shadow-xl">
                   <h3 className="text-xl font-medium text-accent mb-4">{block.name} <span className="text-sm text-text-muted ml-2">({formatTime(block.totalDurationInMinutes || 0)})</span></h3>
-                  
-                  <PhaseIngredientsAccordion ingredients={block.ingredients} title="Ingredients" isGlobal={false} />
+
+                  <PhaseIngredientsAccordion ingredients={block.ingredients} title="Ingredients" isGlobal={false} baseYield={baseYield} targetYield={targetYield} />
 
                   <div>
                     <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-2">Steps</h4>
@@ -184,16 +224,16 @@ export default function Home() {
               Active Cooking
             </h2>
 
-            <PhaseIngredientsAccordion ingredients={cookIngredients} title="Phase Ingredients" isGlobal={true} />
+            <PhaseIngredientsAccordion ingredients={cookIngredients} title="Phase Ingredients" isGlobal={true} baseYield={baseYield} targetYield={targetYield} />
 
             <div className="space-y-6">
               {recipe.cookBlocks.map((block, idx) => (
                 <div key={idx} className="bg-card-bg border-2 border-border-subtle rounded-xl p-6 shadow-2xl relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-1 h-full bg-accent"></div>
-                  
+
                   <h3 className="text-xl font-medium text-accent mb-4">{block.name} <span className="text-sm text-text-muted ml-2">({formatTime(block.totalDurationInMinutes || 0)})</span></h3>
-                  
-                  <PhaseIngredientsAccordion ingredients={block.ingredients} title="Mise en place" isGlobal={false} />
+
+                  <PhaseIngredientsAccordion ingredients={block.ingredients} title="Mise en place" isGlobal={false} baseYield={baseYield} targetYield={targetYield} />
 
                   <div>
                     <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-2">Execution</h4>
