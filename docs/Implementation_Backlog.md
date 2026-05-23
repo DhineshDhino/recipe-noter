@@ -78,7 +78,7 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 - Task 3: Add `setTargetYield` Redux action.
 - Task 4: Connect scaling math to UI components.
 
-#### Story 6: Strict Ratio Group Validation 🔄 [IN PROGRESS]
+#### Story 6: Strict Ratio Group Validation ✅ [COMPLETED]
 **Description:** Enforce independent ratio math defined in the `ratioGroups` registry.
 **Tasks:**
 - Task 1: Create reducer to flag "Ratio Mismatch" on manual overrides.
