@@ -22,3 +22,24 @@ export const getGlobalIngredients = (blocks: any[]) => {
   }));
   return Object.values(all);
 };
+
+/**
+ * Calculates a scaled ingredient quantity based on the target yield.
+ * Returns the original quantity unchanged for optional ingredients.
+ *
+ * @param baseQuantity  - The original quantity at baseYield
+ * @param baseYield     - The recipe's original serving count
+ * @param targetYield   - The user's desired serving count
+ * @param isOptional    - If true, quantity is not scaled (returns base as-is)
+ * @returns             - The scaled quantity, rounded to 2 decimal places
+ */
+export const calculateScaledQuantity = (
+  baseQuantity: number,
+  baseYield: number,
+  targetYield: number,
+  isOptional: boolean = false,
+): number => {
+  if (isOptional) return baseQuantity;
+  if (baseYield === 0) return 0;
+  return Math.round((baseQuantity / baseYield) * targetYield * 100) / 100;
+};

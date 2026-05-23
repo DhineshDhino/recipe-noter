@@ -70,7 +70,7 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 **Goal:** Mathematically sound scaling engine for global yields and specific taste tolerances.
 
 ### Feature 3.1: Yield & Scaling Engine
-#### Story 5: Global Yield Scaling 🔄 [IN PROGRESS]
+#### Story 5: Global Yield Scaling ✅ [COMPLETED]
 **Description:** Scale ingredient quantities globally based on a "Servings" input.
 **Tasks:**
 - Task 1: Add a global "Yield" input.
@@ -78,7 +78,7 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 - Task 3: Add `setTargetYield` Redux action.
 - Task 4: Connect scaling math to UI components.
 
-#### Story 6: Strict Ratio Group Validation ⏳ [PLANNED]
+#### Story 6: Strict Ratio Group Validation 🔄 [IN PROGRESS]
 **Description:** Enforce independent ratio math defined in the `ratioGroups` registry.
 **Tasks:**
 - Task 1: Create reducer to flag "Ratio Mismatch" on manual overrides.
