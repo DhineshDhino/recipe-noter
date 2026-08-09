@@ -67,7 +67,7 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 ---
 
 ## Epic 3: Relational Ratio Engine
-**Goal:** Mathematically sound scaling engine for global yields and specific taste tolerances.
+**Goal:** Mathematically sound scaling engine for global yields and strict ratio validation.
 
 ### Feature 3.1: Yield & Scaling Engine
 #### Story 5: Global Yield Scaling ✅ [COMPLETED]
@@ -85,74 +85,127 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 - Task 2: Build UI prompt ("Auto-scale Group" vs "Confirm Break").
 - Task 3: Implement dispatch actions for auto-scaling sister ingredients.
 
-### Feature 3.2: Taste Profiles
-#### Story 7: Tolerance Sliders (Spice/Sweetness) ⏳ [PLANNED]
-**Description:** Slider inputs that linearly scale tagged ingredients.
-**Tasks:**
-- Task 1: Create a "Spice Level" UI slider.
-- Task 2: Write logic applying multiplier ONLY to tagged ingredients.
-
----
-
-## Epic 4: Interactive Workflow & State Tracking
-**Goal:** Transform the static recipe into an interactive execution checklist.
-
-### Feature 4.1: Cooking Progress
-#### Story 8: Step Checkboxes & Progress Tracking ⏳ [PLANNED]
-**Description:** Allow checking off atomic steps.
-**Tasks:**
-- Task 1: Build checkbox UI and connect to `toggleStepCompletion` Redux action.
-- Task 2: Calculate and display block-specific global progress bars.
-
-### Feature 4.2: Built-in Timers
-#### Story 9: Step Duration Timers ⏳ [PLANNED]
-**Description:** Clickable timers for steps with defined durations.
-**Tasks:**
-- Task 1: Create a `useTimer` custom hook.
-- Task 2: Build glowing visual progress ring UI.
-- Task 3: Implement browser/audio alert on completion.
-
 ---
 
 # 🏗 INITIATIVE 2: Recipe Authoring & Content Management (CMS)
-**Goal:** Provide a robust interface for chefs to input, structure, and edit complex modular recipes.
+**Goal:** Provide a sequential, step-by-step noter interface for chefs to input, structure, and edit modular recipes organized into three distinct phases: **Prep → Rest/Passive → Cooking**.
 
-## Epic 5: Recipe Builder Workspace
-**Goal:** A drag-and-drop UI to create recipes.
+## Epic 4: Step-by-Step Recipe Noter
+**Goal:** A sequential step entry UI organized into three cooking phases — no drag-and-drop; the noter adds steps in order, one at a time, within the correct phase.
 
-### Feature 5.1: Workflow Node Editor
-#### Story 10: Component Block Management ⏳ [PLANNED]
-**Description:** Interface to add, name, and order Prep/Passive/Cook blocks.
+### Feature 4.1: Three-Phase Recipe Structure
+#### Story 7: Phase Tab Navigation & Step Entry ✅ [COMPLETED]
+**Description:** Build the core noter interface with three distinct phase tabs (Prep, Rest/Passive, Cooking). The noter selects a phase, then adds steps sequentially within it.
 **Tasks:**
-- Task 1: Build block creation UI.
-- Task 2: Implement drag-and-drop reordering logic.
+- Task 1: Build phase tab bar UI (Prep Phase | Rest/Passive Phase | Cooking Phase) with active state styling.
+- Task 2: Build the "Add Step" form — a single-line text input with an "Add" button that appends a new `AtomicStep` to the active phase's step list.
+- Task 3: Display the ordered list of steps within each phase as numbered cards.
+- Task 4: Allow inline editing of existing steps (click to edit, blur/enter to save).
+- Task 5: Allow step deletion with confirmation.
 
-#### Story 11: Step & Ingredient Association ⏳ [PLANNED]
-**Description:** Interface to add atomic steps and link specific ingredients.
+#### Story 8: Step Metadata Entry ✅ [COMPLETED]
+**Description:** Allow the noter to attach structured metadata to each step (duration, heat, criticality).
 **Tasks:**
-- Task 1: Build text editor for step descriptions.
-- Task 2: Implement dropdown to select ingredients from Master Registry.
+- Task 1: Build collapsible "Step Details" panel per step card (duration input, yield-dependent toggle).
+- Task 2: Add heat/temperature hybrid input (Intensity dropdown: Low/Medium/High + optional precision °C field).
+- Task 3: Add "Mark as Critical" toggle that visually flags the step with a warning style.
 
-### Feature 5.2: Relational Math Setup
+#### Story 9: Step Reordering Within Phase ✅ [COMPLETED]
+**Description:** Allow the noter to reorder steps within a single phase using intuitive HTML5 Drag & Drop handles complemented by ↑ / ↓ arrow controls.
+**Tasks:**
+- Task 1: Add drag handle `⠿` and HTML5 drag & drop event handlers to step cards.
+- Task 2: Add ↑ / ↓ arrow buttons on step cards.
+- Task 3: Write Redux actions `reorderSteps`, `moveStepUp`, and `moveStepDown`.
+
+### Feature 4.2: Block Management Within Phases
+#### Story 10: Component Block Creation ✅ [COMPLETED]
+**Description:** Within each phase, the noter can create named Component Blocks (e.g., "The Marinade", "The Tempering") to group related steps.
+**Tasks:**
+- Task 1: Build "Add Block" button within each phase tab.
+- Task 2: Build block naming/renaming inline input.
+- Task 3: Steps are added inside a specific block — display block → steps hierarchy.
+- Task 4: Allow block deletion (warn if steps exist inside).
+
+#### Story 10.1: Block Ingredient Authoring ⏳ [PLANNED]
+**Description:** Allow authors to add, edit, and remove ingredients for each Component Block in the editor (quantity, unit, optional flag, and spice/sweet tags).
+**Tasks:**
+- Task 1: Build block ingredient form (Select from Master Registry, quantity, unit, optional toggle, tag buttons).
+- Task 2: Display ingredient list within each block in the editor.
+- Task 3: Write Redux actions `addBlockIngredient`, `updateBlockIngredient`, `removeBlockIngredient`.
+
+#### Story 10.2: Recipe Equipment, Pairings & Version Metadata ⏳ [PLANNED]
+**Description:** Allow authors to define required equipment, food pairings, and version metadata in the editor.
+**Tasks:**
+- Task 1: Build equipment checklist input (add/remove equipment items).
+- Task 2: Build food pairings input (add/remove pairings).
+- Task 3: Build version details input (Version Name, Author).
+
+### Feature 4.3: Step ↔ Ingredient Association
+#### Story 11: Link Ingredients to Steps ⏳ [PLANNED]
+**Description:** When writing a step, the noter can associate specific ingredients from the Master Registry to that step.
+**Tasks:**
+- Task 1: Build ingredient chip selector within each step's detail panel.
+- Task 2: Show associated ingredients as inline chips/tags on the step card.
+- Task 3: Redux logic to store `ingredientIds[]` on each `AtomicStep`.
+
+### Feature 4.4: Relational Math Setup
 #### Story 12: Ratio Group Builder ⏳ [PLANNED]
-**Description:** Allow authors to bind ingredients into mathematical groups.
+**Description:** Allow authors to bind ingredients into mathematical ratio groups.
 **Tasks:**
 - Task 1: UI to define ratio base (e.g., "1 part Rice : 0.5 part Dal").
 - Task 2: Redux logic to generate `ratioGroups` schema arrays.
 
+#### Story 12.1: Live Recipe Preview & Reader Sync ⏳ [PLANNED]
+**Description:** Provide a "Live Preview" toggle in the editor that renders the active edited recipe in the exact Reader View format, and allow syncing edited recipes into the main recipe store.
+**Tasks:**
+- Task 1: Write `exportEditorToRecipe` mapper utility.
+- Task 2: Add "Preview Recipe" toggle/modal in the Editor header.
+- Task 3: Allow loading edited recipe directly into the Reader View.
+
+---
+
+## Epic 5: Smart Autocomplete Engine
+**Goal:** Provide intelligent inline suggestions as the noter types step descriptions, powered by two sources: the recipe's Master Ingredient list and a built-in dictionary of common cooking terms.
+
+### Feature 5.1: Ingredient Autocomplete
+#### Story 13: Autocomplete from Master Ingredients ⏳ [PLANNED]
+**Description:** As the noter types inside a step text input, suggest matching ingredient names from the recipe's Master Ingredient Registry.
+**Tasks:**
+- Task 1: Build autocomplete dropdown component (floating, keyboard-navigable, max 5 suggestions).
+- Task 2: Implement fuzzy-match search against `masterIngredients[].defaultName` and translations.
+- Task 3: On selection, insert the ingredient name into the step text and auto-associate the ingredient ID to the step.
+- Task 4: Highlight matched ingredients in the step text with a distinct visual style (e.g., colored chip/underline).
+
+### Feature 5.2: Cooking Term Autocomplete
+#### Story 14: Built-in Cooking Terms Dictionary ⏳ [PLANNED]
+**Description:** Suggest common cooking technique terms (frying, sauté, blanch, temper, fold, julienne, etc.) as the noter types.
+**Tasks:**
+- Task 1: Create a static dictionary of ~100 common cooking terms, organized by category (heat techniques, cutting techniques, mixing techniques, etc.).
+- Task 2: Integrate cooking terms into the same autocomplete dropdown, visually distinguished from ingredient suggestions (e.g., different icon or label).
+- Task 3: Allow the noter to add custom cooking terms to the dictionary.
+
+### Feature 5.3: Unified Autocomplete UX
+#### Story 15: Merged Suggestion Dropdown ⏳ [PLANNED]
+**Description:** Combine ingredient and cooking term suggestions into a single, prioritized dropdown with clear visual grouping.
+**Tasks:**
+- Task 1: Design grouped dropdown sections: "🥘 Ingredients" and "🔥 Techniques" with section headers.
+- Task 2: Implement trigger logic — autocomplete activates after typing 2+ characters.
+- Task 3: Keyboard navigation (↑↓ to move, Enter/Tab to select, Esc to dismiss).
+- Task 4: Mobile-friendly touch selection support.
+
 ---
 
 ## Epic 6: Master Ingredient Registry
-**Goal:** A centralized database of ingredients to standardize units and translations.
+**Goal:** A centralized database of ingredients to standardize units and translations, and to power the autocomplete engine.
 
 ### Feature 6.1: Centralized Dictionary
-#### Story 13: Ingredient CRUD ⏳ [PLANNED]
+#### Story 16: Ingredient CRUD ⏳ [PLANNED]
 **Description:** Administrative interface to manage the master ingredient list.
 **Tasks:**
 - Task 1: Form to add new ingredients (ID, default name).
 - Task 2: List view with edit/delete capabilities.
 
-#### Story 14: Conversions & Translations ⏳ [PLANNED]
+#### Story 17: Conversions & Translations ⏳ [PLANNED]
 **Description:** Store standard volume-to-weight conversions and multi-language support.
 **Tasks:**
 - Task 1: Implement volume-to-weight density ratios (e.g., 1 cup flour = 120g).
@@ -167,14 +220,14 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 **Goal:** MongoDB schema setup and RESTful endpoints.
 
 ### Feature 7.1: Infrastructure & Schemas
-#### Story 15: Mongoose Schemas & MongoDB ⏳ [PLANNED]
+#### Story 18: Mongoose Schemas & MongoDB ⏳ [PLANNED]
 **Description:** Strict backend validation mapping to TypeScript interfaces.
 **Tasks:**
 - Task 1: Configure MongoDB URI and connection utility.
 - Task 2: Build `Recipe`, `Ingredient`, and `User` Mongoose models.
 
 ### Feature 7.2: Data Access Layer
-#### Story 16: RESTful Next.js Route Handlers ⏳ [PLANNED]
+#### Story 19: RESTful Next.js Route Handlers ⏳ [PLANNED]
 **Description:** Standard API for frontend consumption.
 **Tasks:**
 - Task 1: Build `GET /api/recipes`.
@@ -184,14 +237,14 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 **Goal:** Secure user accounts and personalized settings.
 
 ### Feature 8.1: Auth System
-#### Story 17: User Authentication ⏳ [PLANNED]
+#### Story 20: User Authentication ⏳ [PLANNED]
 **Description:** NextAuth integration for login/signup.
 **Tasks:**
 - Task 1: Setup NextAuth with Google/Email providers.
 - Task 2: Protect `/editor` routes with auth middleware.
 
 ### Feature 8.2: Personalization
-#### Story 18: Favorites & Notes ⏳ [PLANNED]
+#### Story 21: Favorites & Notes ⏳ [PLANNED]
 **Description:** Let users save recipes and add private cooking notes.
 **Tasks:**
 - Task 1: Build "Add to Favorites" toggle.
@@ -206,7 +259,7 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 **Goal:** Allow users to cook without touching their devices with dirty hands.
 
 ### Feature 9.1: Voice Control
-#### Story 19: Voice Command Navigation ⏳ [PLANNED]
+#### Story 22: Voice Command Navigation ⏳ [PLANNED]
 **Description:** Use Web Speech API for basic workflow control.
 **Tasks:**
 - Task 1: Implement SpeechRecognition for "Next Step" command.
@@ -216,8 +269,42 @@ This document breaks down the Modular Recipe System into a comprehensive, long-t
 **Goal:** Convert required recipe yields into shoppable lists.
 
 ### Feature 10.1: Dynamic Shopping Lists
-#### Story 20: Aggregate Grocery List Generation ⏳ [PLANNED]
+#### Story 23: Aggregate Grocery List Generation ⏳ [PLANNED]
 **Description:** Auto-generate a grocery list based on the active target yield.
 **Tasks:**
 - Task 1: Write logic to aggregate identical ingredients across blocks.
 - Task 2: Build "Export to PDF/Notes" functionality.
+
+---
+
+# 🎮 INITIATIVE 5: Interactive Cooking Experience
+**Goal:** Transform the static recipe into a live, gamified execution checklist with real-time feedback.
+
+## Epic 11: Interactive Workflow & State Tracking
+**Goal:** Let the cook check off steps and track block-level progress in real time.
+
+### Feature 11.1: Cooking Progress
+#### Story 24: Step Checkboxes & Progress Tracking ⏳ [PLANNED]
+**Description:** Allow checking off atomic steps with live block progress bars.
+**Tasks:**
+- Task 1: Build checkbox UI and connect to `toggleStepCompletion` Redux action.
+- Task 2: Calculate and display block-specific global progress bars.
+
+### Feature 11.2: Built-in Timers
+#### Story 25: Step Duration Timers ⏳ [PLANNED]
+**Description:** Clickable timers for steps with defined durations.
+**Tasks:**
+- Task 1: Create a `useTimer` custom hook.
+- Task 2: Build glowing visual progress ring UI.
+- Task 3: Implement browser/audio alert on completion.
+
+## Epic 12: Taste Profile Tuning
+**Goal:** Let users independently adjust spice and sweetness tolerances without affecting global yield.
+
+### Feature 12.1: Taste Profiles
+#### Story 26: Tolerance Sliders (Spice/Sweetness) ⏳ [PLANNED]
+**Description:** Slider inputs that linearly scale ingredients tagged with "spice" or "sweet".
+**Tasks:**
+- Task 1: Create a "Spice Level" UI slider (Low: 50%, High: 150%).
+- Task 2: Write logic applying multiplier ONLY to tagged ingredients.
+

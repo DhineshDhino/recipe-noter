@@ -2,6 +2,7 @@
 
 import { useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import Link from 'next/link';
 import { RootState } from '@/store/store';
 import { setTargetYield, setIngredientOverride, autoScaleGroup, confirmBreakRatio } from '@/store/recipeSlice';
 import { formatIngredientName, formatTime, getGlobalIngredients, calculateScaledQuantity } from '@/lib/utils';
@@ -196,9 +197,18 @@ export default function Home() {
     <div className="min-h-screen p-4 sm:p-8 font-sans flex flex-col gap-8 max-w-7xl mx-auto">
       {/* Header */}
       <header className="space-y-4 border-b border-border-subtle pb-6">
-        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-foreground">
-          {recipe.name}
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight text-foreground">
+            {recipe.name}
+          </h1>
+          <Link
+            href="/editor"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-accent/15 text-accent border border-accent/40 hover:bg-accent/25 text-xs font-bold transition-all shadow-sm"
+          >
+            <span>📝</span>
+            <span>Recipe Editor</span>
+          </Link>
+        </div>
         <div className="flex flex-wrap gap-x-6 gap-y-3 items-center">
           <div className="flex items-center gap-2 bg-card-bg border border-border-subtle rounded-lg px-3 py-1.5 focus-within:border-accent transition-colors">
             <label htmlFor="yield-input" className="text-text-muted text-sm font-medium whitespace-nowrap">Servings</label>
