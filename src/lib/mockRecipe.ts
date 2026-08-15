@@ -4,11 +4,14 @@ export const mockAdaiRecipe: Recipe = {
   id: "recipe_adai_001",
   name: "Adai",
   baseYield: 4, // Assuming this serves 4 people
+  mealSlots: ['breakfast', 'snack', 'dinner'],
+  dietary: ['vegetarian', 'vegan', 'gluten_free', 'high_protein'],
+  difficulty: 'medium',
   versionHistory: [
     {
       versionName: "Amma's Soft Version",
       author: "Amma",
-      timestamp: new Date("2023-01-01T00:00:00Z"),
+      timestamp: "2023-01-01T00:00:00Z",
     }
   ],
   masterIngredients: [
@@ -115,7 +118,14 @@ export const mockAdaiRecipe: Recipe = {
         {
           text: "Add all the soaked dal varieties. Grind until the correct slightly coarse consistency.",
           duration: { value: 5, isYieldDependent: true },
-          isCritical: true
+          isCritical: true,
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80",
+              caption: "Semi-coarse batter texture with visible crushed dal flecks",
+              stage: "while_cooking",
+            },
+          ],
         },
         {
           text: "Add asafoetida and salt right before taking it out of the grinder.",
@@ -158,12 +168,26 @@ export const mockAdaiRecipe: Recipe = {
           text: "Heat Dosa Tawa. Pour a ladle of batter and spread it like a thick dosa.",
           duration: { value: 1, isYieldDependent: false },
           heat: { intensity: "Medium" },
-          isCritical: false
+          isCritical: false,
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=80",
+              caption: "Evenly spread thick batter on hot tawa with oil drizzled around edges",
+              stage: "while_cooking",
+            },
+          ],
         },
         {
           text: "Cook until golden brown on both sides.",
           duration: { value: 5, isYieldDependent: false },
-          isCritical: false
+          isCritical: false,
+          images: [
+            {
+              url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=600&q=80",
+              caption: "Crispy golden brown crust with roasted edges and tender core",
+              stage: "after_step",
+            },
+          ],
         }
       ]
     }

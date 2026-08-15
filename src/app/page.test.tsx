@@ -18,7 +18,7 @@ const renderWithRedux = (component: React.ReactElement) => {
 describe('Dashboard UI Shell — Rendering (Stories 3 & 4)', () => {
   it('renders the recipe name from the Redux store', () => {
     renderWithRedux(<Home />);
-    expect(screen.getByText('Adai')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1, name: 'Adai' })).toBeInTheDocument();
   });
 
   it('renders the recipe version name', () => {
@@ -175,3 +175,149 @@ describe('Dashboard UI Shell — Story 6: Ratio Mismatch UI', () => {
     expect(screen.queryByText(/Ratio Mismatch/i)).not.toBeInTheDocument();
   });
 });
+
+// ─────────────────────────────────────────────
+// Story 24 — Cooking Progress & Checklists
+// ─────────────────────────────────────────────
+describe('Dashboard UI Shell — Story 24: Cooking Progress & Checklists', () => {
+  it('renders overall steps progress counter (0/X Steps Done)', () => {
+    renderWithRedux(<Home />);
+    expect(screen.getByText(/0\//)).toBeInTheDocument();
+    expect(screen.getByText(/Steps Done/i)).toBeInTheDocument();
+  });
+
+  it('checking a step increments the progress counter', () => {
+    const { container } = renderWithRedux(<Home />);
+    const firstCheckbox = container.querySelector('#checkbox-prep-0-0') as HTMLInputElement;
+    expect(firstCheckbox).toBeInTheDocument();
+    expect(firstCheckbox.checked).toBe(false);
+
+    fireEvent.click(firstCheckbox);
+    expect(screen.getByText(/1\//)).toBeInTheDocument();
+  });
+
+  it('renders "Reset" progress button when steps are checked and resets on click', () => {
+    const { container } = renderWithRedux(<Home />);
+    const firstCheckbox = container.querySelector('#checkbox-prep-0-0') as HTMLInputElement;
+    fireEvent.click(firstCheckbox);
+
+    const resetBtn = screen.getByText('Reset');
+    expect(resetBtn).toBeInTheDocument();
+
+    fireEvent.click(resetBtn);
+    expect(screen.getByText(/0\//)).toBeInTheDocument();
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 25 — Step Duration Timers
+// ─────────────────────────────────────────────
+describe('Dashboard UI Shell — Story 25: Step Duration Timers', () => {
+  it('renders clickable timer button for steps with defined duration', () => {
+    renderWithRedux(<Home />);
+    const timerButtons = screen.getAllByText(/Start Timer/i);
+    expect(timerButtons.length).toBeGreaterThan(0);
+  });
+
+  it('clicking start timer reveals countdown timer interface with Pause/Reset controls', () => {
+    renderWithRedux(<Home />);
+    const timerButton = screen.getAllByText(/Start Timer/i)[0];
+    fireEvent.click(timerButton);
+
+    expect(screen.getByText('Pause')).toBeInTheDocument();
+    expect(screen.getByTitle('Reset timer')).toBeInTheDocument();
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 26 — Taste Profile Tuning
+// ─────────────────────────────────────────────
+describe('Dashboard UI Shell — Story 26: Taste Profile Tuning', () => {
+  it('toggles the Taste Profile panel when clicking Taste Tuning button', () => {
+    renderWithRedux(<Home />);
+    const toggleBtn = screen.getByText(/Taste Tuning/i);
+    expect(screen.queryByText(/Taste Profile Tolerance Adjusters/i)).not.toBeInTheDocument();
+
+    fireEvent.click(toggleBtn);
+    expect(screen.getByText(/Taste Profile Tolerance Adjusters/i)).toBeInTheDocument();
+    expect(screen.getByText(/Spice Tolerance/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sweetness Tolerance/i)).toBeInTheDocument();
+  });
+
+  it('adjusts spice tolerance level when clicking a preset (e.g. Spicy 150%)', () => {
+    renderWithRedux(<Home />);
+    fireEvent.click(screen.getByText(/Taste Tuning/i));
+
+    const spicyPreset = screen.getByText('Spicy (150%)');
+    fireEvent.click(spicyPreset);
+
+    expect(screen.getAllByText(/150%/).length).toBeGreaterThan(0);
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 8 / Yield Scaling — Step Duration Scaling
+// ─────────────────────────────────────────────
+describe('Dashboard UI Shell — Step Duration Scaling with Yield', () => {
+  it('dynamically scales duration and badges for yield-dependent steps when servings change', () => {
+    renderWithRedux(<Home />);
+    const yieldInput = screen.getByRole('spinbutton', { name: /servings/i });
+    
+    // Scale servings from 4 to 8 (doubled)
+    fireEvent.change(yieldInput, { target: { value: '8' } });
+
+    // Yield-dependent steps like wash step and dal grinding step (5m for 4 servings) should scale to 10m
+    expect(screen.getAllByText(/scaled from 5m/i).length).toBeGreaterThan(0);
+    // Yield-dependent steps like grind step (10m for 4 servings) should scale to 20m
+    expect(screen.getAllByText(/scaled from 10m/i).length).toBeGreaterThan(0);
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 8.1 — Step Visual Media & Guidance
+// ─────────────────────────────────────────────
+describe('Dashboard UI Shell — Story 8.1: Step Visual Media Guidance', () => {
+  it('renders step image guidance buttons with stage tags (While Cooking & Expected Result)', () => {
+    renderWithRedux(<Home />);
+    expect(screen.getAllByText(/👨‍🍳 While Cooking/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/✨ Expected Result/i).length).toBeGreaterThan(0);
+  });
+
+  it('opens Image Lightbox Modal when clicking a step reference photo and allows closing', () => {
+    renderWithRedux(<Home />);
+    const photoBtns = screen.getAllByTitle('Click to view full photo');
+    expect(photoBtns.length).toBeGreaterThan(0);
+
+    fireEvent.click(photoBtns[0]);
+
+    // Lightbox modal should display full-size photo, stage badge, and caption
+    expect(screen.getAllByText(/Semi-coarse batter texture with visible crushed dal flecks/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/👨‍🍳 While Cooking \(In-Progress Process\)/i)).toBeInTheDocument();
+
+    // Close modal
+    const closeBtn = screen.getByTitle('Close preview');
+    fireEvent.click(closeBtn);
+    expect(screen.queryByText(/👨‍🍳 While Cooking \(In-Progress Process\)/i)).not.toBeInTheDocument();
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 24.1 — Focus Mode
+// ─────────────────────────────────────────────
+describe('Dashboard UI Shell — Story 24.1: Step-by-Step Focus Mode', () => {
+  it('opens Focus Mode when clicking Focus Mode button and can exit', () => {
+    renderWithRedux(<Home />);
+    const focusModeBtn = screen.getByRole('button', { name: /Focus Mode/i });
+    expect(focusModeBtn).toBeInTheDocument();
+
+    fireEvent.click(focusModeBtn);
+    expect(screen.getAllByText(/Focus Mode/i).length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: /Complete & Next/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Next/i })).toBeInTheDocument();
+
+    const exitBtn = screen.getByTitle(/Exit Focus Mode/i);
+    fireEvent.click(exitBtn);
+    expect(screen.queryByText(/Step 1 of/i)).not.toBeInTheDocument();
+  });
+});
+

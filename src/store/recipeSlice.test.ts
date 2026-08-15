@@ -1,10 +1,17 @@
 import reducer, {
+  loadRecipe,
   setTargetYield,
   setSpiceTolerance,
   setSweetTolerance,
+  toggleStepCompleted,
+  resetStepProgress,
+  setAllStepsCompleted,
   setIngredientOverride,
   autoScaleGroup,
   confirmBreakRatio,
+  setLanguage,
+  toggleFavorite,
+  setRecipeNote,
 } from './recipeSlice';
 import { mockAdaiRecipe } from '../lib/mockRecipe';
 
@@ -236,5 +243,120 @@ describe('recipeSlice — Story 6: Resolution Actions', () => {
     const mismatchCount = state.ratioMismatches.length;
     state = reducer(state, confirmBreakRatio({ groupId: 'ratio_nonexistent' }));
     expect(state.ratioMismatches).toHaveLength(mismatchCount);
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 12.1 — loadRecipe
+// ─────────────────────────────────────────────
+describe('recipeSlice — Story 12.1: loadRecipe', () => {
+  it('loads a custom recipe into active reader state and resets progress and overrides', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    // Add overrides and checked step
+    state = reducer(state, setIngredientOverride({ ingredientId: 'ing_raw_rice', quantity: 999 }));
+    state = reducer(state, toggleStepCompleted({ stepKey: 'prep-0-0' }));
+    expect(state.completedStepIds['prep-0-0']).toBe(true);
+
+    const customRecipe = {
+      ...mockAdaiRecipe,
+      id: 'custom_biryani_01',
+      name: 'Hyderabadi Dum Biryani',
+      baseYield: 6,
+    };
+
+    state = reducer(state, loadRecipe(customRecipe));
+    expect(state.recipe?.id).toBe('custom_biryani_01');
+    expect(state.recipe?.name).toBe('Hyderabadi Dum Biryani');
+    expect(state.targetYield).toBe(6);
+    expect(state.ingredientOverrides).toEqual({});
+    expect(state.completedStepIds).toEqual({});
+    expect(state.ratioMismatches).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 24 — Step Progress Checklist
+// ─────────────────────────────────────────────
+describe('recipeSlice — Story 24: Step Execution Checklist', () => {
+  it('toggles a step completion state from false to true and back', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    expect(state.completedStepIds['prep-0-0']).toBeFalsy();
+
+    state = reducer(state, toggleStepCompleted({ stepKey: 'prep-0-0' }));
+    expect(state.completedStepIds['prep-0-0']).toBe(true);
+
+    state = reducer(state, toggleStepCompleted({ stepKey: 'prep-0-0' }));
+    expect(state.completedStepIds['prep-0-0']).toBe(false);
+  });
+
+  it('resets all step progress', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(state, toggleStepCompleted({ stepKey: 'prep-0-0' }));
+    state = reducer(state, toggleStepCompleted({ stepKey: 'cook-0-1' }));
+    expect(Object.keys(state.completedStepIds).length).toBe(2);
+
+    state = reducer(state, resetStepProgress());
+    expect(state.completedStepIds).toEqual({});
+  });
+
+  it('bulk sets step completion states', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(
+      state,
+      setAllStepsCompleted({ stepKeys: ['prep-0-0', 'prep-0-1'], completed: true })
+    );
+    expect(state.completedStepIds['prep-0-0']).toBe(true);
+    expect(state.completedStepIds['prep-0-1']).toBe(true);
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 26 — Taste Profile Multipliers
+// ─────────────────────────────────────────────
+describe('recipeSlice — Story 26: Taste Profile Multipliers', () => {
+  it('updates spice tolerance multiplier', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(state, setSpiceTolerance(1.5));
+    expect(state.spiceToleranceMultiplier).toBe(1.5);
+  });
+
+  it('updates sweet tolerance multiplier', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(state, setSweetTolerance(0.5));
+    expect(state.sweetToleranceMultiplier).toBe(0.5);
+  });
+});
+
+// ─────────────────────────────────────────────
+// Story 17 & 21 — Localization, Favorites & Notes
+// ─────────────────────────────────────────────
+describe('recipeSlice — Story 17 & 21: Localization, Favorites & Notes', () => {
+  it('updates active language via setLanguage', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    expect(state.language).toBe('en');
+
+    state = reducer(state, setLanguage('ta'));
+    expect(state.language).toBe('ta');
+
+    state = reducer(state, setLanguage('hi'));
+    expect(state.language).toBe('hi');
+  });
+
+  it('toggles favorites bookmark via toggleFavorite', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(state, toggleFavorite('recipe_pbm_123'));
+    expect(state.favorites).toContain('recipe_pbm_123');
+
+    state = reducer(state, toggleFavorite('recipe_pbm_123'));
+    expect(state.favorites).not.toContain('recipe_pbm_123');
+  });
+
+  it('sets private chef note via setRecipeNote', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(
+      state,
+      setRecipeNote({ recipeId: 'recipe_adai_anchor', note: 'Use gingelly oil for best crispy edges!' })
+    );
+    expect(state.recipeNotes['recipe_adai_anchor']).toBe('Use gingelly oil for best crispy edges!');
   });
 });

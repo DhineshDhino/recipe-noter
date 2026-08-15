@@ -17,6 +17,10 @@ export interface IngredientRegistry {
   translations: IngredientTranslation[];
 }
 
+export type MealSlot = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'late_night';
+export type DietaryCategory = 'vegetarian' | 'vegan' | 'gluten_free' | 'jain' | 'high_protein';
+export type RecipeDifficulty = 'easy' | 'medium' | 'advanced';
+
 export interface Recipe {
   id: string;
   name: string;
@@ -29,6 +33,10 @@ export interface Recipe {
   passiveBlocks: ComponentBlock[]; // Waiting periods (e.g., marinating)
   cookBlocks: ComponentBlock[];
   pairings: string[];
+  photoPool?: PoolPhoto[];
+  mealSlots?: MealSlot[];
+  dietary?: DietaryCategory[];
+  difficulty?: RecipeDifficulty;
 }
 
 export interface RatioGroup {
@@ -48,6 +56,22 @@ export interface ComponentBlock {
   steps: AtomicStep[];
 }
 
+export type StepImageStage = 'while_cooking' | 'after_step';
+
+export interface StepImage {
+  id?: string;
+  url: string;
+  caption?: string;
+  stage: StepImageStage; // 'while_cooking' (During step execution) vs 'after_step' (Expected visual outcome)
+}
+
+export interface PoolPhoto {
+  id: string;
+  url: string;
+  caption?: string;
+  defaultStage?: StepImageStage;
+}
+
 export interface AtomicStep {
   text: string;
   duration?: {
@@ -59,6 +83,7 @@ export interface AtomicStep {
     precisionTemp?: number;
   };
   isCritical: boolean;
+  images?: StepImage[];
 }
 
 export interface ScopedIngredient {
