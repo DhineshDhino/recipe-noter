@@ -1,6 +1,6 @@
-# 🍳 Recipe Noter: Standardized Modular Recipe System
+# 🍳 What 2 Cook: Smart Culinary Recommendation & Modular Recipe System
 
-A high-precision, technical web application for culinary execution and recipe authoring. **Recipe Noter** strictly separates **Preparation (Prerequisites)** from **Rest/Passive Periods** and **Cooking (Active Execution)**, utilizing a relational ratio engine, circadian recommendation engine, and interactive guided execution to make cooking flawless and enjoyable.
+A high-precision, technical web application for culinary execution, smart recipe recommendations, and recipe authoring. **What 2 Cook** strictly separates **Preparation (Prerequisites)** from **Rest/Passive Periods** and **Cooking (Active Execution)**, utilizing a relational ratio engine, circadian recommendation engine, and interactive guided execution to make cooking flawless and enjoyable.
 
 ---
 

@@ -25,9 +25,9 @@ const renderWithRedux = (component: React.ReactElement) => {
 };
 
 describe('AppNavbar Component — Wholesome App Flow', () => {
-  it('renders app branding and name "Recipe Noter"', () => {
+  it('renders app branding and name "What 2 Cook"', () => {
     renderWithRedux(<AppNavbar />);
-    expect(screen.getByText('Recipe Noter')).toBeInTheDocument();
+    expect(screen.getByText('What 2 Cook')).toBeInTheDocument();
     expect(screen.getByText('Studio')).toBeInTheDocument();
   });
 

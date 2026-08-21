@@ -93,7 +93,7 @@ const RecipeHeader = ({
     {/* Breadcrumbs & Status */}
     <div className="flex items-center justify-between text-xs text-text-muted">
       <div className="flex items-center gap-2">
-        <span>🍳 Recipe Noter</span>
+        <span>🍳 What 2 Cook</span>
         <span>/</span>
         <span className="text-accent font-semibold">📝 Noter Studio</span>
         <span>/</span>

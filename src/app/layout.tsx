@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Recipe Noter | The Standardized Modular Recipe System",
-  description: "A high-precision, technical manual for culinary execution.",
+  title: "What 2 Cook | Smart Culinary Recommendation & Modular Recipe System",
+  description: "Smart recipe recommendations, precision ratios, and guided cooking execution.",
 };
 
 export default function RootLayout({

@@ -47,7 +47,7 @@ export default function UserProfileModal({ isOpen, onClose }: UserProfileModalPr
           <div className="flex items-center gap-2.5">
             <span className="text-xl">👤</span>
             <h2 className="text-base sm:text-lg font-bold text-foreground">
-              {currentUser?.isLoggedIn ? 'Chef Profile & Account' : 'Sign In to Recipe Noter'}
+              {currentUser?.isLoggedIn ? 'Chef Profile & Account' : 'Sign In to What 2 Cook'}
             </h2>
           </div>
           <button

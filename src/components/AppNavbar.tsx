@@ -60,14 +60,14 @@ export default function AppNavbar() {
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-extrabold text-lg sm:text-xl tracking-tight text-foreground group-hover:text-accent transition-colors">
-                    Recipe Noter
+                    What 2 Cook
                   </span>
                   <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent/15 text-accent border border-accent/30 uppercase tracking-wider">
                     Studio
                   </span>
                 </div>
                 <p className="text-[10px] text-text-muted hidden md:block">
-                  Modular Precision Cooking & Recipe Authoring
+                  Smart Culinary Suggestions & Modular Precision Cooking
                 </p>
               </div>
             </button>

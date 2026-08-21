@@ -4,15 +4,15 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
-# 🍳 Recipe Noter — Agent Guidelines & Repository Architecture
+# 🍳 What 2 Cook — Agent Guidelines & Repository Architecture
 
-Welcome! This file serves as the operational guide and technical documentation for AI agents working in the `recipe-noter` codebase.
+Welcome! This file serves as the operational guide and technical documentation for AI agents working in the `What 2 Cook` codebase.
 
 ---
 
 ## 🚀 1. Project Overview & Vision
 
-`recipe-noter` is a **Modular Recipe System** built for precision cooking and recipe authoring. It consists of multiple interconnected experiences:
+`What 2 Cook` is a **Smart Culinary Recommendation & Modular Recipe System** built for precision cooking and recipe authoring. It consists of multiple interconnected experiences:
 
 1. **Core Reader Experience (Cooking Dashboard)** (`/`)
    - Interactive stove-side cooking view with automated yield scaling, ratio group validation, total time breakdown, phase ingredients accordions, step execution checklists, multilingual translations (English / Tamil / Hindi), and recipe notes & bookmarks.
