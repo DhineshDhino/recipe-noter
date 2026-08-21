@@ -27,6 +27,8 @@ import {
 import { mockAdaiRecipe } from '@/lib/mockRecipe';
 import GuidedCookingModal from '@/components/GuidedCookingModal';
 import GroceryListModal from '@/components/GroceryListModal';
+import RecipeJourneyTimeline from '@/components/RecipeJourneyTimeline';
+import RecipeDiscussionSection from '@/components/RecipeDiscussionSection';
 import { SupportedLanguage, getLocalizedIngredientName } from '@/lib/conversions';
 import { setLanguage, toggleFavorite, setRecipeNote } from '@/store/recipeSlice';
 
@@ -1139,6 +1141,27 @@ export default function Home() {
                 ))}
               </div>
             </section>
+          </div>
+        )}
+
+        {/* Story 40 & 41: Recipe Cooking Journey & Past Tries Timeline */}
+        {recipe && (
+          <div className="mt-8">
+            <RecipeJourneyTimeline
+              recipeId={recipe.id}
+              recipeName={recipe.name}
+              baseYield={recipe.baseYield}
+            />
+          </div>
+        )}
+
+        {/* Story 43: Community Discussion & Cooking Tips */}
+        {recipe && (
+          <div className="mt-6">
+            <RecipeDiscussionSection
+              recipeId={recipe.id}
+              recipeName={recipe.name}
+            />
           </div>
         )}
       </main>

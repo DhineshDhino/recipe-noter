@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Recipe } from '../lib/types';
+import { Recipe, RecipeTry, RecipeComment, UserProfile } from '../lib/types';
 import { mockAdaiRecipe } from '../lib/mockRecipe';
 
 import { SupportedLanguage } from '../lib/conversions';
@@ -33,7 +33,23 @@ export interface RecipeState {
   recipeNotes: Record<string, string>;
   // Story 35: Kitchen pantry inventory (ingredient IDs currently available at home)
   userPantryIngredientIds: string[];
+  // Story 40: Logged cooking attempts and micro-tweaks per recipe
+  recipeTries: Record<string, RecipeTry[]>;
+  // Story 43: Community recipe comments & cooking questions
+  recipeComments: Record<string, RecipeComment[]>;
+  // Story 42: Google user authentication identity state
+  currentUser: UserProfile;
+  // Story 44: Custom user collections (e.g., "Sunday Brunch" -> [recipe IDs])
+  customCollections: Record<string, string[]>;
 }
+
+const defaultUser: UserProfile = {
+  id: 'user_chef_dhinesh',
+  name: 'Chef Dhinesh',
+  email: 'dhinesh@gmail.com',
+  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+  isLoggedIn: true,
+};
 
 const initialState: RecipeState = {
   recipe: mockAdaiRecipe,
@@ -44,7 +60,7 @@ const initialState: RecipeState = {
   ingredientOverrides: {},
   completedStepIds: {},
   language: 'en',
-  favorites: ['recipe_adai_anchor', 'recipe_pbm_002'],
+  favorites: ['recipe_adai_001', 'recipe_pbm_002'],
   recipeNotes: {},
   userPantryIngredientIds: [
     'ing_raw_rice',
@@ -62,6 +78,40 @@ const initialState: RecipeState = {
     'ing_curry_leaves',
     'ing_rava',
   ],
+  recipeTries: {
+    recipe_adai_001: [
+      {
+        id: 'try_adai_1',
+        recipeId: 'recipe_adai_001',
+        timestamp: '2026-08-10T09:00:00Z',
+        yieldCooked: 4,
+        tweaksSummary: 'Added +10g fresh ginger and 5 curry leaves directly into coarse batter grind.',
+        tasteNotes: 'Extra aromatic, fantastic crunch on the cast iron tawa with sesame oil.',
+        rating: 5,
+        photos: ['https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=600&q=80'],
+        authorName: 'Chef Dhinesh',
+      },
+    ],
+  },
+  recipeComments: {
+    recipe_adai_001: [
+      {
+        id: 'comm_1',
+        recipeId: 'recipe_adai_001',
+        authorId: 'user_ananya',
+        authorName: 'Ananya Ramesh',
+        authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+        text: 'Adding a handful of drumstick leaves (murungai keerai) at the end takes this to a whole new level!',
+        timestamp: '2026-08-12T14:30:00Z',
+        likes: 12,
+      },
+    ],
+  },
+  currentUser: defaultUser,
+  customCollections: {
+    'Sunday Brunch': ['recipe_adai_001', 'recipe_upma_003'],
+    'Royal Dinner': ['recipe_pbm_002'],
+  },
 };
 
 export const recipeSlice = createSlice({
@@ -262,6 +312,101 @@ export const recipeSlice = createSlice({
     clearPantry: (state) => {
       state.userPantryIngredientIds = [];
     },
+
+    /**
+     * Story 40: Log a new Cooking Try / Tweak attempt
+     */
+    addRecipeTry: (state, action: PayloadAction<RecipeTry>) => {
+      const tryItem = action.payload;
+      if (!state.recipeTries[tryItem.recipeId]) {
+        state.recipeTries[tryItem.recipeId] = [];
+      }
+      state.recipeTries[tryItem.recipeId].unshift(tryItem);
+    },
+
+    /**
+     * Story 40: Delete a Cooking Try attempt
+     */
+    deleteRecipeTry: (state, action: PayloadAction<{ recipeId: string; tryId: string }>) => {
+      const { recipeId, tryId } = action.payload;
+      if (state.recipeTries[recipeId]) {
+        state.recipeTries[recipeId] = state.recipeTries[recipeId].filter(t => t.id !== tryId);
+      }
+    },
+
+    /**
+     * Story 43: Add a Community Comment to a recipe
+     */
+    addRecipeComment: (state, action: PayloadAction<RecipeComment>) => {
+      const comment = action.payload;
+      if (!state.recipeComments[comment.recipeId]) {
+        state.recipeComments[comment.recipeId] = [];
+      }
+      state.recipeComments[comment.recipeId].unshift(comment);
+    },
+
+    /**
+     * Story 43: Like / upvote a community comment
+     */
+    likeRecipeComment: (state, action: PayloadAction<{ recipeId: string; commentId: string }>) => {
+      const { recipeId, commentId } = action.payload;
+      const comment = state.recipeComments[recipeId]?.find(c => c.id === commentId);
+      if (comment) {
+        comment.likes += 1;
+      }
+    },
+
+    /**
+     * Story 43: Delete a comment
+     */
+    deleteRecipeComment: (state, action: PayloadAction<{ recipeId: string; commentId: string }>) => {
+      const { recipeId, commentId } = action.payload;
+      if (state.recipeComments[recipeId]) {
+        state.recipeComments[recipeId] = state.recipeComments[recipeId].filter(c => c.id !== commentId);
+      }
+    },
+
+    /**
+     * Story 42: Set active Google / authenticated user
+     */
+    setCurrentUser: (state, action: PayloadAction<UserProfile>) => {
+      state.currentUser = { ...action.payload };
+    },
+
+    /**
+     * Story 42: Log out to guest mode
+     */
+    logoutUser: (state) => {
+      state.currentUser = {
+        id: 'guest',
+        name: 'Guest Cook',
+        email: '',
+        isLoggedIn: false,
+      };
+    },
+
+    /**
+     * Story 44: Create custom collection
+     */
+    createCollection: (state, action: PayloadAction<{ name: string; recipeIds?: string[] }>) => {
+      state.customCollections[action.payload.name] = action.payload.recipeIds || [];
+    },
+
+    /**
+     * Story 44: Toggle recipe membership in custom collection
+     */
+    toggleRecipeInCollection: (state, action: PayloadAction<{ collectionName: string; recipeId: string }>) => {
+      const { collectionName, recipeId } = action.payload;
+      if (!state.customCollections[collectionName]) {
+        state.customCollections[collectionName] = [];
+      }
+      const col = state.customCollections[collectionName];
+      if (col.includes(recipeId)) {
+        state.customCollections[collectionName] = col.filter(id => id !== recipeId);
+      } else {
+        state.customCollections[collectionName].push(recipeId);
+      }
+    },
   },
 });
 
@@ -282,6 +427,15 @@ export const {
   togglePantryIngredient,
   setPantryIngredients,
   clearPantry,
+  addRecipeTry,
+  deleteRecipeTry,
+  addRecipeComment,
+  likeRecipeComment,
+  deleteRecipeComment,
+  setCurrentUser,
+  logoutUser,
+  createCollection,
+  toggleRecipeInCollection,
 } = recipeSlice.actions;
 
 export default recipeSlice.reducer;

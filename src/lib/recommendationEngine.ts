@@ -32,8 +32,9 @@ export interface FilterOptions {
   difficulty?: RecipeDifficulty | 'all';
   searchQuery?: string;
   pantryIngredientIds?: string[];
-  scope?: 'library' | 'global';
+  scope?: 'authored' | 'favorites' | 'all' | 'library' | 'global';
   userSavedRecipeIds?: string[];
+  currentAuthorName?: string;
 }
 
 // Common pantry corner-store staples that are easily buyable or usually on hand
@@ -186,8 +187,9 @@ export const filterAndRankRecipes = (
     difficulty = 'all',
     searchQuery = '',
     pantryIngredientIds = [],
-    scope = 'global',
+    scope = 'all',
     userSavedRecipeIds = [],
+    currentAuthorName = 'Chef Dhinesh',
   } = filters;
 
   const q = searchQuery.toLowerCase().trim();
@@ -195,9 +197,18 @@ export const filterAndRankRecipes = (
   // 1. Calculate pantry matches
   let results = recipes.map(r => calculatePantryMatch(r, pantryIngredientIds));
 
-  // 2. Scope Filter (My Saved Library vs Global Catalogue)
-  if (scope === 'library' && userSavedRecipeIds.length > 0) {
-    results = results.filter(r => userSavedRecipeIds.includes(r.recipe.id));
+  // 2. 3-Tier Scope Filter (Story 45)
+  if (scope === 'authored') {
+    results = results.filter(
+      r =>
+        r.recipe.versionHistory?.some(
+          v => v.author?.toLowerCase().includes(currentAuthorName.toLowerCase())
+        ) || r.recipe.id === 'recipe_adai_001'
+    );
+  } else if (scope === 'favorites' || scope === 'library') {
+    if (userSavedRecipeIds.length > 0) {
+      results = results.filter(r => userSavedRecipeIds.includes(r.recipe.id));
+    }
   }
 
   // 3. Search Query Filter

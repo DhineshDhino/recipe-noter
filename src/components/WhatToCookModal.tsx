@@ -38,7 +38,7 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
   const [heroIngredientId, setHeroIngredientId] = useState<string | null>(null);
   const [selectedDietary, setSelectedDietary] = useState<DietaryCategory[]>([]);
   const [selectedDifficulty, setSelectedDifficulty] = useState<RecipeDifficulty | 'all'>('all');
-  const [scope, setScope] = useState<'global' | 'library'>('global');
+  const [scope, setScope] = useState<'all' | 'favorites' | 'authored'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showPantryEditor, setShowPantryEditor] = useState(false);
   const [focusRecipe, setFocusRecipe] = useState<Recipe | null>(null);
@@ -215,25 +215,37 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
         <div className="px-5 py-3 border-b border-border-subtle bg-card-bg/60 flex flex-wrap items-center justify-between gap-3 text-xs">
           {/* Quick Filters */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* Scope Switcher (Story 37) */}
+            {/* 3-Tier Scope Switcher (Story 45) */}
             <div className="flex items-center bg-background border border-border-subtle rounded-lg p-0.5">
               <button
                 type="button"
-                onClick={() => setScope('global')}
+                onClick={() => setScope('authored')}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                  scope === 'global' ? 'bg-accent text-background' : 'text-text-muted hover:text-foreground'
+                  scope === 'authored' ? 'bg-accent text-background' : 'text-text-muted hover:text-foreground'
                 }`}
+                title="Only recipes authored by you"
               >
-                🌐 Global Cloud
+                📚 My Authored
               </button>
               <button
                 type="button"
-                onClick={() => setScope('library')}
+                onClick={() => setScope('favorites')}
                 className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                  scope === 'library' ? 'bg-accent text-background' : 'text-text-muted hover:text-foreground'
+                  scope === 'favorites' ? 'bg-accent text-background' : 'text-text-muted hover:text-foreground'
                 }`}
+                title="Your favorited recipes from your notebook and community"
               >
-                📚 My Library ({favorites.length})
+                ❤️ My Favorites ({favorites.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setScope('all')}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  scope === 'all' ? 'bg-accent text-background' : 'text-text-muted hover:text-foreground'
+                }`}
+                title="All recipes across the entire community catalogue"
+              >
+                🌐 All Recipes
               </button>
             </div>
 
@@ -392,7 +404,7 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
                   setMaxTotalTime(null);
                   setZeroRestTime(false);
                   setHeroIngredientId(null);
-                  setScope('global');
+                  setScope('all');
                 }}
                 className="px-4 py-2 rounded-xl bg-accent text-background text-xs font-bold hover:bg-accent/80 transition-all cursor-pointer"
               >

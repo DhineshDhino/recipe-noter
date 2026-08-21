@@ -12,6 +12,15 @@ import reducer, {
   setLanguage,
   toggleFavorite,
   setRecipeNote,
+  addRecipeTry,
+  deleteRecipeTry,
+  addRecipeComment,
+  likeRecipeComment,
+  deleteRecipeComment,
+  setCurrentUser,
+  logoutUser,
+  createCollection,
+  toggleRecipeInCollection,
 } from './recipeSlice';
 import { mockAdaiRecipe } from '../lib/mockRecipe';
 
@@ -358,5 +367,79 @@ describe('recipeSlice — Story 17 & 21: Localization, Favorites & Notes', () =>
       setRecipeNote({ recipeId: 'recipe_adai_anchor', note: 'Use gingelly oil for best crispy edges!' })
     );
     expect(state.recipeNotes['recipe_adai_anchor']).toBe('Use gingelly oil for best crispy edges!');
+  });
+
+  // --- Story 40: Cooking Try Journal & Tweak Logger ---
+  it('logs a new cooking try via addRecipeTry and deletes via deleteRecipeTry', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(
+      state,
+      addRecipeTry({
+        id: 'try-test-1',
+        recipeId: 'recipe_adai_001',
+        timestamp: '2026-08-15T12:00:00Z',
+        yieldCooked: 4,
+        tweaksSummary: 'Added +10g ginger and cooked on cast iron',
+        tasteNotes: 'Crunchy edges and great ginger kick',
+        rating: 5,
+      })
+    );
+
+    expect(state.recipeTries['recipe_adai_001']).toBeDefined();
+    expect(state.recipeTries['recipe_adai_001'][0].tweaksSummary).toContain('+10g ginger');
+
+    state = reducer(state, deleteRecipeTry({ recipeId: 'recipe_adai_001', tryId: 'try-test-1' }));
+    expect(state.recipeTries['recipe_adai_001'].find(t => t.id === 'try-test-1')).toBeUndefined();
+  });
+
+  // --- Story 43: Community Comments & Discussion ---
+  it('posts a comment via addRecipeComment, likes it via likeRecipeComment, and deletes it', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    state = reducer(
+      state,
+      addRecipeComment({
+        id: 'comm-test-1',
+        recipeId: 'recipe_adai_001',
+        authorId: 'user-1',
+        authorName: 'Chef Rahul',
+        text: 'Can I replace toor dal with moong dal?',
+        timestamp: '2026-08-15T12:00:00Z',
+        likes: 0,
+      })
+    );
+
+    expect(state.recipeComments['recipe_adai_001'][0].text).toContain('replace toor dal');
+
+    state = reducer(state, likeRecipeComment({ recipeId: 'recipe_adai_001', commentId: 'comm-test-1' }));
+    expect(state.recipeComments['recipe_adai_001'][0].likes).toBe(1);
+
+    state = reducer(state, deleteRecipeComment({ recipeId: 'recipe_adai_001', commentId: 'comm-test-1' }));
+    expect(state.recipeComments['recipe_adai_001'].find(c => c.id === 'comm-test-1')).toBeUndefined();
+  });
+
+  // --- Story 42 & 44: User Auth & Custom Collections ---
+  it('manages user profile state and custom recipe collections', () => {
+    let state = reducer(undefined, { type: 'unknown' });
+    expect(state.currentUser.isLoggedIn).toBe(true);
+
+    state = reducer(
+      state,
+      setCurrentUser({
+        id: 'user-custom',
+        name: 'Custom Chef',
+        email: 'custom@test.com',
+        isLoggedIn: true,
+      })
+    );
+    expect(state.currentUser.name).toBe('Custom Chef');
+
+    state = reducer(state, logoutUser());
+    expect(state.currentUser.isLoggedIn).toBe(false);
+
+    state = reducer(state, createCollection({ name: 'Weekend Feasts', recipeIds: ['recipe_adai_001'] }));
+    expect(state.customCollections['Weekend Feasts']).toEqual(['recipe_adai_001']);
+
+    state = reducer(state, toggleRecipeInCollection({ collectionName: 'Weekend Feasts', recipeId: 'recipe_pbm_002' }));
+    expect(state.customCollections['Weekend Feasts']).toContain('recipe_pbm_002');
   });
 });

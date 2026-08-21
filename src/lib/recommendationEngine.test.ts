@@ -118,5 +118,23 @@ describe('Epic 14, 15, 16: Recommendation Engine & Pantry Matcher', () => {
 
       expect(ranked[0].matchPercentage).toBeGreaterThanOrEqual(ranked[ranked.length - 1].matchPercentage);
     });
+
+    // --- Story 45: 3-Tier Scope Filtering ---
+    it('filters by 3-tier scope (authored, favorites, all)', () => {
+      const authored = filterAndRankRecipes(recipeLibrary, {
+        scope: 'authored',
+        currentAuthorName: 'Chef Ranveer',
+      });
+      expect(authored.some(r => r.recipe.id === 'recipe_pbm_002')).toBe(true);
+
+      const favorites = filterAndRankRecipes(recipeLibrary, {
+        scope: 'favorites',
+        userSavedRecipeIds: ['recipe_upma_003'],
+      });
+      expect(favorites.every(r => r.recipe.id === 'recipe_upma_003')).toBe(true);
+
+      const all = filterAndRankRecipes(recipeLibrary, { scope: 'all' });
+      expect(all.length).toBe(recipeLibrary.length);
+    });
   });
 });

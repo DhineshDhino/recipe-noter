@@ -94,3 +94,36 @@ export interface ScopedIngredient {
   allowedSubstitutes?: string[]; // Array of ingredient IDs allowed as substitutes for this block
   tags: ("spice" | "sweet")[];
 }
+
+export interface RecipeTry {
+  id: string;
+  recipeId: string;
+  timestamp: string; // ISO 8601 string
+  yieldCooked: number;
+  tweaksSummary: string; // e.g., "Added +10g ginger, reduced chilli, cooked 2m longer"
+  tasteNotes: string; // e.g., "Very crispy edges, aromatic ginger finish"
+  rating: number; // 1 to 5 stars
+  photos?: string[];
+  authorId?: string;
+  authorName?: string;
+}
+
+export interface RecipeComment {
+  id: string;
+  recipeId: string;
+  authorId: string;
+  authorName: string;
+  authorAvatar?: string;
+  text: string;
+  timestamp: string;
+  likes: number;
+  parentCommentId?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  isLoggedIn: boolean;
+}

@@ -11,6 +11,7 @@ import { loadRecipeIntoEditor, resetEditorState } from '@/store/editorSlice';
 import RecipeLibraryModal from './RecipeLibraryModal';
 import TamilVoiceNoteModal from './TamilVoiceNoteModal';
 import WhatToCookModal from './WhatToCookModal';
+import UserProfileModal from './UserProfileModal';
 
 export default function AppNavbar() {
   const pathname = usePathname();
@@ -18,10 +19,12 @@ export default function AppNavbar() {
   const dispatch = useDispatch();
   const activeRecipe = useSelector((state: RootState) => state.recipe.recipe);
   const editorRecipeName = useSelector((state: RootState) => state.editor.recipeName);
+  const currentUser = useSelector((state: RootState) => state.recipe.currentUser);
 
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isWhatToCookOpen, setIsWhatToCookOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
   const isEditorRoute = pathname === '/editor';
@@ -196,6 +199,24 @@ export default function AppNavbar() {
               <span>➕</span>
               <span className="hidden sm:inline">New Recipe</span>
             </button>
+
+            {/* User Profile Avatar / Google Login (Story 42) */}
+            <button
+              onClick={() => setIsProfileModalOpen(true)}
+              className="flex items-center gap-2 p-1 pl-2 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 transition-all cursor-pointer"
+              title={currentUser?.isLoggedIn ? `Account: ${currentUser.name}` : 'Sign In with Google'}
+            >
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-accent/40 bg-background">
+                {currentUser?.avatar ? (
+                  <img src={currentUser.avatar} alt={currentUser.name} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xs flex items-center justify-center h-full">👤</span>
+                )}
+              </div>
+              <span className="text-xs font-semibold text-foreground max-w-[80px] truncate hidden md:inline">
+                {currentUser?.isLoggedIn ? currentUser.name.split(' ')[0] : 'Sign In'}
+              </span>
+            </button>
           </div>
         </div>
       </nav>
@@ -204,6 +225,7 @@ export default function AppNavbar() {
       <RecipeLibraryModal isOpen={isLibraryOpen} onClose={() => setIsLibraryOpen(false)} />
       <TamilVoiceNoteModal isOpen={isVoiceModalOpen} onClose={() => setIsVoiceModalOpen(false)} />
       <WhatToCookModal isOpen={isWhatToCookOpen} onClose={() => setIsWhatToCookOpen(false)} />
+      <UserProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} />
     </>
   );
 }

@@ -14,7 +14,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 5** | Epics 11, 12 | 🎮 Interactive Focus Mode, Timers & Taste Profiler | ✅ `[COMPLETED]` (Stories 24–26) |
 | **Initiative 6** | Epic 13 | 🎙️ Voice-to-Recipe AI Onboarding (Tamil Speech-to-Text) | ✅ `[COMPLETED]` (Stories 27–32) |
 | **Initiative 7** | Epics 14, 15, 16, 17 | 🍽️ **"What to Cook" — Recommendation & Pantry Match Engine** | ✅ `[COMPLETED]` (Stories 33–39) |
-| **Initiative 8** | Epics 18, 19, 20, 21 | 📓 **Cooking Try Journal, Google OAuth, Community & 3-Tier Scope** | ⏳ `[PLANNED]` (Stories 40–45) |
+| **Initiative 8** | Epics 18, 19, 20, 21 | 📓 **Cooking Try Journal, Google OAuth, Community & 3-Tier Scope** | ✅ `[COMPLETED]` (Stories 40–45) |
 
 ---
 
@@ -501,14 +501,14 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 **Goal:** Provide an iterative cooking experiment log where cooks can record each attempt, the micro-tweaks made, and the resulting taste outcome.
 
 ### Feature 18.1: Cooking Attempt Logger & Sensory Feedback
-#### Story 40: Cooking Try & Tweak Logger [NECESSARY - MVP] ⏳ [PLANNED]
+#### Story 40: Cooking Try & Tweak Logger [NECESSARY - MVP] ✅ [COMPLETED]
 **Description:** Enable cooks to log a new "Try" for a recipe, documenting specific ingredient/cooking tweaks, final photos, and sensory taste ratings.
 **Tasks:**
 - Task 1: Define `RecipeTry` interface (`id`, `recipeId`, `timestamp`, `yieldCooked`, `tweaksSummary`, `tasteNotes`, `rating`, `photos`, `authorId`).
 - Task 2: Build `<RecipeTryModal>` to log a new attempt with micro-tweak diffs (e.g. `+10g Ginger`, `Reduced flame`, `Extra crispy`).
 - Task 3: Render an expandable "Cooking Journey / Past Tries" timeline on the Recipe Reader View.
 
-#### Story 41: Version Iteration Comparison & Taste Evolution [FANCY - POST-MVP] ⏳ [PLANNED]
+#### Story 41: Version Iteration Comparison & Taste Evolution [FANCY - POST-MVP] ✅ [COMPLETED]
 **Description:** Side-by-side comparison of different cooking attempts to visualize how slight variations influenced the flavor profile.
 **Tasks:**
 - Task 1: Build comparative diff viewer highlighting changes in ingredient ratios vs taste scores across tries.
@@ -520,7 +520,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 **Goal:** Secure user identity and notebook data via Google/Gmail OAuth integration.
 
 ### Feature 19.1: Google Authentication & User Profile
-#### Story 42: Google / Gmail OAuth Login & Profile State [NECESSARY - MVP] ⏳ [PLANNED]
+#### Story 42: Google / Gmail OAuth Login & Profile State [NECESSARY - MVP] ✅ [COMPLETED]
 **Description:** Seamless single-sign-on using Google OAuth for cloud recipe sync, personalized cooking notes, and author attribution.
 **Tasks:**
 - Task 1: Configure OAuth provider handler (NextAuth / Google OAuth 2.0).
@@ -533,14 +533,14 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 **Goal:** Facilitate social learning where cooks can ask questions, share tips, and leave feedback on recipes.
 
 ### Feature 20.1: Recipe Comments & Cooking Discussions
-#### Story 43: Community Comments & Cooking Tips Thread [NECESSARY - MVP] ⏳ [PLANNED]
+#### Story 43: Community Comments & Cooking Tips Thread [NECESSARY - MVP] ✅ [COMPLETED]
 **Description:** Dedicated discussion thread under each recipe for cooking questions, feedback, and substitute suggestions.
 **Tasks:**
 - Task 1: Define `RecipeComment` schema (`id`, `recipeId`, `authorName`, `authorAvatar`, `text`, `timestamp`, `likes`, `parentCommentId`).
 - Task 2: Build `<RecipeDiscussionSection>` with comment authoring, replies, and helpfulness upvotes.
 - Task 3: Integrate REST API handlers for `GET` and `POST /api/recipes/[id]/comments`.
 
-#### Story 44: Universal Recipe Favoriting & Personal Collections [NECESSARY - MVP] ⏳ [PLANNED]
+#### Story 44: Universal Recipe Favoriting & Personal Collections [NECESSARY - MVP] ✅ [COMPLETED]
 **Description:** Bookmark any recipe in the global catalogue into the user's personal favorites and curated collections.
 **Tasks:**
 - Task 1: Extend favorites system to differentiate between authored recipes and bookmarked community recipes.
@@ -553,7 +553,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 **Goal:** Refine the "What to Cook" recommendation engine to offer a 3-tier search scope.
 
 ### Feature 21.1: 3-Tier Search Scope Architecture
-#### Story 45: 3-Tier Recommendation Scope (My Authored, My Favorites, All Recipes) [NECESSARY - MVP] ⏳ [PLANNED]
+#### Story 45: 3-Tier Recommendation Scope (My Authored, My Favorites, All Recipes) [NECESSARY - MVP] ✅ [COMPLETED]
 **Description:** Update the "What to Cook" matcher to support 3 distinct discovery tiers: 1) My Authored Recipes, 2) My Favorites (authored + bookmarked community recipes), and 3) All Recipes in the App.
 **Tasks:**
 - Task 1: Update `recommendationEngine.ts` `FilterOptions` with `scope: 'authored' | 'favorites' | 'all'`.

@@ -71,4 +71,18 @@ describe('Epic 17: WhatToCookModal Component (Story 39)', () => {
     // Guided cooking focus modal should now be open
     expect(screen.getByText(/Focus Mode/i)).toBeInTheDocument();
   });
+
+  it('switches between 3-tier scopes (My Authored, My Favorites, All Recipes)', () => {
+    renderWithRedux(<WhatToCookModal isOpen={true} onClose={jest.fn()} />);
+
+    expect(screen.getByText(/My Authored/i)).toBeInTheDocument();
+    expect(screen.getByText(/My Favorites/i)).toBeInTheDocument();
+    expect(screen.getByText(/All Recipes/i)).toBeInTheDocument();
+
+    const authoredBtn = screen.getByText(/My Authored/i);
+    fireEvent.click(authoredBtn);
+
+    const favoritesBtn = screen.getByText(/My Favorites/i);
+    fireEvent.click(favoritesBtn);
+  });
 });
