@@ -18,6 +18,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 9** | Epics 22, 23 | 🕒 **Universal 'Anytime' Slots, Popover Alignment & Unisex Avatars** | ✅ `[COMPLETED]` (Stories 46–48) |
 | **Initiative 10** | Epics 24, 25, 26 | ⚡ **3-Tier Criticality System & Multilingual Localization Engine** | ✅ `[COMPLETED]` (Stories 49–51) |
 | **Initiative 11** | Epics 27, 28 | 📌 **Stove-Side Sticky HUD & Collapsible Header System** | ⏳ `[PLANNED]` (Stories 52–54) |
+| **Initiative 12** | Epics 29, 30 | 🌐 **Whole-Recipe Multilingual Localization & AI Translation Engine** | ⏳ `[PLANNED]` (Stories 55–57) |
 
 ---
 
@@ -708,3 +709,65 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 1: Add sticky top navigation container to `src/app/editor/page.tsx`.
 - Task 2: Verify responsive layout on mobile/tablet viewports.
 - Task 3: Add unit tests in `src/app/editor/page.test.tsx`.
+
+---
+
+# 🌐 INITIATIVE 12: Whole-Recipe Multilingual Localization & AI Translation Engine
+**Goal:** Deliver scalable, multi-locale recipe storage and AI-powered on-the-fly translation so entire recipes (titles, steps, blocks, equipment, notes) translate seamlessly across English, Tamil, and Hindi.
+
+## Epic 29: Whole-Recipe Multi-Locale Schema & Reactive Reader Localization
+**Goal:** Expand recipe data structures to support rich language dictionaries and render full recipe translations in Reader & Focus Mode.
+
+### Feature 29.1: Multi-Locale Schema & Localized Reader Hydration
+#### Story 55: Multi-Locale Recipe Schema & Full Reader/Focus Mode Localization [MVP] ⏳ [PLANNED]
+**Description:** Extend the `Recipe` schema with a `locales` dictionary (supporting `ta`, `hi`, and future languages) and wire Reader View (`/`) and Focus Mode (`GuidedCookingModal`) to reactively display translated Recipe Title, Version, Block Names, Step Instructions, and Equipment.
+**Acceptance Criteria (Gherkin):**
+- **Given** a recipe contains multi-locale definitions for `ta` (Tamil) or `hi` (Hindi) in `recipe.locales`
+- **When** the user switches active language to `ta` or `hi` via the top navigation or reader toggle
+- **Then** the Recipe Title, Version, Phase Block Titles, Step Instructions, Equipment, and Image captions dynamically update to the localized script in real-time.
+- **And** if a specific step or block translation is missing in that language, the system gracefully falls back to the default language (English) without breaking.
+- **And** Focus Mode (`GuidedCookingModal`) displays the localized step instructions with dual-script subtitle options.
+
+**Tasks:**
+- Task 1: Update `Recipe` and `ComponentBlock` TypeScript interfaces in `src/lib/types.ts` with `locales?: Record<string, RecipeLocaleData>`.
+- Task 2: Enrich mock recipes (`Adai`, `Paneer Butter Masala`, `Filter Coffee`, `Upma`) with complete Tamil and Hindi translations in `locales`.
+- Task 3: Update `RecipeStep` and `src/app/page.tsx` to resolve localized step texts and block names via helper `getLocalizedRecipeContent(recipe, language)`.
+- Task 4: Update `GuidedCookingModal.tsx` to render localized step text in Focus Mode.
+- Task 5: Write unit tests in `src/lib/translations.test.ts` and `src/app/page.test.tsx`.
+
+---
+
+## Epic 30: Studio AI Translation Assistant & On-Demand Engine
+**Goal:** Empower authors to auto-translate recipes during authoring and provide dynamic translation for community recipes.
+
+### Feature 30.1: Studio 1-Click AI Translation Assistant
+#### Story 56: Studio 1-Click AI Recipe Translation & Multi-Language Review [POLISH - MVP] ⏳ [PLANNED]
+**Description:** Add a "✨ Auto-Translate Recipe" feature in Recipe Noter Studio (`/editor`) allowing authors to generate, review, and edit Tamil and Hindi translations before publishing.
+**Acceptance Criteria (Gherkin):**
+- **Given** an author is authoring or editing a recipe in Noter Studio (`/editor`)
+- **When** the author clicks "🌐 Auto-Translate (Tamil / Hindi)" in the Setup or Review tab
+- **Then** the system automatically translates all block names, step texts, and equipment into the target language.
+- **And** the author can toggle between language review tabs (`EN`, `தமிழ்`, `हिंदी`) to fine-tune and proofread the generated text.
+- **And** clicking "Publish" saves the complete multi-locale payload into the recipe store.
+
+**Tasks:**
+- Task 1: Add `locales` state management and translation reducers to `editorSlice.ts`.
+- Task 2: Build `RecipeTranslationReviewDrawer` component in `/editor`.
+- Task 3: Integrate with translation utility to generate localized blocks and steps.
+- Task 4: Write unit tests in `src/store/editorSlice.test.ts` and `src/app/editor/page.test.tsx`.
+
+### Feature 30.2: Dynamic On-Demand Translation API
+#### Story 57: Dynamic On-Demand Translation API & Local Cache [POST-MVP] ⏳ [PLANNED]
+**Description:** Provide on-the-fly translation for any community recipe lacking pre-authored locales, caching results locally to eliminate repeat latency.
+**Acceptance Criteria (Gherkin):**
+- **Given** a user views a user-generated recipe on Reader View (`/`) that lacks a `ta` or `hi` locale
+- **When** the user switches language to `ta` or `hi`
+- **Then** the app calls the `/api/translate` endpoint to translate the recipe text on-the-fly.
+- **And** the translated result is cached in `localStorage` / client state for instant subsequent loads.
+
+**Tasks:**
+- Task 1: Create Next.js API route `/api/recipes/[id]/translate`.
+- Task 2: Implement client-side translation caching layer in `recipeSlice.ts`.
+- Task 3: Add loading skeleton states during dynamic translation.
+- Task 4: Write unit tests in `src/app/api/recipes/[id]/translate/route.test.ts`.
+
