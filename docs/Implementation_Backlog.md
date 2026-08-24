@@ -17,6 +17,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 8** | Epics 18, 19, 20, 21 | 📓 **Cooking Try Journal, Google OAuth, Community & 3-Tier Scope** | ✅ `[COMPLETED]` (Stories 40–45) |
 | **Initiative 9** | Epics 22, 23 | 🕒 **Universal 'Anytime' Slots, Popover Alignment & Unisex Avatars** | ✅ `[COMPLETED]` (Stories 46–48) |
 | **Initiative 10** | Epics 24, 25, 26 | ⚡ **3-Tier Criticality System & Multilingual Localization Engine** | ✅ `[COMPLETED]` (Stories 49–51) |
+| **Initiative 11** | Epics 27, 28 | 📌 **Stove-Side Sticky HUD & Collapsible Header System** | ⏳ `[PLANNED]` (Stories 52–54) |
 
 ---
 
@@ -643,5 +644,67 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 3: Enrich mock recipes with rich Tamil and Hindi translations.
 - Task 4: Bind active language state to Reader View dashboard, phase headings, time metrics, and buttons.
 
+---
 
+# 📌 INITIATIVE 11: Stove-Side Sticky HUD & Collapsible Header System
+**Goal:** Optimize stove-side viewport real estate with a sticky floating HUD on scroll and a manual collapsible header mode.
 
+## Epic 27: Sticky Stove-Side Heads-Up Display (HUD)
+**Goal:** Keep essential recipe controls, progress, and focus actions pinned when scrolling deep into preparation and cooking blocks.
+
+### Feature 27.1: Reader View Sticky Floating Action HUD
+#### Story 52: Sticky Stove-Side HUD on Scroll [MVP] ⏳ [PLANNED]
+**Description:** When scrolling down past the main recipe header on Reader View (`/`), smoothly slide down a glassmorphism floating HUD pinning essential cooking controls.
+**Acceptance Criteria (Gherkin):**
+- **Given** the user is viewing a recipe on Reader View (`/`)
+- **When** the user scrolls past the main recipe header (scroll offset > 240px)
+- **Then** a sticky floating top HUD slides into view with backdrop blur (`backdrop-blur-md bg-card-bg/90 border-b border-border-subtle shadow-xl`).
+- **And** the sticky HUD displays:
+  - Recipe Name & Version badge
+  - Servings scaler with quick `[-]` and `[+]` controls
+  - Real-time cooking progress counter (`X/Y Steps Done`) with mini progress bar
+  - `🎯 Focus Mode` quick action trigger
+  - `▲ Top / Expand` scroll-to-top button
+- **When** the user scrolls back to the top of the page
+- **Then** the sticky HUD smoothly animates out of view without content layout shift.
+
+**Tasks:**
+- Task 1: Create `<StickyCookingHud>` component with responsive mobile/desktop layout.
+- Task 2: Add scroll offset detection listener with cleanup and performance optimization.
+- Task 3: Integrate with Redux state for `targetYield`, `completedStepIds`, and Focus Mode modal triggers.
+- Task 4: Add responsive mobile styling to streamline icons on smaller screens (<640px).
+- Task 5: Write unit tests in `src/components/StickyCookingHud.test.tsx`.
+
+---
+
+## Epic 28: Collapsible Header & Studio Navigation
+**Goal:** Empower cooks to manually minimize top metadata for zero-distraction cooking and provide sticky phase navigation in Noter Studio.
+
+### Feature 28.1: Reader Manual Header Collapse
+#### Story 53: Collapsible Recipe Header & Compact Mode Toggle [POLISH - MVP] ⏳ [PLANNED]
+**Description:** Allow users to collapse the recipe header metadata (description, author, version, taste tuning) into a compact bar with 1-click.
+**Acceptance Criteria (Gherkin):**
+- **Given** the user is on Reader View (`/`)
+- **When** the user clicks the "▲ Minimize Header" button
+- **Then** the header collapses into a sleek single-line summary with recipe name, servings, and "▼ Expand Header" toggle.
+- **And** the preference is saved in Redux (`state.recipe.isHeaderCollapsed`) and persisted in `localStorage`.
+- **When** the user clicks "▼ Expand Header"
+- **Then** the full header with taste tuning and metadata expands smoothly with CSS transition.
+
+**Tasks:**
+- Task 1: Add `isHeaderCollapsed: boolean` state and `toggleHeaderCollapsed` reducer in `recipeSlice.ts`.
+- Task 2: Update Reader View header in `src/app/page.tsx` with smooth collapse/expand animation and toggle button.
+- Task 3: Add unit tests in `recipeSlice.test.ts` and `page.test.tsx`.
+
+### Feature 28.2: Studio Editor Sticky Action Bar
+#### Story 54: Studio Sticky Action & Phase Navigation HUD [POLISH] ⏳ [PLANNED]
+**Description:** Provide a compact sticky top bar in Recipe Noter Studio (`/editor`) when editing long recipe phases.
+**Acceptance Criteria (Gherkin):**
+- **Given** the author is editing a recipe in Noter Studio (`/editor`)
+- **When** the user scrolls down through multiple block steps
+- **Then** a sticky bar remains pinned with `[Recipe Title]`, `[Phase Switcher Tabs]`, `[👁️ Live Preview]`, and `[💾 Save & Publish]`.
+
+**Tasks:**
+- Task 1: Add sticky top navigation container to `src/app/editor/page.tsx`.
+- Task 2: Verify responsive layout on mobile/tablet viewports.
+- Task 3: Add unit tests in `src/app/editor/page.test.tsx`.
