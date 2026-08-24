@@ -187,6 +187,7 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
             { id: 'snack', label: 'Tea Time / Snack', emoji: '☕' },
             { id: 'dinner', label: 'Dinner', emoji: '🌙' },
             { id: 'late_night', label: 'Late Night', emoji: '🌌' },
+            { id: 'anytime', label: 'Anytime', emoji: '🕒' },
           ].map(slot => {
             const isSelected = activeMealSlot === slot.id;
             const isCurrent = slot.id === currentCircadianSlot;

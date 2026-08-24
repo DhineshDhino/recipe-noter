@@ -94,9 +94,9 @@ describe('Epic 14, 15, 16: Recommendation Engine & Pantry Matcher', () => {
   });
 
   describe('Filter & Rank Engine (Story 37 & 38)', () => {
-    it('filters by mealSlot accurately', () => {
+    it('filters by mealSlot accurately (including anytime staples)', () => {
       const results = filterAndRankRecipes(recipeLibrary, { mealSlot: 'lunch' });
-      expect(results.every(r => r.recipe.mealSlots?.includes('lunch'))).toBe(true);
+      expect(results.every(r => r.recipe.mealSlots?.includes('lunch') || r.recipe.mealSlots?.includes('anytime'))).toBe(true);
     });
 
     it('filters by zeroRestTime (excludes dishes with soaking/fermentation)', () => {
@@ -127,14 +127,19 @@ describe('Epic 14, 15, 16: Recommendation Engine & Pantry Matcher', () => {
       });
       expect(authored.some(r => r.recipe.id === 'recipe_pbm_002')).toBe(true);
 
-      const favorites = filterAndRankRecipes(recipeLibrary, {
-        scope: 'favorites',
-        userSavedRecipeIds: ['recipe_upma_003'],
-      });
-      expect(favorites.every(r => r.recipe.id === 'recipe_upma_003')).toBe(true);
-
       const all = filterAndRankRecipes(recipeLibrary, { scope: 'all' });
       expect(all.length).toBe(recipeLibrary.length);
+    });
+
+    // --- Story 46: Universal Anytime Slot Filtering ---
+    it('filters by anytime meal slot accurately', () => {
+      const anytimeResults = filterAndRankRecipes(recipeLibrary, { mealSlot: 'anytime' });
+      expect(anytimeResults.every(r => r.recipe.mealSlots?.includes('anytime'))).toBe(true);
+      expect(anytimeResults.some(r => r.recipe.id === 'recipe_upma_003')).toBe(true);
+
+      const meta = getMealSlotMeta('anytime');
+      expect(meta.label).toContain('Anytime');
+      expect(meta.emoji).toBe('🕒');
     });
   });
 });

@@ -47,7 +47,7 @@ const defaultUser: UserProfile = {
   id: 'user_chef_dhinesh',
   name: 'Chef Dhinesh',
   email: 'dhinesh@gmail.com',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+  avatar: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=120&q=80',
   isLoggedIn: true,
 };
 
@@ -99,8 +99,8 @@ const initialState: RecipeState = {
         id: 'comm_1',
         recipeId: 'recipe_adai_001',
         authorId: 'user_ananya',
-        authorName: 'Ananya Ramesh',
-        authorAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80',
+        authorName: 'Chef Ananya',
+        authorAvatar: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=120&q=80',
         text: 'Adding a handful of drumstick leaves (murungai keerai) at the end takes this to a whole new level!',
         timestamp: '2026-08-12T14:30:00Z',
         likes: 12,

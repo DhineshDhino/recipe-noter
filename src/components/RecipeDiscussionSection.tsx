@@ -31,7 +31,7 @@ export default function RecipeDiscussionSection({
         recipeId,
         authorId: currentUser?.id || 'guest',
         authorName: currentUser?.name || 'Fellow Cook',
-        authorAvatar: currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
+        authorAvatar: currentUser?.avatar || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=120&q=80',
         text: newCommentText.trim(),
         timestamp: new Date().toISOString(),
         likes: 0,
@@ -110,7 +110,7 @@ export default function RecipeDiscussionSection({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
                     <div className="w-7 h-7 rounded-full overflow-hidden border border-border-subtle bg-card-bg">
-                      <img src={c.authorAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'} alt={c.authorName} className="w-full h-full object-cover" />
+                      <img src={c.authorAvatar || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=120&q=80'} alt={c.authorName} className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <span className="text-xs font-bold text-foreground">{c.authorName}</span>

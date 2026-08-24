@@ -84,6 +84,8 @@ export const getMealSlotMeta = (slot: MealSlot): { label: string; emoji: string;
       return { label: 'Dinner / Night Tiffin', emoji: '🌙', timeRange: '7 PM – 11 PM' };
     case 'late_night':
       return { label: 'Late Night Quick Bite', emoji: '🌌', timeRange: '11 PM – 6 AM' };
+    case 'anytime':
+      return { label: 'Anytime / All Day', emoji: '🕒', timeRange: 'All Day Staple' };
   }
 };
 
@@ -223,9 +225,17 @@ export const filterAndRankRecipes = (
 
   // 4. Meal Slot Filter
   if (mealSlot && mealSlot !== 'all') {
-    results = results.filter(
-      r => r.recipe.mealSlots && r.recipe.mealSlots.includes(mealSlot)
-    );
+    if (mealSlot === 'anytime') {
+      results = results.filter(
+        r => r.recipe.mealSlots && r.recipe.mealSlots.includes('anytime')
+      );
+    } else {
+      results = results.filter(
+        r =>
+          r.recipe.mealSlots &&
+          (r.recipe.mealSlots.includes(mealSlot) || r.recipe.mealSlots.includes('anytime'))
+      );
+    }
   }
 
   // 5. Hero Ingredient Filter

@@ -66,7 +66,7 @@ export default function UserProfileModal({ isOpen, onClose }: UserProfileModalPr
               <div className="flex items-center gap-3.5 p-3.5 bg-background rounded-xl border border-border-subtle">
                 <div className="w-12 h-12 rounded-full overflow-hidden border border-accent/40 bg-card-bg">
                   <img
-                    src={currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'}
+                    src={currentUser.avatar || 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=120&q=80'}
                     alt={currentUser.name}
                     className="w-full h-full object-cover"
                   />
@@ -162,7 +162,7 @@ export default function UserProfileModal({ isOpen, onClose }: UserProfileModalPr
                     handleGoogleSignIn(
                       'dhinesh@gmail.com',
                       'Chef Dhinesh',
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80'
+                      'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=120&q=80'
                     )
                   }
                   className="w-full py-2.5 px-4 rounded-xl bg-white text-gray-900 font-bold text-xs hover:bg-gray-100 transition-all flex items-center justify-center gap-2 shadow-md cursor-pointer"
@@ -175,15 +175,15 @@ export default function UserProfileModal({ isOpen, onClose }: UserProfileModalPr
                   type="button"
                   onClick={() =>
                     handleGoogleSignIn(
-                      'ranveer@gmail.com',
-                      'Chef Ranveer',
-                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80'
+                      'alex@gmail.com',
+                      'Chef Alex',
+                      'https://images.unsplash.com/photo-1581299894007-aaa50297cf16?auto=format&fit=crop&w=120&q=80'
                     )
                   }
                   className="w-full py-2 px-4 rounded-xl bg-card-bg border border-border-subtle text-foreground font-semibold text-xs hover:border-accent/40 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>👤</span>
-                  <span>Switch Account: Chef Ranveer (ranveer@gmail.com)</span>
+                  <span>Switch Account: Chef Alex (alex@gmail.com)</span>
                 </button>
               </div>
             </div>

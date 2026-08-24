@@ -147,47 +147,62 @@ export default function AppNavbar() {
               </button>
 
               {isSwitcherOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-[#1E1E1E] border border-border-subtle rounded-xl shadow-2xl p-2 z-50 animate-[fadeIn_100ms_ease-out]">
-                  <div className="px-2 py-1.5 text-[10px] font-bold text-text-muted uppercase tracking-wider border-b border-border-subtle mb-1">
-                    {isEditorRoute ? 'Load Recipe into Editor' : 'Select Active Recipe'}
-                  </div>
-                  <div className="max-h-60 overflow-y-auto space-y-1">
-                    {/* Blank Recipe Draft Option */}
-                    <button
-                      onClick={handleNewRecipe}
-                      className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors cursor-pointer ${
-                        isDraftMode
-                          ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40'
-                          : 'text-amber-400/90 hover:bg-card-bg hover:text-amber-300'
-                      }`}
-                    >
-                      <span className="font-semibold">➕ Blank Recipe Draft</span>
-                      <span className="text-[10px] text-text-muted">Create from scratch</span>
-                    </button>
-
-                    <div className="border-t border-border-subtle/50 my-1" />
-
-                    {recipeLibrary.map(r => {
-                      const isCurrent = isEditorRoute ? editorRecipeName === r.name : activeRecipe?.id === r.id;
-                      return (
-                        <button
-                          key={r.id}
-                          onClick={() => handleSelectRecipe(r)}
-                          className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs flex items-center justify-between transition-colors cursor-pointer ${
-                            isCurrent
-                              ? 'bg-accent text-background font-bold'
-                              : 'text-foreground hover:bg-card-bg'
-                          }`}
-                        >
-                          <span className="truncate">{r.name}</span>
-                          <span className={`text-[10px] font-mono ${isCurrent ? 'text-background/80' : 'text-text-muted'}`}>
-                            {r.baseYield}p
+                <>
+                  {/* Backdrop overlay for outside click */}
+                  <div
+                    className="fixed inset-0 z-40 bg-transparent"
+                    onClick={() => setIsSwitcherOpen(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] bg-[#1A1A1A] border border-border-subtle rounded-2xl shadow-2xl p-2.5 z-50 animate-[fadeIn_120ms_ease-out] ring-1 ring-black/40">
+                    <div className="px-2.5 py-2 text-[10px] font-bold text-text-muted uppercase tracking-wider border-b border-border-subtle/60 mb-1.5 flex items-center justify-between">
+                      <span>{isEditorRoute ? 'Load Recipe into Editor' : 'Select Active Recipe'}</span>
+                      <span className="text-[10px] text-accent font-mono">({recipeLibrary.length + 1} options)</span>
+                    </div>
+                    <div className="max-h-72 overflow-y-auto space-y-1 pr-0.5">
+                      {/* Blank Recipe Draft Option */}
+                      <button
+                        onClick={handleNewRecipe}
+                        className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
+                          isDraftMode
+                            ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/40 shadow-sm'
+                            : 'text-amber-400/90 hover:bg-card-bg hover:text-amber-300 border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-md bg-amber-500/20 text-amber-400 flex items-center justify-center text-xs font-bold">
+                            ➕
                           </span>
-                        </button>
-                      );
-                    })}
+                          <div>
+                            <span className="font-semibold block">Blank Recipe Draft</span>
+                            <span className="text-[10px] text-text-muted">Create from scratch</span>
+                          </div>
+                        </div>
+                      </button>
+
+                      <div className="border-t border-border-subtle/50 my-1.5" />
+
+                      {recipeLibrary.map(r => {
+                        const isCurrent = isEditorRoute ? editorRecipeName === r.name : activeRecipe?.id === r.id;
+                        return (
+                          <button
+                            key={r.id}
+                            onClick={() => handleSelectRecipe(r)}
+                            className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
+                              isCurrent
+                                ? 'bg-accent text-background font-bold shadow-sm'
+                                : 'text-foreground hover:bg-card-bg hover:text-accent'
+                            }`}
+                          >
+                            <span className="truncate font-medium">{r.name}</span>
+                            <span className={`text-[10px] font-mono shrink-0 ml-2 ${isCurrent ? 'text-background/80 font-bold' : 'text-text-muted'}`}>
+                              {r.baseYield} servings
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 

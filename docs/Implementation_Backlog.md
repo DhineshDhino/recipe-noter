@@ -15,6 +15,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 6** | Epic 13 | 🎙️ Voice-to-Recipe AI Onboarding (Tamil Speech-to-Text) | ✅ `[COMPLETED]` (Stories 27–32) |
 | **Initiative 7** | Epics 14, 15, 16, 17 | 🍽️ **"What to Cook" — Recommendation & Pantry Match Engine** | ✅ `[COMPLETED]` (Stories 33–39) |
 | **Initiative 8** | Epics 18, 19, 20, 21 | 📓 **Cooking Try Journal, Google OAuth, Community & 3-Tier Scope** | ✅ `[COMPLETED]` (Stories 40–45) |
+| **Initiative 9** | Epics 22, 23 | 🕒 **Universal 'Anytime' Slots, Popover Alignment & Unisex Avatars** | ✅ `[COMPLETED]` (Stories 46–48) |
 
 ---
 
@@ -559,5 +560,43 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 1: Update `recommendationEngine.ts` `FilterOptions` with `scope: 'authored' | 'favorites' | 'all'`.
 - Task 2: Update `<WhatToCookModal>` scope segmented pill bar with 3 tabs: `📚 My Authored`, `❤️ My Favorites`, and `🌐 All Recipes`.
 - Task 3: Write comprehensive unit tests verifying 3-tier recommendation filtering.
+
+---
+
+# 🕒 INITIATIVE 9: Universal Time Slots, Popover Ergonomics & Unisex Identity
+**Goal:** Add universal 'Anytime' meal classification, fix New Recipe popup alignment, and standardize on modern unisex chef avatars.
+
+## Epic 22: Universal Time Slots & Meal Classification ("Anytime / All Day")
+**Goal:** Enable all-day recipes and anytime snacks to be categorized and discovered flexibly.
+
+### Feature 22.1: Anytime Meal Slot Integration
+#### Story 46: Universal 'Anytime' Time Budget & Meal Slot Support [NECESSARY - MVP] ✅ [COMPLETED]
+**Description:** Support `'anytime'` across types, recommendation engine, WhatToCookModal, editor Setup phase, and mock recipes.
+**Tasks:**
+- Task 1: Add `'anytime'` to `MealSlot` type union and metadata descriptions (`🕒 Anytime / All Day`).
+- Task 2: Update `recommendationEngine.ts` to surface anytime recipes in both specific circadian slots and the dedicated Anytime filter tab.
+- Task 3: Update `<WhatToCookModal>` and `/what-to-cook` page with the `🕒 Anytime` tab.
+- Task 4: Add `anytime` pill to the Setup phase authoring tab in `/editor`.
+
+---
+
+## Epic 23: UI Alignment, Popover Polish & Unisex Identity
+**Goal:** Perfect navbar popovers and ensure inclusive, modern unisex chef identity.
+
+### Feature 23.1: Popover Alignment & Backdrop Overlay
+#### Story 47: New Recipe Popover Alignment & Backdrop Overlay [BUGFIX / POLISH - MVP] ✅ [COMPLETED]
+**Description:** Fix popup alignment, responsive positioning, and click-outside backdrop for New Recipe / Switcher dropdown.
+**Tasks:**
+- Task 1: Add click-outside backdrop overlay to `<AppNavbar>` recipe switcher popover so clicking outside smoothly dismisses it.
+- Task 2: Fix dropdown positioning with responsive bounds (`right-0 mt-2 w-72 max-w-[calc(100vw-2rem)]`) to prevent off-screen shifting.
+- Task 3: Enhance "➕ Blank Recipe Draft" button styling and visual alignment within the popup.
+
+### Feature 23.2: Inclusive Unisex Avatar System
+#### Story 48: Unisex Chef Identity & Neutral Avatar System [POLISH - MVP] ✅ [COMPLETED]
+**Description:** Replace gender-specific stock avatars with modern, stylish unisex chef avatars across auth, journal, comments, and profile modal.
+**Tasks:**
+- Task 1: Replace all stock user/comment avatars in `recipeSlice.ts`, `UserProfileModal.tsx`, `RecipeDiscussionSection.tsx`, and API mock store with modern unisex chef avatars.
+- Task 2: Update default fallback avatars to neutral chef iconography with high aesthetic polish.
+
 
 

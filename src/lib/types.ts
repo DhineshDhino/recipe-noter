@@ -17,7 +17,7 @@ export interface IngredientRegistry {
   translations: IngredientTranslation[];
 }
 
-export type MealSlot = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'late_night';
+export type MealSlot = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'late_night' | 'anytime';
 export type DietaryCategory = 'vegetarian' | 'vegan' | 'gluten_free' | 'jain' | 'high_protein';
 export type RecipeDifficulty = 'easy' | 'medium' | 'advanced';
 

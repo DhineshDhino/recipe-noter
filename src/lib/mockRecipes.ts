@@ -174,7 +174,7 @@ export const mockFilterCoffeeRecipe: Recipe = {
     'Brass Davarah and Tumbler',
     'Milk Boiling Saucepan',
   ],
-  mealSlots: ['breakfast', 'snack', 'late_night'],
+  mealSlots: ['breakfast', 'snack', 'late_night', 'anytime'],
   dietary: ['vegetarian', 'gluten_free'],
   difficulty: 'easy',
   pairings: ['Medhu Vada', 'Mysore Pak', 'Butter Biscuit'],
@@ -268,7 +268,7 @@ export const mockRavaUpmaRecipe: Recipe = {
   id: 'recipe_upma_003',
   name: 'Quick Rava Upma',
   baseYield: 2,
-  mealSlots: ['breakfast', 'snack', 'dinner', 'late_night'],
+  mealSlots: ['breakfast', 'snack', 'dinner', 'late_night', 'anytime'],
   dietary: ['vegetarian', 'vegan'],
   difficulty: 'easy',
   versionHistory: [

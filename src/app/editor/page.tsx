@@ -1953,6 +1953,7 @@ const RecipeMetadataForm = () => {
             { id: 'snack' as MealSlot, label: '☕ Evening Snack / Tea Time', hours: '3-7 PM' },
             { id: 'dinner' as MealSlot, label: '🌙 Dinner / Night Tiffin', hours: '7-11 PM' },
             { id: 'late_night' as MealSlot, label: '🌌 Late Night Quick Bite', hours: '11 PM-6 AM' },
+            { id: 'anytime' as MealSlot, label: '🕒 Anytime / All-Day', hours: 'All Day' },
           ].map(slot => {
             const isSelected = mealSlots.includes(slot.id);
             return (

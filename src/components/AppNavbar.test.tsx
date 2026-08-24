@@ -64,7 +64,7 @@ describe('AppNavbar Component — Wholesome App Flow', () => {
 
     fireEvent.click(switcherTrigger);
     expect(screen.getByText('Select Active Recipe')).toBeInTheDocument();
-    expect(screen.getByText('➕ Blank Recipe Draft')).toBeInTheDocument();
+    expect(screen.getByText('Blank Recipe Draft')).toBeInTheDocument();
     expect(screen.getByText('Create from scratch')).toBeInTheDocument();
   });
 
