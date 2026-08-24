@@ -18,7 +18,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 9** | Epics 22, 23 | 🕒 **Universal 'Anytime' Slots, Popover Alignment & Unisex Avatars** | ✅ `[COMPLETED]` (Stories 46–48) |
 | **Initiative 10** | Epics 24, 25, 26 | ⚡ **3-Tier Criticality System & Multilingual Localization Engine** | ✅ `[COMPLETED]` (Stories 49–51) |
 | **Initiative 11** | Epics 27, 28 | 📌 **Stove-Side Sticky HUD & Collapsible Header System** | ⏳ `[PLANNED]` (Stories 52–54) |
-| **Initiative 12** | Epics 29, 30 | 🌐 **Whole-Recipe Multilingual Localization & AI Translation Engine** | ⏳ `[PLANNED]` (Stories 55–57) |
+| **Initiative 12** | Epics 29, 30 | 🌐 **Whole-Recipe Multilingual Localization & AI Translation Engine** | ⏳ `[PLANNED]` (Stories 55–58) |
 
 ---
 
@@ -756,13 +756,30 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 3: Integrate with translation utility to generate localized blocks and steps.
 - Task 4: Write unit tests in `src/store/editorSlice.test.ts` and `src/app/editor/page.test.tsx`.
 
-### Feature 30.2: Dynamic On-Demand Translation API
-#### Story 57: Dynamic On-Demand Translation API & Local Cache [POST-MVP] ⏳ [PLANNED]
-**Description:** Provide on-the-fly translation for any community recipe lacking pre-authored locales, caching results locally to eliminate repeat latency.
+### Feature 30.2: Zero-Cost Local LLaMA Batch Translation Pipeline
+#### Story 57: Zero-Cost Local LLaMA / Ollama Batch Translation Pipeline [TOOLING / PERFORMANCE - MVP] ⏳ [PLANNED]
+**Description:** Build an offline batch translation CLI script (`npm run translate:recipes`) that connects to a local LLaMA instance (via Ollama on Apple Silicon / local GPU) to translate all recipes into Tamil (`ta`) and Hindi (`hi`) at $0 cost and save pre-computed strings directly into recipe JSON for 0ms runtime switching.
 **Acceptance Criteria (Gherkin):**
-- **Given** a user views a user-generated recipe on Reader View (`/`) that lacks a `ta` or `hi` locale
+- **Given** one or more recipes in `src/lib/mockRecipes.ts` or storage lack `locales.ta` or `locales.hi` translations
+- **When** the developer runs `npm run translate:recipes` (or `npx ts-node scripts/translate-recipes.ts`)
+- **Then** the script connects to the local Ollama API (`http://localhost:11434/api/generate` with model `llama3.2` / `qwen2.5` / `gemma2`)
+- **And** sends structured culinary translation prompts preserving cooking measurements, timers, and step clarity.
+- **And** writes the translated JSON schema (`name`, `versionName`, `prepBlocks`, `cookBlocks`, `requiredEquipment`) directly into the recipe's `locales` dictionary.
+- **And** incurs exactly $0.00 in cloud API fees, providing 100% offline-ready 0ms client-side switching.
+
+**Tasks:**
+- Task 1: Create `scripts/translate-recipes.ts` batch runner script with Ollama integration and rate/error handling.
+- Task 2: Add culinary system prompt template ensuring accurate Tamil & Hindi cooking terms.
+- Task 3: Add `npm run translate:recipes` script to `package.json`.
+- Task 4: Add unit/mock tests for the batch translation pipeline in `scripts/translate-recipes.test.ts`.
+
+### Feature 30.3: Dynamic On-Demand Translation API
+#### Story 58: Dynamic On-Demand Translation API & Local Cache [POST-MVP] ⏳ [PLANNED]
+**Description:** Provide optional fallback on-the-fly translation for live user-generated recipes lacking pre-authored locales, caching results in `localStorage` to eliminate repeat requests.
+**Acceptance Criteria (Gherkin):**
+- **Given** a user views a custom recipe on Reader View (`/`) that lacks a `ta` or `hi` locale
 - **When** the user switches language to `ta` or `hi`
-- **Then** the app calls the `/api/translate` endpoint to translate the recipe text on-the-fly.
+- **Then** the app calls the `/api/recipes/[id]/translate` endpoint to translate the recipe text on-the-fly.
 - **And** the translated result is cached in `localStorage` / client state for instant subsequent loads.
 
 **Tasks:**
