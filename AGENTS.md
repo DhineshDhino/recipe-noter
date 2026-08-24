@@ -139,3 +139,13 @@ recipe-noter/
 - **Pure Math Functions**: Keep scaling, ratio validation, time formatting, and recommendation math pure and decoupled from React render loops inside `src/lib/utils.ts` and `src/lib/recommendationEngine.ts`.
 - **Node vs Browser API Compatibility in Tests**:
   - Web Audio (`AudioContext`), Web Speech (`webkitSpeechRecognition`), and MediaDevices should be guarded with `typeof window !== 'undefined'` or mock fallbacks so unit tests run cleanly in Jest JSDOM environments.
+
+---
+
+## 🤖 7. Custom Skills & Agile Business Analyst Role
+
+- **Business Analyst Skill (`.agents/skills/business-analyst/SKILL.md`)**:
+  - Automatically activates whenever a new feature, bug report, or product requirement is proposed.
+  - Formulates structured **Functional & Technical Questions** in a single combined prompt.
+  - Translates aligned requirements into standard Agile user stories with Gherkin acceptance criteria.
+  - Updates `docs/Implementation_Backlog.md` and roadmap tables with appropriate priority tags (`[MVP]`, `[POLISH]`, `[PERFORMANCE]`, `[POST-MVP]`).
