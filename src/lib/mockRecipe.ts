@@ -15,21 +15,21 @@ export const mockAdaiRecipe: Recipe = {
     }
   ],
   masterIngredients: [
-    { id: "ing_raw_rice", defaultName: "Raw Rice", translations: [{ language: "Tamil", name: "Pacha Arisi" }] },
-    { id: "ing_boiled_rice", defaultName: "Boiled Rice", translations: [{ language: "Tamil", name: "Puzhungal Arisi" }] },
-    { id: "ing_toor_dal", defaultName: "Toor Dal", translations: [{ language: "Tamil", name: "Thoram Parupu" }] },
-    { id: "ing_urad_dal", defaultName: "Urad Dal", translations: [{ language: "Tamil", name: "Ulutham Parupu" }] },
-    { id: "ing_moong_dal", defaultName: "Moong Dal", translations: [{ language: "Tamil", name: "Paasi Parupu" }] },
-    { id: "ing_chana_dal", defaultName: "Chana Dal", translations: [{ language: "Tamil", name: "Kadala Parupu" }] },
-    { id: "ing_ginger", defaultName: "Ginger", translations: [{ language: "Tamil", name: "Inji" }] },
-    { id: "ing_asafoetida", defaultName: "Asafoetida", translations: [{ language: "Tamil", name: "Perungayam" }] },
-    { id: "ing_green_chilli", defaultName: "Green Chilli", translations: [{ language: "Tamil", name: "Pacha Molaga" }] },
-    { id: "ing_dry_red_chilli", defaultName: "Dry Red Chilli", translations: [{ language: "Tamil", name: "Vara Molaga" }] },
-    { id: "ing_curry_leaves", defaultName: "Curry Leaves", translations: [{ language: "Tamil", name: "Karuvepillai" }] },
-    { id: "ing_salt", defaultName: "Salt", translations: [{ language: "Tamil", name: "Uppu" }] },
-    { id: "ing_coriander", defaultName: "Coriander Leaves", translations: [{ language: "Tamil", name: "Kothamalli" }] },
-    { id: "ing_drumstick_leaves", defaultName: "Drumstick Leaves", translations: [{ language: "Tamil", name: "Murunga Keera" }] },
-    { id: "ing_onion", defaultName: "Onion", translations: [{ language: "Tamil", name: "Vengayam" }] },
+    { id: "ing_raw_rice", defaultName: "Raw Rice", translations: [{ language: "Tamil", name: "பச்சரிசி" }, { language: "Hindi", name: "कच्चा चावल" }] },
+    { id: "ing_boiled_rice", defaultName: "Boiled Rice", translations: [{ language: "Tamil", name: "புழுங்கல் அரிசி" }, { language: "Hindi", name: "उबला चावल" }] },
+    { id: "ing_toor_dal", defaultName: "Toor Dal", translations: [{ language: "Tamil", name: "துவரம் பருப்பு" }, { language: "Hindi", name: "तूर दाल" }] },
+    { id: "ing_urad_dal", defaultName: "Urad Dal", translations: [{ language: "Tamil", name: "உளுத்தம் பருப்பு" }, { language: "Hindi", name: "उड़द दाल" }] },
+    { id: "ing_moong_dal", defaultName: "Moong Dal", translations: [{ language: "Tamil", name: "பாசிப் பருப்பு" }, { language: "Hindi", name: "मूंग दाल" }] },
+    { id: "ing_chana_dal", defaultName: "Chana Dal", translations: [{ language: "Tamil", name: "கடலைப் பருப்பு" }, { language: "Hindi", name: "चना दाल" }] },
+    { id: "ing_ginger", defaultName: "Ginger", translations: [{ language: "Tamil", name: "இஞ்சி" }, { language: "Hindi", name: "अदरक" }] },
+    { id: "ing_asafoetida", defaultName: "Asafoetida", translations: [{ language: "Tamil", name: "பெருங்காயம்" }, { language: "Hindi", name: "हींग" }] },
+    { id: "ing_green_chilli", defaultName: "Green Chilli", translations: [{ language: "Tamil", name: "பச்சை மிளகாய்" }, { language: "Hindi", name: "हरी मिर्च" }] },
+    { id: "ing_dry_red_chilli", defaultName: "Dry Red Chilli", translations: [{ language: "Tamil", name: "வரமிளகாய்" }, { language: "Hindi", name: "सूखी लाल मिर्च" }] },
+    { id: "ing_curry_leaves", defaultName: "Curry Leaves", translations: [{ language: "Tamil", name: "கருவேப்பிலை" }, { language: "Hindi", name: "कढ़ी पत्ता" }] },
+    { id: "ing_salt", defaultName: "Salt", translations: [{ language: "Tamil", name: "உப்பு" }, { language: "Hindi", name: "नमक" }] },
+    { id: "ing_coriander", defaultName: "Coriander Leaves", translations: [{ language: "Tamil", name: "கொத்தமல்லி" }, { language: "Hindi", name: "धनिया पत्ती" }] },
+    { id: "ing_drumstick_leaves", defaultName: "Drumstick Leaves", translations: [{ language: "Tamil", name: "முருங்கைக்கீரை" }, { language: "Hindi", name: "सहजन की पत्तियां" }] },
+    { id: "ing_onion", defaultName: "Onion", translations: [{ language: "Tamil", name: "வெங்காயம்" }, { language: "Hindi", name: "प्याज" }] },
   ],
   requiredEquipment: [
     "Grinder / Mixer Grinder",
@@ -73,12 +73,12 @@ export const mockAdaiRecipe: Recipe = {
       name: "Soaking",
       totalDurationInMinutes: 240, // 4 hours from CSV
       ingredients: [
-        { ingredientId: "ing_raw_rice", quantity: 100, unit: "g", isOptional: false, tags: [] },
-        { ingredientId: "ing_boiled_rice", quantity: 100, unit: "g", isOptional: false, tags: [] },
-        { ingredientId: "ing_toor_dal", quantity: 25, unit: "g", isOptional: false, tags: [] },
-        { ingredientId: "ing_urad_dal", quantity: 25, unit: "g", isOptional: false, tags: [] },
-        { ingredientId: "ing_moong_dal", quantity: 25, unit: "g", isOptional: true, tags: [] }, // CSV noted as optional
-        { ingredientId: "ing_chana_dal", quantity: 25, unit: "g", isOptional: false, tags: [] },
+        { ingredientId: "ing_raw_rice", quantity: 100, unit: "g", isOptional: false, isCritical: true, tags: [] },
+        { ingredientId: "ing_boiled_rice", quantity: 100, unit: "g", isOptional: false, isCritical: true, tags: [] },
+        { ingredientId: "ing_toor_dal", quantity: 25, unit: "g", isOptional: false, isCritical: true, tags: [] },
+        { ingredientId: "ing_urad_dal", quantity: 25, unit: "g", isOptional: false, isCritical: true, tags: [] },
+        { ingredientId: "ing_moong_dal", quantity: 25, unit: "g", isOptional: true, isCritical: false, tags: [] }, // CSV noted as optional
+        { ingredientId: "ing_chana_dal", quantity: 25, unit: "g", isOptional: false, isCritical: true, tags: [] },
       ],
       steps: [
         {
@@ -155,8 +155,8 @@ export const mockAdaiRecipe: Recipe = {
       totalDurationInMinutes: 15, // 15 mins from CSV
       ingredients: [
         { ingredientId: "ing_onion", quantity: 100, unit: "g", isOptional: false, tags: [] },
-        { ingredientId: "ing_drumstick_leaves", quantity: 1, unit: "handful", isOptional: false, tags: [] },
-        { ingredientId: "ing_coriander", quantity: 1, unit: "handful", isOptional: false, tags: [] },
+        { ingredientId: "ing_drumstick_leaves", quantity: 1, unit: "handful", isOptional: true, tags: [] },
+        { ingredientId: "ing_coriander", quantity: 1, unit: "handful", isOptional: true, tags: [] },
       ],
       steps: [
         {

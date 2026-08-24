@@ -91,6 +91,7 @@ export interface ScopedIngredient {
   quantity: number; // Base quantity anchored to baseYield
   unit: Unit; // Unit lives locally in the scope
   isOptional: boolean; // If true, fixed quantity + scaling warning
+  isCritical?: boolean; // If true, non-negotiable structural core ingredient (⚡)
   allowedSubstitutes?: string[]; // Array of ingredient IDs allowed as substitutes for this block
   tags: ("spice" | "sweet")[];
 }

@@ -50,13 +50,14 @@ describe('Epic 10: Smart Grocery Planning (Story 23)', () => {
     expect(checkboxes.length).toBeGreaterThan(0);
 
     fireEvent.click(checkboxes[0]);
-    expect(screen.getByText(/1 of \d+ items bought/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 of \d+/i)).toBeInTheDocument();
   });
 
-  it('copies checklist formatted text to clipboard', () => {
+  it('copies checklist formatted text to clipboard with [Critical] and [Optional] tags', () => {
+    const writeTextMock = jest.fn().mockImplementation(() => Promise.resolve());
     Object.assign(navigator, {
       clipboard: {
-        writeText: jest.fn().mockImplementation(() => Promise.resolve()),
+        writeText: writeTextMock,
       },
     });
 
@@ -73,6 +74,36 @@ describe('Epic 10: Smart Grocery Planning (Story 23)', () => {
     const copyBtn = screen.getByText(/Copy Checklist/i);
     fireEvent.click(copyBtn);
 
-    expect(navigator.clipboard.writeText).toHaveBeenCalled();
+    expect(writeTextMock).toHaveBeenCalled();
+    const copiedText = writeTextMock.mock.calls[0][0];
+    expect(copiedText).toContain('[Critical]');
+    expect(copiedText).toContain('Raw Rice');
+  });
+
+  it('filters grocery items by ⚡ Critical Core and ✨ Optional tabs', () => {
+    render(
+      <GroceryListModal
+        isOpen={true}
+        onClose={jest.fn()}
+        recipe={mockAdaiRecipe}
+        targetYield={4}
+        baseYield={4}
+      />
+    );
+
+    // Initial view: all items
+    expect(screen.getByRole('button', { name: /All Items/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Critical Core/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Optional/i })).toBeInTheDocument();
+
+    // Click Critical tab
+    const criticalTab = screen.getByRole('button', { name: /Critical Core/i });
+    fireEvent.click(criticalTab);
+    expect(screen.getAllByText(/⚡ Critical/i).length).toBeGreaterThan(0);
+
+    // Click Optional tab
+    const optionalTab = screen.getByRole('button', { name: /Optional/i });
+    fireEvent.click(optionalTab);
+    expect(screen.getAllByText(/✨ Optional/i).length).toBeGreaterThan(0);
   });
 });

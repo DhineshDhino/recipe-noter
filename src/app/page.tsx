@@ -29,7 +29,9 @@ import GuidedCookingModal from '@/components/GuidedCookingModal';
 import GroceryListModal from '@/components/GroceryListModal';
 import RecipeJourneyTimeline from '@/components/RecipeJourneyTimeline';
 import RecipeDiscussionSection from '@/components/RecipeDiscussionSection';
-import { SupportedLanguage, getLocalizedIngredientName } from '@/lib/conversions';
+import { SupportedLanguage, formatLocalizedIngredient } from '@/lib/conversions';
+import { getUiString } from '@/lib/translations';
+import { IngredientRegistry } from '@/lib/types';
 import { setLanguage, toggleFavorite, setRecipeNote } from '@/store/recipeSlice';
 
 // --- SUB-COMPONENTS ---
@@ -46,8 +48,8 @@ const Badge = ({
   const base =
     'inline-flex items-center text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider relative -top-[1px]';
   const variants = {
-    critical: 'bg-warning text-white shadow-[0_0_8px_rgba(255,59,48,0.4)]',
-    optional: 'bg-amber-500/20 text-amber-500 border border-amber-500/50',
+    critical: 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-xs',
+    optional: 'bg-blue-500/20 text-blue-300 border border-blue-500/40',
     duration: 'bg-border-subtle text-foreground font-mono tabular-nums border border-border-subtle font-semibold tracking-wide',
     heat: 'bg-accent/10 text-accent border border-accent/20',
     spice: 'bg-red-500/20 text-red-400 border border-red-500/30',
@@ -241,6 +243,8 @@ const PhaseIngredientsAccordion = ({
   sweetMultiplier = 1.0,
   ingredientOverrides,
   onOverride,
+  language = 'en',
+  masterIngredients,
 }: {
   ingredients: any[];
   title?: string;
@@ -251,6 +255,8 @@ const PhaseIngredientsAccordion = ({
   sweetMultiplier?: number;
   ingredientOverrides: Record<string, number>;
   onOverride?: (ingredientId: string, qty: number) => void;
+  language?: SupportedLanguage;
+  masterIngredients?: IngredientRegistry[];
 }) => {
   if (!ingredients || ingredients.length === 0) return null;
   const containerClass = isGlobal
@@ -295,6 +301,7 @@ const PhaseIngredientsAccordion = ({
             const overriddenQty = ingredientOverrides[id];
             const displayQty = overriddenQty ?? scaledQty;
             const isOverridden = overriddenQty !== undefined;
+            const loc = formatLocalizedIngredient(id, language, masterIngredients);
 
             return (
               <li
@@ -302,8 +309,14 @@ const PhaseIngredientsAccordion = ({
                 className="text-foreground text-sm flex justify-between items-center border-b border-border-subtle/30 pb-1.5 gap-2"
               >
                 <span className="flex-1 flex flex-wrap items-center gap-1.5">
-                  <span>{formatIngredientName(id)}</span>
-                  {ing.isOptional && <Badge variant="optional">Optional</Badge>}
+                  <span className="font-medium">{loc.primary}</span>
+                  {loc.secondary && (
+                    <span className="text-[11px] text-text-muted">({loc.secondary})</span>
+                  )}
+                  {ing.isCritical && (
+                    <Badge variant="critical">⚡ Critical</Badge>
+                  )}
+                  {ing.isOptional && <Badge variant="optional">✨ Optional</Badge>}
                   {isSpice && spiceMultiplier !== 1.0 && (
                     <Badge variant="spice">🌶️ {Math.round(spiceMultiplier * 100)}%</Badge>
                   )}
@@ -678,6 +691,8 @@ export default function Home() {
     sweetMultiplier: sweetToleranceMultiplier,
     ingredientOverrides,
     onOverride: handleOverride,
+    language,
+    masterIngredients: recipe.masterIngredients,
   };
 
   return (
@@ -757,7 +772,7 @@ export default function Home() {
               title="Open smart grocery list for this recipe"
             >
               <span>🛒</span>
-              <span className="hidden sm:inline">Grocery List</span>
+              <span className="hidden sm:inline">{getUiString('groceryList', language)}</span>
             </button>
 
             <button
@@ -767,7 +782,7 @@ export default function Home() {
               title="Open Step-by-Step Focus Mode"
             >
               <span>🎯</span>
-              <span>Focus Mode</span>
+              <span>{getUiString('focusMode', language)}</span>
             </button>
             <Link
               href="/editor"
@@ -977,10 +992,10 @@ export default function Home() {
           {/* Prep Phase */}
           {recipe.prepBlocks && recipe.prepBlocks.length > 0 && (
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">Preparation</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">{getUiString('prepPhase', language)}</h2>
               <PhaseIngredientsAccordion
                 ingredients={prepIngredients}
-                title="Phase Ingredients"
+                title={`${getUiString('prepPhase', language)} ${getUiString('ingredients', language)}`}
                 isGlobal={true}
                 {...accordionProps}
               />
@@ -1035,7 +1050,7 @@ export default function Home() {
           {/* Passive Phase */}
           {recipe.passiveBlocks && recipe.passiveBlocks.length > 0 && (
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">Passive / Resting</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">{getUiString('restPhase', language)}</h2>
               <div className="space-y-6">
                 {recipe.passiveBlocks.map((block, idx) => (
                   <div
@@ -1086,11 +1101,11 @@ export default function Home() {
             <section className="lg:sticky lg:top-8">
               <h2 className="text-2xl font-semibold text-accent mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-                Active Cooking
+                {getUiString('cookPhase', language)}
               </h2>
               <PhaseIngredientsAccordion
                 ingredients={cookIngredients}
-                title="Phase Ingredients"
+                title={`${getUiString('cookPhase', language)} ${getUiString('ingredients', language)}`}
                 isGlobal={true}
                 {...accordionProps}
               />
@@ -1182,6 +1197,7 @@ export default function Home() {
           baseYield={recipe.baseYield}
           spiceMultiplier={spiceToleranceMultiplier}
           sweetMultiplier={sweetToleranceMultiplier}
+          language={language}
         />
       )}
 

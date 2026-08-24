@@ -31,6 +31,7 @@ import {
   addBlockIngredient,
   updateBlockIngredient,
   removeBlockIngredient,
+  setIngredientCriticality,
   updateBlockName,
   deleteBlock,
   moveBlockUp as moveBlockUpAction,
@@ -1017,7 +1018,7 @@ const AddIngredientForm = ({
   const [ingredientId, setIngredientId] = useState(masterIngredients[0]?.id || '');
   const [quantity, setQuantity] = useState('');
   const [unit, setUnit] = useState('g');
-  const [isOptional, setIsOptional] = useState(false);
+  const [criticalityTier, setCriticalityTier] = useState<'critical' | 'standard' | 'optional'>('standard');
   const [isSpice, setIsSpice] = useState(false);
   const [isSweet, setIsSweet] = useState(false);
 
@@ -1040,13 +1041,14 @@ const AddIngredientForm = ({
       ingredientId,
       quantity: qty,
       unit,
-      isOptional,
+      isOptional: criticalityTier === 'optional',
+      isCritical: criticalityTier === 'critical',
       tags,
     });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 bg-background border border-border-subtle rounded-xl space-y-3">
+    <form onSubmit={handleSubmit} className="p-3.5 bg-background border border-border-subtle rounded-xl space-y-3">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
         <select
           value={ingredientId}
@@ -1085,16 +1087,48 @@ const AddIngredientForm = ({
           </select>
         </div>
 
-        <div className="flex items-center gap-2">
-          <label className="flex items-center gap-1 text-xs text-text-muted cursor-pointer">
-            <input
-              type="checkbox"
-              checked={isOptional}
-              onChange={e => setIsOptional(e.target.checked)}
-              className="rounded border-border-subtle text-accent"
-            />
-            <span>Optional</span>
-          </label>
+        {/* 3-Tier Criticality Selector */}
+        <div className="flex items-center bg-card-bg border border-border-subtle rounded-lg p-0.5">
+          <button
+            type="button"
+            onClick={() => setCriticalityTier('critical')}
+            className={`flex-1 py-1 px-1.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+              criticalityTier === 'critical'
+                ? 'bg-amber-500/30 text-amber-300 border border-amber-500/50 shadow-xs'
+                : 'text-text-muted hover:text-foreground'
+            }`}
+            title="Non-negotiable structural ingredient"
+          >
+            ⚡ Critical
+          </button>
+          <button
+            type="button"
+            onClick={() => setCriticalityTier('standard')}
+            className={`flex-1 py-1 px-1.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${
+              criticalityTier === 'standard'
+                ? 'bg-accent/20 text-accent font-bold shadow-xs'
+                : 'text-text-muted hover:text-foreground'
+            }`}
+          >
+            Standard
+          </button>
+          <button
+            type="button"
+            onClick={() => setCriticalityTier('optional')}
+            className={`flex-1 py-1 px-1.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+              criticalityTier === 'optional'
+                ? 'bg-blue-500/30 text-blue-300 border border-blue-500/50 shadow-xs'
+                : 'text-text-muted hover:text-foreground'
+            }`}
+            title="Optional enhancer, topping or garnish"
+          >
+            ✨ Optional
+          </button>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-1">
+        <div className="flex items-center gap-3">
           <label className="flex items-center gap-1 text-xs text-text-muted cursor-pointer">
             <input
               type="checkbox"
@@ -1102,7 +1136,7 @@ const AddIngredientForm = ({
               onChange={e => setIsSpice(e.target.checked)}
               className="rounded border-border-subtle text-red-500"
             />
-            <span>🌶️</span>
+            <span>🌶️ Spice Tag</span>
           </label>
           <label className="flex items-center gap-1 text-xs text-text-muted cursor-pointer">
             <input
@@ -1111,26 +1145,25 @@ const AddIngredientForm = ({
               onChange={e => setIsSweet(e.target.checked)}
               className="rounded border-border-subtle text-amber-400"
             />
-            <span>🍯</span>
+            <span>🍯 Sweet Tag</span>
           </label>
         </div>
-      </div>
 
-      <div className="flex justify-end gap-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-3 py-1 bg-border-subtle text-foreground text-xs rounded-lg hover:bg-border-subtle/80"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={!ingredientId || !quantity}
-          className="px-3 py-1 bg-accent text-background font-bold text-xs rounded-lg hover:bg-accent/80 disabled:opacity-40"
-        >
-          Add Ingredient
-        </button>
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-3 py-1 text-xs text-text-muted hover:text-foreground cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-3 py-1 bg-accent text-background text-xs font-bold rounded-lg hover:bg-accent/80 transition-colors cursor-pointer"
+          >
+            Add Ingredient
+          </button>
+        </div>
       </div>
     </form>
   );
@@ -1548,22 +1581,44 @@ const BlockPanel = ({
           <div className="flex flex-wrap gap-2">
             {block.ingredients.map(ing => {
               const masterName = formatIngredientName(ing.ingredientId, masterIngredients);
+              const currentTier = ing.isCritical ? 'critical' : ing.isOptional ? 'optional' : 'standard';
+
               return (
                 <div
                   key={ing.id}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-background border border-border-subtle text-xs"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-background border border-border-subtle text-xs group/ing"
                 >
                   <span className="font-bold text-accent">
                     {ing.quantity} {ing.unit}
                   </span>
-                  <span className="text-foreground">{masterName}</span>
-                  {ing.isOptional && <span className="text-[10px] text-amber-400 font-mono">(Opt)</span>}
-                  {ing.tags?.includes('spice') && <span>🌶️</span>}
-                  {ing.tags?.includes('sweet') && <span>🍯</span>}
+                  <span className="text-foreground font-medium">{masterName}</span>
+
+                  {/* 3-Tier Badge Toggle */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextTier = currentTier === 'critical' ? 'standard' : currentTier === 'standard' ? 'optional' : 'critical';
+                      dispatch(setIngredientCriticality({ phase, blockId: block.id, ingredientId: ing.id, tier: nextTier }));
+                    }}
+                    className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold transition-all cursor-pointer ${
+                      ing.isCritical
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-xs'
+                        : ing.isOptional
+                        ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                        : 'bg-card-bg text-text-muted hover:text-foreground border border-border-subtle'
+                    }`}
+                    title="Click to cycle tier (Critical -> Standard -> Optional)"
+                  >
+                    {ing.isCritical ? '⚡ Critical' : ing.isOptional ? '✨ Optional' : 'Standard'}
+                  </button>
+
+                  {ing.tags?.includes('spice') && <span title="Spice tag">🌶️</span>}
+                  {ing.tags?.includes('sweet') && <span title="Sweet tag">🍯</span>}
+
                   <button
                     type="button"
                     onClick={() => dispatch(removeBlockIngredient({ phase, blockId: block.id, ingredientId: ing.id }))}
-                    className="text-text-muted hover:text-warning ml-1"
+                    className="text-text-muted hover:text-warning ml-1 transition-colors cursor-pointer"
                     title="Remove"
                   >
                     ✕

@@ -16,6 +16,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 7** | Epics 14, 15, 16, 17 | 🍽️ **"What to Cook" — Recommendation & Pantry Match Engine** | ✅ `[COMPLETED]` (Stories 33–39) |
 | **Initiative 8** | Epics 18, 19, 20, 21 | 📓 **Cooking Try Journal, Google OAuth, Community & 3-Tier Scope** | ✅ `[COMPLETED]` (Stories 40–45) |
 | **Initiative 9** | Epics 22, 23 | 🕒 **Universal 'Anytime' Slots, Popover Alignment & Unisex Avatars** | ✅ `[COMPLETED]` (Stories 46–48) |
+| **Initiative 10** | Epics 24, 25, 26 | ⚡ **3-Tier Criticality System & Multilingual Localization Engine** | ✅ `[COMPLETED]` (Stories 49–51) |
 
 ---
 
@@ -597,6 +598,50 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 **Tasks:**
 - Task 1: Replace all stock user/comment avatars in `recipeSlice.ts`, `UserProfileModal.tsx`, `RecipeDiscussionSection.tsx`, and API mock store with modern unisex chef avatars.
 - Task 2: Update default fallback avatars to neutral chef iconography with high aesthetic polish.
+
+---
+
+# ⚡ INITIATIVE 10: 3-Tier Ingredient Criticality & Multilingual Localization Engine
+**Goal:** Deliver 3-tier ingredient criticality (Critical Core ⚡, Standard Regular, Optional Garnish ✨) across Studio, Reader & Grocery Checklist, plus dynamic English/Tamil/Hindi localization.
+
+## Epic 24: 3-Tier Ingredient Criticality System
+**Goal:** Empower authors and cooks to distinguish non-negotiable structural ingredients from optional garnishes.
+
+### Feature 24.1: Studio Criticality Authoring & State Management
+#### Story 49: 3-Tier Criticality in Recipe Noter Studio & Reader View [NECESSARY - MVP] ✅ [COMPLETED]
+**Description:** Enable 3-tier criticality selection in Noter Studio (`/editor`) and render distinct color-coded badges (`⚡ Critical` and `✨ Optional`) across Reader View (`/`) and Focus Mode (`GuidedCookingModal`).
+**Tasks:**
+- Task 1: Add `isCritical?: boolean` to `ScopedIngredient` and `EditableScopedIngredient`.
+- Task 2: Add `setIngredientCriticality` action to `editorSlice.ts` supporting `'critical' | 'standard' | 'optional'` tiers.
+- Task 3: Update `AddIngredientForm` and block ingredient chips in `/editor` with 3-tier selector pills and instant tier cycling.
+- Task 4: Render `⚡ Critical` and `✨ Optional` badges across Reader ingredient accordions and Focus Mode step ingredient cards.
+
+---
+
+## Epic 25: Critical vs. Optional Smart Grocery Planning
+**Goal:** Supercharge grocery checklist planning with criticality filtering and tagged exports.
+
+### Feature 25.1: Filterable Grocery Checklist & Tagged Exports
+#### Story 50: Grocery Checklist Criticality Filtering & Tagged WhatsApp Copy [NECESSARY - MVP] ✅ [COMPLETED]
+**Description:** Allow cooks to filter shopping lists by `All Items`, `⚡ Critical Core`, and `✨ Optional Garnishes`, and export tagged checklists.
+**Tasks:**
+- Task 1: Add filter tabs (`All Items`, `⚡ Critical Core`, `✨ Optional`) to `GroceryListModal.tsx`.
+- Task 2: Display `⚡ Critical` and `✨ Optional` pill badges on each aisle item.
+- Task 3: Format WhatsApp/Clipboard copy with `[Critical]` and `[Optional]` tags.
+
+---
+
+## Epic 26: Reactive Multilingual Localization Engine
+**Goal:** Provide instant, seamless UI and ingredient localization across English, Tamil (தமிழ்), and Hindi (हिंदी).
+
+### Feature 26.1: Dual-Script Ingredient Names & UI Translation Dictionary
+#### Story 51: Dynamic English, Tamil & Hindi Localization Engine [NECESSARY - MVP] ✅ [COMPLETED]
+**Description:** Localize ingredient names (with primary native script + secondary English in brackets) and UI headings/buttons in real-time when switching languages.
+**Tasks:**
+- Task 1: Create `src/lib/translations.ts` with comprehensive UI dictionary for EN, தமிழ், and हिंदी.
+- Task 2: Build `formatLocalizedIngredient` helper with dual-script fallback formatting (e.g. `துவரம் பருப்பு (Toor Dal)` / `तूर दाल (Toor Dal)`).
+- Task 3: Enrich mock recipes with rich Tamil and Hindi translations.
+- Task 4: Bind active language state to Reader View dashboard, phase headings, time metrics, and buttons.
 
 
 

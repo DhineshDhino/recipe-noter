@@ -114,6 +114,7 @@ export const exportEditorToRecipe = (editorState: EditorState): Recipe => {
       quantity: Number(i.quantity) || 0,
       unit: i.unit || 'g',
       isOptional: Boolean(i.isOptional),
+      isCritical: Boolean(i.isCritical),
       tags: i.tags || [],
     }));
 

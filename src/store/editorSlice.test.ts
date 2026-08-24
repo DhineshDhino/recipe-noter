@@ -24,6 +24,7 @@ import editorReducer, {
   addBlockIngredient,
   updateBlockIngredient,
   removeBlockIngredient,
+  setIngredientCriticality,
   updateBlockName,
   deleteBlock,
   moveBlockUp as moveBlockUpAction,
@@ -1082,6 +1083,53 @@ describe('editorSlice', () => {
 
       result = editorReducer(result, setDifficulty('advanced'));
       expect(result.difficulty).toBe('advanced');
+    });
+  });
+
+  describe('Initiative 10: 3-Tier Ingredient Criticality', () => {
+    it('sets critical, optional, and standard tiers accurately via setIngredientCriticality', () => {
+      const blockId = state.prepBlocks[0].id;
+      let result = editorReducer(
+        state,
+        addBlockIngredient({
+          phase: 'prep',
+          blockId,
+          ingredient: {
+            ingredientId: 'ing_toor_dal',
+            quantity: 100,
+            unit: 'g',
+            isOptional: false,
+            isCritical: false,
+            tags: [],
+          },
+        })
+      );
+
+      const ingredientId = result.prepBlocks[0].ingredients[0].id;
+
+      // Set to Critical
+      result = editorReducer(
+        result,
+        setIngredientCriticality({ phase: 'prep', blockId, ingredientId, tier: 'critical' })
+      );
+      expect(result.prepBlocks[0].ingredients[0].isCritical).toBe(true);
+      expect(result.prepBlocks[0].ingredients[0].isOptional).toBe(false);
+
+      // Set to Optional
+      result = editorReducer(
+        result,
+        setIngredientCriticality({ phase: 'prep', blockId, ingredientId, tier: 'optional' })
+      );
+      expect(result.prepBlocks[0].ingredients[0].isCritical).toBe(false);
+      expect(result.prepBlocks[0].ingredients[0].isOptional).toBe(true);
+
+      // Set to Standard
+      result = editorReducer(
+        result,
+        setIngredientCriticality({ phase: 'prep', blockId, ingredientId, tier: 'standard' })
+      );
+      expect(result.prepBlocks[0].ingredients[0].isCritical).toBe(false);
+      expect(result.prepBlocks[0].ingredients[0].isOptional).toBe(false);
     });
   });
 });

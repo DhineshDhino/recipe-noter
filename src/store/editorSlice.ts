@@ -23,6 +23,7 @@ export interface EditableScopedIngredient {
   quantity: number;
   unit: string;
   isOptional: boolean;
+  isCritical?: boolean;
   tags: ("spice" | "sweet")[];
 }
 
@@ -585,6 +586,35 @@ export const editorSlice = createSlice({
       }
     },
 
+    /** Set 3-tier criticality for a block ingredient (Critical Core / Standard / Optional) */
+    setIngredientCriticality: (
+      state,
+      action: PayloadAction<{
+        phase: PhaseKey;
+        blockId: string;
+        ingredientId: string;
+        tier: 'critical' | 'standard' | 'optional';
+      }>
+    ) => {
+      const { phase, blockId, ingredientId, tier } = action.payload;
+      const block = getPhaseBlocks(state, phase).find(b => b.id === blockId);
+      if (block) {
+        const ingredient = block.ingredients.find(i => i.id === ingredientId);
+        if (ingredient) {
+          if (tier === 'critical') {
+            ingredient.isCritical = true;
+            ingredient.isOptional = false;
+          } else if (tier === 'optional') {
+            ingredient.isCritical = false;
+            ingredient.isOptional = true;
+          } else {
+            ingredient.isCritical = false;
+            ingredient.isOptional = false;
+          }
+        }
+      }
+    },
+
     /** Update block name */
     updateBlockName: (
       state,
@@ -771,6 +801,7 @@ export const editorSlice = createSlice({
             quantity: i.quantity,
             unit: i.unit,
             isOptional: Boolean(i.isOptional),
+            isCritical: Boolean(i.isCritical),
             tags: i.tags || [],
           })),
           steps: (b.steps || []).map(s => ({
@@ -845,6 +876,7 @@ export const {
   addBlockIngredient,
   updateBlockIngredient,
   removeBlockIngredient,
+  setIngredientCriticality,
   updateBlockName,
   deleteBlock,
   moveBlockUp,

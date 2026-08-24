@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { Recipe, ScopedIngredient } from '@/lib/types';
 import { calculateScaledQuantity } from '@/lib/utils';
-import { getLocalizedIngredientName, SupportedLanguage } from '@/lib/conversions';
+import { formatLocalizedIngredient, SupportedLanguage } from '@/lib/conversions';
 
 interface GroceryListModalProps {
   isOpen: boolean;
@@ -15,6 +15,8 @@ interface GroceryListModalProps {
   sweetMultiplier?: number;
   language?: SupportedLanguage;
 }
+
+type CriticalityFilter = 'all' | 'critical' | 'optional';
 
 export default function GroceryListModal({
   isOpen,
@@ -28,11 +30,22 @@ export default function GroceryListModal({
 }: GroceryListModalProps) {
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
+  const [filterTier, setFilterTier] = useState<CriticalityFilter>('all');
 
   const aggregatedIngredients = useMemo(() => {
     if (!recipe) return [];
 
-    const map: Record<string, { ingredientId: string; totalQty: number; unit: string; tags: string[] }> = {};
+    const map: Record<
+      string,
+      {
+        ingredientId: string;
+        totalQty: number;
+        unit: string;
+        tags: string[];
+        isCritical: boolean;
+        isOptional: boolean;
+      }
+    > = {};
 
     const processIngredients = (ingredients: ScopedIngredient[]) => {
       ingredients.forEach(i => {
@@ -49,7 +62,12 @@ export default function GroceryListModal({
             totalQty: 0,
             unit: i.unit,
             tags: i.tags || [],
+            isCritical: Boolean(i.isCritical),
+            isOptional: Boolean(i.isOptional),
           };
+        } else {
+          if (i.isCritical) map[key].isCritical = true;
+          if (!i.isOptional) map[key].isOptional = false;
         }
         map[key].totalQty += scaled;
       });
@@ -60,18 +78,16 @@ export default function GroceryListModal({
     (recipe.cookBlocks || []).forEach(b => processIngredients(b.ingredients || []));
 
     return Object.values(map).map(item => {
-      const reg = recipe.masterIngredients?.find(m => m.id === item.ingredientId);
-      const name = getLocalizedIngredientName(reg, language);
-      const tamilName = reg?.translations?.find(t => t.language.toLowerCase() === 'tamil')?.name;
+      const loc = formatLocalizedIngredient(item.ingredientId, language, recipe.masterIngredients);
 
       // Categorize
       const id = item.ingredientId.toLowerCase();
       let category = '🌾 Grains & Pulses';
-      if (id.includes('rice') || id.includes('dal') || id.includes('flour') || id.includes('grain')) {
+      if (id.includes('rice') || id.includes('dal') || id.includes('flour') || id.includes('grain') || id.includes('rava')) {
         category = '🌾 Grains & Lentils';
-      } else if (id.includes('chilli') || id.includes('pepper') || id.includes('turmeric') || id.includes('mustard') || id.includes('cumin') || id.includes('masala') || id.includes('salt') || id.includes('spice')) {
+      } else if (id.includes('chilli') || id.includes('pepper') || id.includes('turmeric') || id.includes('mustard') || id.includes('cumin') || id.includes('masala') || id.includes('salt') || id.includes('spice') || id.includes('asafoetida') || id.includes('chicory')) {
         category = '🌶️ Spices & Seasonings';
-      } else if (id.includes('ghee') || id.includes('oil') || id.includes('milk') || id.includes('paneer') || id.includes('butter')) {
+      } else if (id.includes('ghee') || id.includes('oil') || id.includes('milk') || id.includes('paneer') || id.includes('butter') || id.includes('cream')) {
         category = '🥛 Dairy & Oils';
       } else if (id.includes('onion') || id.includes('tomato') || id.includes('garlic') || id.includes('ginger') || id.includes('leaves') || id.includes('coriander') || id.includes('coconut')) {
         category = '🧅 Fresh Produce & Herbs';
@@ -81,23 +97,34 @@ export default function GroceryListModal({
 
       return {
         ...item,
-        name,
-        tamilName,
+        name: loc.primary,
+        subtitle: loc.secondary,
         category,
         totalQty: Math.round(item.totalQty * 100) / 100,
       };
     });
   }, [recipe, targetYield, baseYield, spiceMultiplier, sweetMultiplier, language]);
 
+  // Filter by criticality tab
+  const filteredIngredients = useMemo(() => {
+    if (filterTier === 'critical') {
+      return aggregatedIngredients.filter(i => i.isCritical);
+    }
+    if (filterTier === 'optional') {
+      return aggregatedIngredients.filter(i => i.isOptional);
+    }
+    return aggregatedIngredients;
+  }, [aggregatedIngredients, filterTier]);
+
   // Group by category
   const categorized = useMemo(() => {
-    const groups: Record<string, typeof aggregatedIngredients> = {};
-    aggregatedIngredients.forEach(item => {
+    const groups: Record<string, typeof filteredIngredients> = {};
+    filteredIngredients.forEach(item => {
       if (!groups[item.category]) groups[item.category] = [];
       groups[item.category].push(item);
     });
     return groups;
-  }, [aggregatedIngredients]);
+  }, [filteredIngredients]);
 
   if (!isOpen || !recipe) return null;
 
@@ -112,8 +139,10 @@ export default function GroceryListModal({
     Object.entries(categorized).forEach(([cat, items]) => {
       text += `--- ${cat} ---\n`;
       items.forEach(i => {
-        const check = checkedItems[`${i.ingredientId}_${i.unit}`] ? ' [x]' : ' [ ]';
-        text += `${check} ${i.totalQty} ${i.unit} ${i.name}${i.tamilName ? ` (${i.tamilName})` : ''}\n`;
+        const check = checkedItems[`${i.ingredientId}_${i.unit}`] ? '[x]' : '[ ]';
+        const tag = i.isCritical ? '[Critical] ' : i.isOptional ? '[Optional] ' : '';
+        const sub = i.subtitle ? ` (${i.subtitle})` : '';
+        text += `${check} ${tag}${i.totalQty} ${i.unit} ${i.name}${sub}\n`;
       });
       text += '\n';
     });
@@ -129,6 +158,8 @@ export default function GroceryListModal({
 
   const completedCount = Object.values(checkedItems).filter(Boolean).length;
   const totalCount = aggregatedIngredients.length;
+  const criticalCount = aggregatedIngredients.filter(i => i.isCritical).length;
+  const optionalCount = aggregatedIngredients.filter(i => i.isOptional).length;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-[fadeIn_150ms_ease-out]">
@@ -152,13 +183,55 @@ export default function GroceryListModal({
           </button>
         </div>
 
-        {/* Action Toolbar */}
-        <div className="p-4 border-b border-border-subtle bg-background/50 flex flex-wrap items-center justify-between gap-3">
+        {/* Filter Segment Tabs */}
+        <div className="px-6 pt-3 pb-2 bg-background/70 border-b border-border-subtle flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 bg-card-bg p-1 rounded-xl border border-border-subtle">
+            <button
+              type="button"
+              onClick={() => setFilterTier('all')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                filterTier === 'all'
+                  ? 'bg-accent text-background shadow-xs'
+                  : 'text-text-muted hover:text-foreground'
+              }`}
+            >
+              All Items ({totalCount})
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterTier('critical')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                filterTier === 'critical'
+                  ? 'bg-amber-500/30 text-amber-300 border border-amber-500/50 shadow-xs'
+                  : 'text-text-muted hover:text-foreground'
+              }`}
+            >
+              <span>⚡ Critical Core</span>
+              <span className="text-[10px] opacity-80">({criticalCount})</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilterTier('optional')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                filterTier === 'optional'
+                  ? 'bg-blue-500/30 text-blue-300 border border-blue-500/50 shadow-xs'
+                  : 'text-text-muted hover:text-foreground'
+              }`}
+            >
+              <span>✨ Optional</span>
+              <span className="text-[10px] opacity-80">({optionalCount})</span>
+            </button>
+          </div>
+
           <div className="text-xs text-text-muted">
-            Progress:{' '}
-            <strong className="text-foreground">
-              {completedCount} of {totalCount} items bought
-            </strong>
+            Bought: <strong className="text-foreground">{completedCount} of {totalCount}</strong>
+          </div>
+        </div>
+
+        {/* Action Toolbar */}
+        <div className="px-6 py-2.5 border-b border-border-subtle bg-background/50 flex flex-wrap items-center justify-between gap-3">
+          <div className="text-[11px] text-text-muted">
+            Showing <span className="text-accent font-semibold">{filteredIngredients.length}</span> items in this view
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -182,55 +255,73 @@ export default function GroceryListModal({
 
         {/* Items List Grouped by Aisle */}
         <div className="p-6 overflow-y-auto space-y-6">
-          {Object.entries(categorized).map(([categoryName, items]) => (
-            <div key={categoryName} className="space-y-2.5">
-              <h3 className="text-xs font-bold text-accent uppercase tracking-wider border-b border-border-subtle/60 pb-1 flex items-center gap-2">
-                <span>{categoryName}</span>
-                <span className="text-[10px] text-text-muted font-normal">({items.length} items)</span>
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {items.map(item => {
-                  const key = `${item.ingredientId}_${item.unit}`;
-                  const isChecked = Boolean(checkedItems[key]);
-
-                  return (
-                    <div
-                      key={key}
-                      onClick={() => toggleCheck(key)}
-                      className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
-                        isChecked
-                          ? 'bg-emerald-500/10 border-emerald-500/30 text-text-muted opacity-60'
-                          : 'bg-card-bg border-border-subtle hover:border-accent/40 text-foreground'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => {}} // handled by parent div
-                          className="w-4 h-4 rounded accent-emerald-500 cursor-pointer"
-                        />
-                        <div className="truncate">
-                          <span className={`text-xs font-medium block truncate ${isChecked ? 'line-through' : ''}`}>
-                            {item.name}
-                          </span>
-                          {item.tamilName && (
-                            <span className="text-[10px] text-text-muted block truncate">
-                              {item.tamilName}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <span className="text-xs font-mono font-bold text-accent whitespace-nowrap ml-2">
-                        {item.totalQty} {item.unit}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+          {Object.entries(categorized).length === 0 ? (
+            <div className="py-12 text-center text-text-muted text-xs">
+              No items matching the selected criticality filter.
             </div>
-          ))}
+          ) : (
+            Object.entries(categorized).map(([categoryName, items]) => (
+              <div key={categoryName} className="space-y-2.5">
+                <h3 className="text-xs font-bold text-accent uppercase tracking-wider border-b border-border-subtle/60 pb-1 flex items-center gap-2">
+                  <span>{categoryName}</span>
+                  <span className="text-[10px] text-text-muted font-normal">({items.length} items)</span>
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {items.map(item => {
+                    const key = `${item.ingredientId}_${item.unit}`;
+                    const isChecked = Boolean(checkedItems[key]);
+
+                    return (
+                      <div
+                        key={key}
+                        onClick={() => toggleCheck(key)}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
+                          isChecked
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-text-muted opacity-60'
+                            : 'bg-card-bg border-border-subtle hover:border-accent/40 text-foreground'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={() => {}} // handled by parent div
+                            className="w-4 h-4 rounded accent-emerald-500 cursor-pointer"
+                          />
+                          <div className="truncate">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className={`text-xs font-medium truncate ${isChecked ? 'line-through' : ''}`}>
+                                {item.name}
+                              </span>
+                              {item.isCritical && (
+                                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                  ⚡ Critical
+                                </span>
+                              )}
+                              {item.isOptional && (
+                                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">
+                                  ✨ Optional
+                                </span>
+                              )}
+                            </div>
+                            {item.subtitle && (
+                              <span className="text-[10px] text-text-muted block truncate">
+                                {item.subtitle}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-xs font-mono font-bold text-accent whitespace-nowrap ml-2">
+                          {item.totalQty} {item.unit}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

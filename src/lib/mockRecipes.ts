@@ -16,18 +16,18 @@ export const mockPaneerButterMasalaRecipe: Recipe = {
     },
   ],
   masterIngredients: [
-    { id: 'ing_paneer', defaultName: 'Paneer (Cottage Cheese)', translations: [{ language: 'Tamil', name: 'Paneer' }] },
-    { id: 'ing_butter', defaultName: 'Salted Butter', translations: [{ language: 'Tamil', name: 'Vennai' }] },
-    { id: 'ing_cream', defaultName: 'Fresh Cream', translations: [{ language: 'Tamil', name: 'Paal Aada' }] },
-    { id: 'ing_tomatoes', defaultName: 'Ripe Red Tomatoes', translations: [{ language: 'Tamil', name: 'Thakkali' }] },
-    { id: 'ing_onions', defaultName: 'Red Onions', translations: [{ language: 'Tamil', name: 'Vengayam' }] },
-    { id: 'ing_cashews', defaultName: 'Cashew Nuts', translations: [{ language: 'Tamil', name: 'Mundhiri' }] },
-    { id: 'ing_ginger_garlic_paste', defaultName: 'Ginger Garlic Paste', translations: [{ language: 'Tamil', name: 'Inji Poondu Paste' }] },
-    { id: 'ing_kashmiri_chilli_powder', defaultName: 'Kashmiri Red Chilli Powder', translations: [{ language: 'Tamil', name: 'Kashmiri Molaga Thool' }] },
-    { id: 'ing_garam_masala', defaultName: 'Garam Masala', translations: [{ language: 'Tamil', name: 'Garam Masala' }] },
-    { id: 'ing_kasuri_methi', defaultName: 'Kasuri Methi (Dried Fenugreek)', translations: [{ language: 'Tamil', name: 'Vendhaya Keerai' }] },
-    { id: 'ing_sugar', defaultName: 'Sugar', translations: [{ language: 'Tamil', name: 'Sarkarai' }] },
-    { id: 'ing_salt', defaultName: 'Salt', translations: [{ language: 'Tamil', name: 'Uppu' }] },
+    { id: 'ing_paneer', defaultName: 'Fresh Malai Paneer', translations: [{ language: 'Tamil', name: 'பனீர்' }, { language: 'Hindi', name: 'पनीर' }] },
+    { id: 'ing_butter', defaultName: 'Salted Butter', translations: [{ language: 'Tamil', name: 'வெண்ணெய்' }, { language: 'Hindi', name: 'मक्खन' }] },
+    { id: 'ing_cream', defaultName: 'Fresh Cream', translations: [{ language: 'Tamil', name: 'பிரெஷ் கிரீம்' }, { language: 'Hindi', name: 'ताजी मलाई' }] },
+    { id: 'ing_tomatoes', defaultName: 'Ripe Red Tomatoes', translations: [{ language: 'Tamil', name: 'தக்காளி' }, { language: 'Hindi', name: 'टमाटर' }] },
+    { id: 'ing_onions', defaultName: 'Red Onions', translations: [{ language: 'Tamil', name: 'வெங்காயம்' }, { language: 'Hindi', name: 'प्याज' }] },
+    { id: 'ing_cashews', defaultName: 'Cashew Nuts', translations: [{ language: 'Tamil', name: 'முந்திரி' }, { language: 'Hindi', name: 'काजू' }] },
+    { id: 'ing_ginger_garlic_paste', defaultName: 'Ginger Garlic Paste', translations: [{ language: 'Tamil', name: 'இஞ்சி பூண்டு விழுது' }, { language: 'Hindi', name: 'अदरक लहसुन पेस्ट' }] },
+    { id: 'ing_kashmiri_chilli_powder', defaultName: 'Kashmiri Red Chilli Powder', translations: [{ language: 'Tamil', name: 'காஷ்மீரி மிளகாய்த்தூள்' }, { language: 'Hindi', name: 'कश्मीरी लाल मिर्च पाउडर' }] },
+    { id: 'ing_garam_masala', defaultName: 'Garam Masala', translations: [{ language: 'Tamil', name: 'கரம் மசாலா' }, { language: 'Hindi', name: 'गरम मसाला' }] },
+    { id: 'ing_kasuri_methi', defaultName: 'Kasuri Methi (Dried Fenugreek)', translations: [{ language: 'Tamil', name: 'கசூரி மேத்தி' }, { language: 'Hindi', name: 'कसूरी मेथी' }] },
+    { id: 'ing_sugar', defaultName: 'Sugar', translations: [{ language: 'Tamil', name: 'சர்க்கரை' }, { language: 'Hindi', name: 'चीनी' }] },
+    { id: 'ing_salt', defaultName: 'Salt', translations: [{ language: 'Tamil', name: 'உப்பு' }, { language: 'Hindi', name: 'नमक' }] },
   ],
   requiredEquipment: [
     'Heavy Bottom Pan / Kadai',
@@ -74,7 +74,7 @@ export const mockPaneerButterMasalaRecipe: Recipe = {
       name: 'Paneer Prep',
       totalDurationInMinutes: 5,
       ingredients: [
-        { ingredientId: 'ing_paneer', quantity: 250, unit: 'g', isOptional: false, tags: [] },
+        { ingredientId: 'ing_paneer', quantity: 250, unit: 'g', isOptional: false, isCritical: true, tags: [] },
       ],
       steps: [
         {
@@ -104,13 +104,13 @@ export const mockPaneerButterMasalaRecipe: Recipe = {
       name: 'Gravy Velvet Simmer',
       totalDurationInMinutes: 15,
       ingredients: [
-        { ingredientId: 'ing_butter', quantity: 40, unit: 'g', isOptional: false, tags: [] },
+        { ingredientId: 'ing_butter', quantity: 40, unit: 'g', isOptional: false, isCritical: true, tags: [] },
         { ingredientId: 'ing_ginger_garlic_paste', quantity: 15, unit: 'g', isOptional: false, tags: ['spice'] },
         { ingredientId: 'ing_kashmiri_chilli_powder', quantity: 8, unit: 'g', isOptional: false, tags: ['spice'] },
         { ingredientId: 'ing_garam_masala', quantity: 4, unit: 'g', isOptional: false, tags: ['spice'] },
         { ingredientId: 'ing_kasuri_methi', quantity: 3, unit: 'g', isOptional: false, tags: [] },
-        { ingredientId: 'ing_sugar', quantity: 5, unit: 'g', isOptional: false, tags: ['sweet'] },
-        { ingredientId: 'ing_cream', quantity: 30, unit: 'ml', isOptional: false, tags: ['sweet'] },
+        { ingredientId: 'ing_sugar', quantity: 5, unit: 'g', isOptional: true, tags: ['sweet'] },
+        { ingredientId: 'ing_cream', quantity: 30, unit: 'ml', isOptional: true, tags: ['sweet'] },
         { ingredientId: 'ing_salt', quantity: 6, unit: 'g', isOptional: false, tags: [] },
       ],
       steps: [
@@ -163,11 +163,11 @@ export const mockFilterCoffeeRecipe: Recipe = {
     },
   ],
   masterIngredients: [
-    { id: 'ing_coffee_powder', defaultName: 'Plantation A Coffee Powder', translations: [{ language: 'Tamil', name: 'Kaapi Thool' }] },
-    { id: 'ing_chicory', defaultName: 'Chicory Powder', translations: [{ language: 'Tamil', name: 'Chicory' }] },
-    { id: 'ing_milk', defaultName: 'Full Fat Fresh Milk (A2/Boiled)', translations: [{ language: 'Tamil', name: 'Pasum Paal' }] },
-    { id: 'ing_water', defaultName: 'Purified Water', translations: [{ language: 'Tamil', name: 'Thanni' }] },
-    { id: 'ing_sugar', defaultName: 'Raw Cane Sugar / Brown Sugar', translations: [{ language: 'Tamil', name: 'Naatu Sarkarai' }] },
+    { id: 'ing_coffee_powder', defaultName: 'Plantation A Coffee Powder', translations: [{ language: 'Tamil', name: 'காபி தூள்' }, { language: 'Hindi', name: 'कॉफी पाउडर' }] },
+    { id: 'ing_chicory', defaultName: 'Chicory Powder', translations: [{ language: 'Tamil', name: 'சிக்கரி' }, { language: 'Hindi', name: 'चिकोरी' }] },
+    { id: 'ing_milk', defaultName: 'Full Fat Fresh Milk', translations: [{ language: 'Tamil', name: 'பசும்பால்' }, { language: 'Hindi', name: 'ताजा दूध' }] },
+    { id: 'ing_water', defaultName: 'Purified Water', translations: [{ language: 'Tamil', name: 'தண்ணீர்' }, { language: 'Hindi', name: 'पानी' }] },
+    { id: 'ing_sugar', defaultName: 'Raw Cane Sugar / Sugar', translations: [{ language: 'Tamil', name: 'நாட்டுச் சர்க்கரை' }, { language: 'Hindi', name: 'चीनी' }] },
   ],
   requiredEquipment: [
     'Traditional Brass / Stainless Steel Coffee Filter',
@@ -203,8 +203,8 @@ export const mockFilterCoffeeRecipe: Recipe = {
       name: 'Filter Assembly & Powder Bedding',
       totalDurationInMinutes: 3,
       ingredients: [
-        { ingredientId: 'ing_coffee_powder', quantity: 20, unit: 'g', isOptional: false, tags: [] },
-        { ingredientId: 'ing_chicory', quantity: 5, unit: 'g', isOptional: false, tags: [] },
+        { ingredientId: 'ing_coffee_powder', quantity: 20, unit: 'g', isOptional: false, isCritical: true, tags: [] },
+        { ingredientId: 'ing_chicory', quantity: 5, unit: 'g', isOptional: false, isCritical: false, tags: [] },
       ],
       steps: [
         {
@@ -237,8 +237,8 @@ export const mockFilterCoffeeRecipe: Recipe = {
       name: 'Milk Frothing & Davarah Metering',
       totalDurationInMinutes: 4,
       ingredients: [
-        { ingredientId: 'ing_milk', quantity: 160, unit: 'ml', isOptional: false, tags: [] },
-        { ingredientId: 'ing_sugar', quantity: 10, unit: 'g', isOptional: false, tags: ['sweet'] },
+        { ingredientId: 'ing_milk', quantity: 160, unit: 'ml', isOptional: false, isCritical: true, tags: [] },
+        { ingredientId: 'ing_sugar', quantity: 10, unit: 'g', isOptional: true, tags: ['sweet'] },
       ],
       steps: [
         {
@@ -279,15 +279,15 @@ export const mockRavaUpmaRecipe: Recipe = {
     },
   ],
   masterIngredients: [
-    { id: 'ing_rava', defaultName: 'Semolina / Roasted Rava', translations: [{ language: 'Tamil', name: 'Rava / Sooji' }] },
-    { id: 'ing_water', defaultName: 'Water', translations: [{ language: 'Tamil', name: 'Thanneer' }] },
-    { id: 'ing_onions', defaultName: 'Onions', translations: [{ language: 'Tamil', name: 'Vengayam' }] },
-    { id: 'ing_green_chilli', defaultName: 'Green Chilli', translations: [{ language: 'Tamil', name: 'Pacha Molaga' }] },
-    { id: 'ing_ginger', defaultName: 'Ginger', translations: [{ language: 'Tamil', name: 'Inji' }] },
-    { id: 'ing_mustard_seeds', defaultName: 'Mustard Seeds', translations: [{ language: 'Tamil', name: 'Kadugu' }] },
-    { id: 'ing_curry_leaves', defaultName: 'Curry Leaves', translations: [{ language: 'Tamil', name: 'Karuvepillai' }] },
-    { id: 'ing_ghee', defaultName: 'Ghee', translations: [{ language: 'Tamil', name: 'Nei' }] },
-    { id: 'ing_salt', defaultName: 'Salt', translations: [{ language: 'Tamil', name: 'Uppu' }] },
+    { id: 'ing_rava', defaultName: 'Semolina / Roasted Rava', translations: [{ language: 'Tamil', name: 'ரவை' }, { language: 'Hindi', name: 'सूजी / रवा' }] },
+    { id: 'ing_water', defaultName: 'Water', translations: [{ language: 'Tamil', name: 'தண்ணீர்' }, { language: 'Hindi', name: 'पानी' }] },
+    { id: 'ing_onions', defaultName: 'Onions', translations: [{ language: 'Tamil', name: 'வெங்காயம்' }, { language: 'Hindi', name: 'प्याज' }] },
+    { id: 'ing_green_chilli', defaultName: 'Green Chilli', translations: [{ language: 'Tamil', name: 'பச்சை மிளகாய்' }, { language: 'Hindi', name: 'हरी मिर्च' }] },
+    { id: 'ing_ginger', defaultName: 'Ginger', translations: [{ language: 'Tamil', name: 'இஞ்சி' }, { language: 'Hindi', name: 'अदरक' }] },
+    { id: 'ing_mustard_seeds', defaultName: 'Mustard Seeds', translations: [{ language: 'Tamil', name: 'கடுகு' }, { language: 'Hindi', name: 'राई / सरसों' }] },
+    { id: 'ing_curry_leaves', defaultName: 'Curry Leaves', translations: [{ language: 'Tamil', name: 'கருவேப்பிலை' }, { language: 'Hindi', name: 'कढ़ी पत्ता' }] },
+    { id: 'ing_ghee', defaultName: 'Pure Desi Ghee', translations: [{ language: 'Tamil', name: 'நெய்' }, { language: 'Hindi', name: 'शुद्ध घी' }] },
+    { id: 'ing_salt', defaultName: 'Salt', translations: [{ language: 'Tamil', name: 'உப்பு' }, { language: 'Hindi', name: 'नमक' }] },
   ],
   requiredEquipment: ['Kadai / Heavy Pan', 'Spatula', 'Measuring Cup'],
   pairings: ['Coconut Chutney', 'Sugar', 'Filter Coffee'],
@@ -331,7 +331,7 @@ export const mockRavaUpmaRecipe: Recipe = {
         { ingredientId: 'ing_curry_leaves', quantity: 5, unit: 'count', isOptional: false, tags: [] },
         { ingredientId: 'ing_water', quantity: 400, unit: 'ml', isOptional: false, tags: [] },
         { ingredientId: 'ing_salt', quantity: 6, unit: 'g', isOptional: false, tags: [] },
-        { ingredientId: 'ing_rava', quantity: 160, unit: 'g', isOptional: false, tags: [] },
+        { ingredientId: 'ing_rava', quantity: 160, unit: 'g', isOptional: false, isCritical: true, tags: [] },
       ],
       steps: [
         {

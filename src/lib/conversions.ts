@@ -137,3 +137,39 @@ export const getLocalizedIngredientName = (
 
   return found?.name || ingredient.defaultName;
 };
+
+/**
+ * Returns formatted localized ingredient label with primary native name + subtle English subtitle if non-English.
+ * e.g., "துவரம் பருப்பு (Toor Dal)" or "तूर दाल (Toor Dal)"
+ */
+export const formatLocalizedIngredient = (
+  ingredientId: string,
+  lang: SupportedLanguage = 'en',
+  masterIngredients?: IngredientRegistry[]
+): { primary: string; secondary?: string; fullText: string } => {
+  const master = masterIngredients?.find(m => m.id === ingredientId);
+  const fallbackEnglish = ingredientId.replace(/^ing_/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+  if (!master) {
+    return { primary: fallbackEnglish, fullText: fallbackEnglish };
+  }
+
+  if (lang === 'en') {
+    return { primary: master.defaultName, fullText: master.defaultName };
+  }
+
+  const targetLangName = lang === 'ta' ? 'Tamil' : 'Hindi';
+  const translation = master.translations?.find(
+    t => t.language.toLowerCase() === targetLangName.toLowerCase()
+  );
+
+  if (translation && translation.name && translation.name !== master.defaultName) {
+    return {
+      primary: translation.name,
+      secondary: master.defaultName,
+      fullText: `${translation.name} (${master.defaultName})`,
+    };
+  }
+
+  return { primary: master.defaultName, fullText: master.defaultName };
+};

@@ -1,4 +1,4 @@
-import { convertUnitQuantity, getLocalizedIngredientName, ingredientDensities } from './conversions';
+import { convertUnitQuantity, getLocalizedIngredientName, formatLocalizedIngredient, ingredientDensities } from './conversions';
 import { IngredientRegistry } from './types';
 
 const mockIngredient: IngredientRegistry = {
@@ -60,6 +60,17 @@ describe('Epic 6: Conversions & Translations Engine', () => {
         translations: [],
       };
       expect(getLocalizedIngredientName(ingWithoutHindi, 'hi')).toBe('Custom Herb');
+    });
+
+    it('formats dual-script localized ingredient names (Tamil + English subtitle)', () => {
+      const formattedTa = formatLocalizedIngredient('ing_toor_dal', 'ta', [mockIngredient]);
+      expect(formattedTa.primary).toBe('துவரம் பருப்பு');
+      expect(formattedTa.secondary).toBe('Toor Dal');
+      expect(formattedTa.fullText).toBe('துவரம் பருப்பு (Toor Dal)');
+
+      const formattedEn = formatLocalizedIngredient('ing_toor_dal', 'en', [mockIngredient]);
+      expect(formattedEn.primary).toBe('Toor Dal');
+      expect(formattedEn.secondary).toBeUndefined();
     });
   });
 });

@@ -7,6 +7,7 @@ import { RootState } from '@/store/store';
 import { toggleStepCompleted } from '@/store/recipeSlice';
 import { formatTime, calculateScaledQuantity, calculateScaledDuration, formatIngredientName, playTimerChime } from '@/lib/utils';
 import { useVoiceNavigation } from '@/lib/useVoiceNavigation';
+import { formatLocalizedIngredient, SupportedLanguage } from '@/lib/conversions';
 
 interface GuidedCookingModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface GuidedCookingModalProps {
   baseYield: number;
   spiceMultiplier: number;
   sweetMultiplier: number;
+  language?: SupportedLanguage;
 }
 
 interface FlattenedStep {
@@ -37,6 +39,7 @@ export default function GuidedCookingModal({
   baseYield,
   spiceMultiplier,
   sweetMultiplier,
+  language = 'en',
 }: GuidedCookingModalProps) {
   const dispatch = useDispatch();
   const completedStepIds = useSelector((state: RootState) => state.recipe.completedStepIds);
@@ -417,7 +420,7 @@ export default function GuidedCookingModal({
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                     {currentStep.ingredients.map(ing => {
-                      const masterName = formatIngredientName(ing.ingredientId, recipe.masterIngredients);
+                      const loc = formatLocalizedIngredient(ing.ingredientId, language, recipe.masterIngredients);
                       let qty = calculateScaledQuantity(ing.quantity, baseYield, targetYield, ing.isOptional);
                       if (ing.tags?.includes('spice') && spiceMultiplier !== 1) qty *= spiceMultiplier;
                       if (ing.tags?.includes('sweet') && sweetMultiplier !== 1) qty *= sweetMultiplier;
@@ -428,8 +431,27 @@ export default function GuidedCookingModal({
                           key={ing.ingredientId}
                           className="flex items-center justify-between p-2.5 rounded-xl bg-background/80 border border-border-subtle text-xs"
                         >
-                          <span className="font-semibold text-foreground">{masterName}</span>
-                          <span className="font-mono font-bold text-accent">
+                          <div className="min-w-0 pr-2">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-semibold text-foreground truncate">{loc.primary}</span>
+                              {ing.isCritical && (
+                                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                                  ⚡ Critical
+                                </span>
+                              )}
+                              {ing.isOptional && (
+                                <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/40">
+                                  ✨ Optional
+                                </span>
+                              )}
+                            </div>
+                            {loc.secondary && (
+                              <span className="text-[10px] text-text-muted block truncate">
+                                {loc.secondary}
+                              </span>
+                            )}
+                          </div>
+                          <span className="font-mono font-bold text-accent whitespace-nowrap">
                             {displayQty} {ing.unit}
                           </span>
                         </div>
