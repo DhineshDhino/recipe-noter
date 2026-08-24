@@ -245,6 +245,7 @@ const PhaseIngredientsAccordion = ({
   onOverride,
   language = 'en',
   masterIngredients,
+  onLanguageChange,
 }: {
   ingredients: any[];
   title?: string;
@@ -257,6 +258,7 @@ const PhaseIngredientsAccordion = ({
   onOverride?: (ingredientId: string, qty: number) => void;
   language?: SupportedLanguage;
   masterIngredients?: IngredientRegistry[];
+  onLanguageChange?: (lang: SupportedLanguage) => void;
 }) => {
   if (!ingredients || ingredients.length === 0) return null;
   const containerClass = isGlobal
@@ -273,7 +275,35 @@ const PhaseIngredientsAccordion = ({
   return (
     <details className={containerClass} open={isGlobal}>
       <summary className={summaryClass}>
-        {title}
+        <div className="flex items-center gap-3 flex-wrap">
+          <span>{title}</span>
+          {isGlobal && onLanguageChange && (
+            <div
+              className="flex items-center bg-background border border-border-subtle rounded-lg p-0.5 text-xs normal-case tracking-normal"
+              onClick={e => e.stopPropagation()}
+            >
+              <span className="text-[10px] text-text-muted px-1.5 font-medium">Script:</span>
+              {(['en', 'ta', 'hi'] as SupportedLanguage[]).map(l => (
+                <button
+                  key={l}
+                  type="button"
+                  onClick={e => {
+                    e.stopPropagation();
+                    onLanguageChange(l);
+                  }}
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+                    language === l
+                      ? 'bg-accent text-background shadow-xs'
+                      : 'text-text-muted hover:text-foreground'
+                  }`}
+                  title={`Show ingredients in ${l === 'en' ? 'English' : l === 'ta' ? 'Tamil' : 'Hindi'}`}
+                >
+                  {l === 'en' ? 'EN' : l === 'ta' ? 'தமிழ்' : 'हिंदी'}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <span className="transition-transform group-open:rotate-180 text-lg leading-none text-accent">
           ▾
         </span>
@@ -693,6 +723,7 @@ export default function Home() {
     onOverride: handleOverride,
     language,
     masterIngredients: recipe.masterIngredients,
+    onLanguageChange: (l: SupportedLanguage) => dispatch(setLanguage(l)),
   };
 
   return (
@@ -748,22 +779,6 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {/* Language Switcher (Story 17) */}
-            <div className="flex items-center bg-card-bg border border-border-subtle rounded-xl p-0.5">
-              {(['en', 'ta', 'hi'] as SupportedLanguage[]).map(l => (
-                <button
-                  key={l}
-                  type="button"
-                  onClick={() => dispatch(setLanguage(l))}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    language === l ? 'bg-accent text-background shadow-xs' : 'text-text-muted hover:text-foreground'
-                  }`}
-                >
-                  {l === 'en' ? 'EN' : l === 'ta' ? 'தமிழ்' : 'हिंदी'}
-                </button>
-              ))}
-            </div>
-
             {/* Smart Grocery List Button (Story 23) */}
             <button
               type="button"
