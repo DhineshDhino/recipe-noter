@@ -19,6 +19,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 10** | Epics 24, 25, 26 | ⚡ **3-Tier Criticality System & Multilingual Localization Engine** | ✅ `[COMPLETED]` (Stories 49–51) |
 | **Initiative 11** | Epics 27, 28 | 📌 **Stove-Side Sticky HUD & Collapsible Header System** | ⏳ `[PLANNED]` (Stories 52–54) |
 | **Initiative 12** | Epics 29, 30 | 🌐 **Whole-Recipe Multilingual Localization & AI Translation Engine** | ⏳ `[PLANNED]` (Stories 55–58) |
+| **Initiative 13** | Epics 31, 32, 33 | 🎙️ **Live Voice Note Inference Engine & Async Kitchen Notifications** | ⏳ `[PLANNED]` (Stories 59–63) |
 
 ---
 
@@ -787,4 +788,98 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 2: Implement client-side translation caching layer in `recipeSlice.ts`.
 - Task 3: Add loading skeleton states during dynamic translation.
 - Task 4: Write unit tests in `src/app/api/recipes/[id]/translate/route.test.ts`.
+
+---
+
+# 🎙️ INITIATIVE 13: Live AI Voice Note Inference Engine & Async Kitchen Notifications
+**Goal:** Upgrade voice-to-recipe capabilities from simulated mock transcripts to a live local Whisper + LLaMA inference pipeline with background processing and browser completion notifications.
+
+## Epic 31: Full-Stack Live Audio Capture & Speech-to-Text Pipeline
+**Goal:** Capture live microphone audio and transcribe Tamil/Tanglish speech with high precision.
+
+### Feature 31.1: Live Audio Recording & API Route
+#### Story 59: Live Audio Capture & Asynchronous Transcription API [MVP] ⏳ [PLANNED]
+**Description:** Capture raw microphone audio in the browser via `MediaRecorder` API and stream to Next.js API route `/api/ai/transcribe-voice-note` for live transcription.
+**Acceptance Criteria (Gherkin):**
+- **Given** the user opens `TamilVoiceNoteModal.tsx` and clicks "Start Recording"
+- **When** the user finishes speaking and clicks "Stop Recording"
+- **Then** the browser captures the audio blob (`audio/webm` or `audio/wav`) and sends a `multipart/form-data` request to `/api/ai/transcribe-voice-note`.
+- **And** the UI displays live processing progress stages (`🎧 Transcribing Speech` ➔ `🧠 Extracting Recipe Blocks`).
+
+**Tasks:**
+- Task 1: Integrate browser `MediaRecorder` in `TamilVoiceNoteModal.tsx` with fallback error states for microphone permission denial.
+- Task 2: Create Next.js API route `/api/ai/transcribe-voice-note/route.ts`.
+- Task 3: Add unit tests in `src/components/TamilVoiceNoteModal.test.tsx` and API route tests.
+
+### Feature 31.2: Local Whisper STT Integration
+#### Story 60: Local Whisper Speech-to-Text Engine (Tamil & Tanglish) [TOOLING / MVP] ⏳ [PLANNED]
+**Description:** Connect the backend API route to a local Whisper instance (`whisper.cpp` / OpenAI-compatible endpoint on Apple Silicon) with Tamil culinary vocabulary prompts.
+**Acceptance Criteria (Gherkin):**
+- **Given** an audio recording in Tamil or Tanglish is submitted to the API
+- **When** the API invokes local Whisper (`http://localhost:8000/v1/audio/transcriptions` with model `medium` or `large-v3`)
+- **Then** it generates both raw Tamil script and Romanized Tanglish transcripts with word-level timestamps.
+- **And** runs 100% locally with zero cloud API costs.
+
+**Tasks:**
+- Task 1: Build local Whisper connector in `src/lib/whisperClient.ts`.
+- Task 2: Add culinary terminology initial prompt hints (`பச்சரிசி`, `துவரம் பருப்பு`, `தாளிப்பு`).
+- Task 3: Write unit tests with mocked Whisper responses.
+
+---
+
+## Epic 32: LLaMA Structured Recipe Extraction & Validation
+**Goal:** Transform raw conversational transcripts into structured, validated Recipe JSON.
+
+### Feature 32.1: Local LLaMA Extraction Engine
+#### Story 61: Local LLaMA Recipe Schema Extraction & JSON Sanitizer [MVP] ⏳ [PLANNED]
+**Description:** Send the dual transcripts to local Ollama LLaMA (`llama3.2` / `qwen2.5`) with a strict schema prompt to extract phase blocks, ratio groups, ingredients, timers, and heat levels.
+**Acceptance Criteria (Gherkin):**
+- **Given** a raw Tamil and Tanglish transcript from Whisper
+- **When** passed to local LLaMA with the `Recipe` system prompt
+- **Then** LLaMA extracts structured JSON matching the `Recipe` interface with 100% valid TypeScript fields.
+- **And** a schema sanitizer validates quantities, units, and ratios before returning to the frontend.
+
+**Tasks:**
+- Task 1: Create recipe extraction prompt template and parser in `src/lib/recipeExtraction.ts`.
+- Task 2: Connect to Ollama API (`http://localhost:11434/api/generate`).
+- Task 3: Write unit tests verifying schema adherence and edge-case handling.
+
+### Feature 32.2: Multi-Model AI Backend Fallback
+#### Story 62: Multi-Model Backend Config (Local Ollama vs. Cloud Gemini Fallback) [POLISH] ⏳ [PLANNED]
+**Description:** Provide automatic fallback to free-tier Google Gemini 1.5 Flash Audio API if the developer/user does not have local Ollama/Whisper running.
+**Acceptance Criteria (Gherkin):**
+- **Given** local Whisper or Ollama is unreachable on `localhost`
+- **When** a voice note is processed
+- **Then** the backend automatically falls back to Gemini 1.5 Flash Audio API if an API key is provided.
+- **And** provides a clear user status badge indicating model provider (`Local Whisper + LLaMA` vs `Gemini Cloud`).
+
+**Tasks:**
+- Task 1: Implement fallback provider logic in API route.
+- Task 2: Add provider status indicator in `TamilVoiceNoteModal.tsx`.
+- Task 3: Write unit tests for fallback transitions.
+
+---
+
+## Epic 33: Background Kitchen Processing & Web Notifications
+**Goal:** Allow cooks to multitask freely while long voice notes process in the background.
+
+### Feature 33.1: Asynchronous Processing & Browser Notifications
+#### Story 63: Background Audio Processing & Browser Notification Alert [POLISH - MVP] ⏳ [PLANNED]
+**Description:** Allow cooks to dismiss the modal or switch tabs while audio is transcribing, notifying them with an audio chime and native browser Web Notification once the recipe is ready to review.
+**Acceptance Criteria (Gherkin):**
+- **Given** a user records or uploads a multi-minute voice note
+- **When** transcription begins and the user closes the modal or switches to another tab
+- **Then** processing continues in the background without cancellation.
+- **And** a non-intrusive floating progress badge appears in the top navigation bar.
+- **When** the recipe extraction finishes
+- **Then** the app plays a gentle culinary completion chime.
+- **And** triggers a native browser Web Notification (`"🍳 Recipe Ready! Your voice note for 'Adai' has been processed. Click to review in Studio."`).
+- **And** clicking the notification reopens the review modal or navigates to `/editor`.
+
+**Tasks:**
+- Task 1: Add background task state in Redux `recipeSlice.ts` (`activeVoiceTasks: Record<string, TaskStatus>`).
+- Task 2: Implement browser Web Notification API permission request and dispatch helper.
+- Task 3: Add audio chime completion sound and floating navbar progress pill in `<AppNavbar>`.
+- Task 4: Write unit tests in `src/components/AppNavbar.test.tsx` and `src/components/TamilVoiceNoteModal.test.tsx`.
+
 
