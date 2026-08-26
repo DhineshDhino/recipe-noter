@@ -21,6 +21,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 12** | Epics 29, 30 | 🌐 **Whole-Recipe Multilingual Localization & AI Translation Engine** | ⏳ `[PLANNED]` (Stories 55–58) |
 | **Initiative 13** | Epics 31, 32, 33 | 🎙️ **Live Voice Note Inference Engine & Async Kitchen Notifications** | ⏳ `[PLANNED]` (Stories 59–63) |
 | **Initiative 14** | Epics 34, 35 | 🍳 **Pro Culinary Stainless & Neon Orange Command Center UI (Experimental)** | ⏳ `[POST-MVP EXPERIMENT]` (Stories 64–67) |
+| **Initiative 15** | Epics 36, 37, 38, 39 | 🛠️ **Essential Stove-Side Kitchen Ergonomics & Utility Engine** | 🔥 `[HIGH PRIORITY - IMMEDIATE FOCUS]` (Stories 68–75) |
 
 ---
 
@@ -952,6 +953,144 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 1: Build embedded countdown scrubber component with Web Audio chime triggers.
 - Task 2: Build precision heat/temperature slider gauge.
 - Task 3: Write unit tests in `src/components/ActiveCookingHeroCard.test.tsx`.
+
+---
+
+# 🛠️ INITIATIVE 15: Essential Stove-Side Kitchen Ergonomics & Utility Engine
+**Goal:** Deliver the 8 core culinary ergonomic essentials that elevate hands-on kitchen cooking (screen wake lock, multi-timer manager, metric/US unit toggle, vulgar fractions, in-step strike-throughs, substitutions, print layout, and offline persistence).
+
+## Epic 36: Kitchen Ergonomics & Screen Wake Lock
+**Goal:** Eliminate kitchen device friction with automatic screen wake lock and a persistent floating multi-timer bar.
+
+### Feature 36.1: Screen Wake Lock API
+#### Story 68: Screen Wake Lock API (Keep Screen On while Cooking) [MVP] ⏳ [PLANNED]
+**Description:** Prevent mobile/tablet screens from dimming or going to sleep during active cooking on Reader View (`/`) and Focus Mode (`GuidedCookingModal`), with a manual toggle indicator (`💡 Screen Awake`).
+**Acceptance Criteria (Gherkin):**
+- **Given** the user is viewing a recipe on Reader View (`/`) or in Focus Mode (`GuidedCookingModal`)
+- **When** the page or modal is active
+- **Then** the browser automatically requests `navigator.wakeLock.request('screen')` to prevent display sleep.
+- **And** displays a subtle status indicator (`💡 Screen Awake`) in the top bar.
+- **When** the user closes the recipe or switches tabs
+- **Then** the wake lock is released to conserve battery.
+
+**Tasks:**
+- Task 1: Create `useScreenWakeLock` hook in `src/lib/useScreenWakeLock.ts` with error handling for unsupported browsers.
+- Task 2: Add wake lock toggle indicator to `AppNavbar` and `GuidedCookingModal`.
+- Task 3: Write unit tests with mock `navigator.wakeLock`.
+
+### Feature 36.2: Parallel Multi-Timer Floating HUD
+#### Story 69: Parallel Multi-Timer Floating HUD [MVP] ⏳ [PLANNED]
+**Description:** Provide a persistent floating bottom HUD that tracks multiple concurrent countdown timers across prep, resting, and active cooking blocks simultaneously.
+**Acceptance Criteria (Gherkin):**
+- **Given** the cook starts one or more step timers (e.g. *4h Soaking* and *20m Boiling*)
+- **When** the cook scrolls away or navigates between blocks
+- **Then** a compact floating bottom HUD displays all active countdowns with name, time remaining, and `Pause/Resume/Dismiss` controls.
+- **When** any timer reaches `00:00`
+- **Then** the Web Audio kitchen chime plays and the specific timer card pulses green.
+
+**Tasks:**
+- Task 1: Add global active timers state to `recipeSlice.ts` (`activeTimers: Record<string, StepTimerState>`).
+- Task 2: Build `<GlobalTimersBar>` floating bottom component.
+- Task 3: Write unit tests in `src/components/GlobalTimersBar.test.tsx`.
+
+---
+
+## Epic 37: Units, Conversions & Culinary Vulgar Fractions
+**Goal:** Provide intuitive 1-click unit system toggles and natural kitchen fraction formatting.
+
+### Feature 37.1: Metric ↔ US Customary / Cups Toggle
+#### Story 70: Metric (g/ml) ↔ US Customary (Cups/Tbsp) 1-Click Toggle [MVP] ⏳ [PLANNED]
+**Description:** Add a segmented `Metric (g/ml) | US / Cups` unit toggle in Reader View (`/`), Noter Studio (`/editor`), and Grocery List, dynamically converting all measurements using ingredient density tables.
+**Acceptance Criteria (Gherkin):**
+- **Given** a recipe has ingredients in grams or millilitres
+- **When** the user clicks the "US / Cups" unit toggle
+- **Then** all ingredient quantities convert to cups, tablespoons, teaspoons, or ounces using density tables in `conversions.ts`.
+- **And** the unit system preference is remembered in `localStorage`.
+
+**Tasks:**
+- Task 1: Add `unitSystem: 'metric' | 'us_customary'` to `recipeSlice.ts`.
+- Task 2: Add unit toggle button to dashboard header and grocery modal.
+- Task 3: Update `PhaseIngredientsAccordion` and `RecipeStep` to render converted units.
+- Task 4: Write unit tests in `src/lib/conversions.test.ts` and `src/app/page.test.tsx`.
+
+### Feature 37.2: Culinary Vulgar Fractions Formatter
+#### Story 71: Vulgar Fractions Formatter (½, ¾, 1 ⅓) for Scaled Yields [POLISH - MVP] ⏳ [PLANNED]
+**Description:** Format scaled ingredient quantities and volume measurements as standard culinary vulgar fractions (`¼`, `⅓`, `½`, `⅔`, `¾`, `1 ½`) instead of floating point decimals.
+**Acceptance Criteria (Gherkin):**
+- **Given** yield scaling results in non-integer quantities (e.g. `0.5 tsp`, `1.33 cups`, `0.75 tbsp`)
+- **When** rendered in any ingredient list or step card
+- **Then** the quantity is formatted as a culinary vulgar fraction (e.g. `½ tsp`, `1 ⅓ cups`, `¾ tbsp`).
+- **And** metric gram measurements retain clean integer or 1-decimal formatting (e.g. `125 g`).
+
+**Tasks:**
+- Task 1: Create `formatCulinaryFraction(quantity, unit)` utility in `src/lib/conversions.ts`.
+- Task 2: Update all ingredient quantity displays across Reader, Studio, and Focus Mode.
+- Task 3: Write unit tests in `src/lib/conversions.test.ts`.
+
+---
+
+## Epic 38: In-Step Ergonomics & Smart Substitutions
+**Goal:** Empower cooks to strike through ingredients as they enter the pot and provide smart substitutions for missing items.
+
+### Feature 38.1: In-Step Ingredient Strike-Through
+#### Story 72: Interactive In-Step Ingredient Strike-Through & Dimming [POLISH] ⏳ [PLANNED]
+**Description:** In step instructions, highlight mentioned ingredient names as interactive chips that dim and strike through when tapped, confirming they were added to the pot.
+**Acceptance Criteria (Gherkin):**
+- **Given** a step mentions ingredients (e.g. *"Add 1 tsp mustard seeds and 2 dry red chillies"*)
+- **When** the cook taps on "mustard seeds"
+- **Then** the ingredient name renders as struck-through (`line-through opacity-50 text-emerald-400`).
+- **And** tapping again restores the active state.
+
+**Tasks:**
+- Task 1: Create `<InteractiveStepText>` parser in `src/components/InteractiveStepText.tsx`.
+- Task 2: Track checked-off ingredients per step in component state.
+- Task 3: Write unit tests in `src/components/InteractiveStepText.test.tsx`.
+
+### Feature 38.2: Smart Pantry Substitutions Engine
+#### Story 73: Smart Pantry Ingredient Substitutions Engine [MVP] ⏳ [PLANNED]
+**Description:** Suggest culinary-accurate substitutes when ingredients are missing in the "What to Cook" pantry matcher or reader view.
+**Acceptance Criteria (Gherkin):**
+- **Given** the user is viewing a recipe and lacks a specific ingredient (e.g., *No Boiled Rice* or *No Tamarind*)
+- **When** clicking "Substitutions" or viewing the Gap Radar
+- **Then** the system displays vetted alternatives (e.g. *Idli Rice / Raw Rice + 10% water* or *1 tbsp Lemon Juice*).
+
+**Tasks:**
+- Task 1: Add `substitutions?: { substitute: string; ratioNote?: string }[]` to `IngredientRegistry`.
+- Task 2: Build `<IngredientSubstitutionModal>` / chip tooltip.
+- Task 3: Write unit tests in `src/lib/recommendationEngine.test.ts`.
+
+---
+
+## Epic 39: Print Stylesheet & Offline LocalStorage Persistence
+**Goal:** Provide clean physical kitchen printing and ensure custom recipes survive page reloads.
+
+### Feature 39.1: Ink-Friendly 1-Page Printable Recipe Card
+#### Story 74: Ink-Friendly 1-Page Printable Recipe Card & PDF Mode [POLISH] ⏳ [PLANNED]
+**Description:** Add a dedicated `@media print` CSS layout that renders a clean, monochrome 2-column recipe card suitable for physical printing or PDF saving.
+**Acceptance Criteria (Gherkin):**
+- **Given** the user clicks "Print Recipe" or presses `Cmd+P` on Reader View (`/`)
+- **When** the print preview opens
+- **Then** dark backgrounds, navbars, and buttons are hidden.
+- **And** the recipe prints as a clean, high-contrast monochrome 2-column layout with ingredient checklists and phase steps.
+
+**Tasks:**
+- Task 1: Add print-specific Tailwind CSS utilities and `@media print` rules in `globals.css`.
+- Task 2: Add "🖨️ Print Recipe" button in header action dropdown.
+- Task 3: Verify print styling across browsers.
+
+### Feature 39.2: LocalStorage & IndexedDB Recipe Store Persistence
+#### Story 75: LocalStorage & IndexedDB Recipe Store Persistence [MVP] ⏳ [PLANNED]
+**Description:** Automatically persist edited recipes, custom tries, and user preferences to `localStorage` / `IndexedDB` so data is never lost on browser refresh.
+**Acceptance Criteria (Gherkin):**
+- **Given** a user edits a recipe in Studio (`/editor`) or adds a try in Reader View
+- **When** the user refreshes the browser or reopens the app
+- **Then** the custom recipes and journal notes are re-hydrated from `localStorage` seamlessly.
+
+**Tasks:**
+- Task 1: Build Redux persistence middleware in `src/store/store.ts`.
+- Task 2: Add local storage migration and fallback guards.
+- Task 3: Write unit tests verifying hydration and store persistence.
+
 
 
 

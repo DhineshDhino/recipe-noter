@@ -128,6 +128,9 @@ recipe-noter/
    - Implement logic in Redux slices + components + unit tests.
    - Run verification via `npx jest` and `npm run build`.
    - Update `Implementation_Backlog.md` and generate `walkthrough.md`.
+4. **Git Commit Confirmation Rule**:
+   - **ALWAYS ask the user for confirmation before committing or pushing changes to git.**
+   - Show the summary of changes and the proposed commit message, and wait for explicit user approval before running `git commit` or `git push`.
 
 ---
 
