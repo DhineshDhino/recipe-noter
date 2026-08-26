@@ -20,6 +20,7 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 | **Initiative 11** | Epics 27, 28 | 📌 **Stove-Side Sticky HUD & Collapsible Header System** | ⏳ `[PLANNED]` (Stories 52–54) |
 | **Initiative 12** | Epics 29, 30 | 🌐 **Whole-Recipe Multilingual Localization & AI Translation Engine** | ⏳ `[PLANNED]` (Stories 55–58) |
 | **Initiative 13** | Epics 31, 32, 33 | 🎙️ **Live Voice Note Inference Engine & Async Kitchen Notifications** | ⏳ `[PLANNED]` (Stories 59–63) |
+| **Initiative 14** | Epics 34, 35 | 🍳 **Pro Culinary Stainless & Neon Orange Command Center UI (Experimental)** | ⏳ `[POST-MVP EXPERIMENT]` (Stories 64–67) |
 
 ---
 
@@ -881,5 +882,73 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 - Task 2: Implement browser Web Notification API permission request and dispatch helper.
 - Task 3: Add audio chime completion sound and floating navbar progress pill in `<AppNavbar>`.
 - Task 4: Write unit tests in `src/components/AppNavbar.test.tsx` and `src/components/TamilVoiceNoteModal.test.tsx`.
+
+---
+
+# 🍳 INITIATIVE 14: Pro Culinary Stainless & Neon Orange Command Center UI System (Experimental UX)
+**Goal:** (Post-MVP Experiment) Explore an ultra-modern professional kitchen command center aesthetic with brushed stainless steel dark theme, categorized Mise en place panels, and an active cooking hero stepper with digital timer scrubbers.
+
+## Epic 34: Metallic Dark Design System & Mise en Place Layout
+**Goal:** Introduce stainless steel & titanium dark tokens and structured 3-category prep organization.
+
+### Feature 34.1: Stainless Steel & Titanium Design System
+#### Story 64: Stainless Steel & Titanium Dark Theme Tokens [EXPERIMENT - POST-MVP] ⏳ [POST-MVP EXPERIMENT]
+**Description:** Implement carbon brushed steel metallic textures (`#16171a` / `#1e2024`), metallic card borders (`#2a2d34`), and neon chef orange glow tokens (`#FF6D00`).
+**Acceptance Criteria (Gherkin):**
+- **Given** the user is viewing the dashboard in Pro Culinary Theme mode
+- **When** the page renders
+- **Then** the background displays brushed stainless titanium surfaces with dark radial gradient highlights and neon orange active accents.
+
+**Tasks:**
+- Task 1: Add custom Tailwind CSS tokens for metallic gradients and neon orange glow.
+- Task 2: Add theme toggle support in settings/navbar.
+
+### Feature 34.2: Structured Mise en Place Prep Panel
+#### Story 65: Categorized Mise en Place Prep Panel (General / Ingredients / Equipment) [EXPERIMENT - POST-MVP] ⏳ [POST-MVP EXPERIMENT]
+**Description:** Restructure prep steps on the left pane into 3 distinct sections (`GENERAL`, `INGREDIENTS`, `EQUIPMENT`) with scaled metrics, time badges, and culinary icons.
+**Acceptance Criteria (Gherkin):**
+- **Given** a recipe has prep tasks and equipment setup
+- **When** rendered in the left column
+- **Then** items are grouped under `GENERAL` (prep checklist with times), `INGREDIENTS` (scaled weights with ingredient category icons), and `EQUIPMENT` (tool temperatures and status).
+
+**Tasks:**
+- Task 1: Build `<MiseEnPlacePrepPanel>` component with 3 sub-groupings.
+- Task 2: Write unit tests in `src/components/MiseEnPlacePrepPanel.test.tsx`.
+
+---
+
+## Epic 35: Active Cooking Hero Stepper & Live Precision HUD
+**Goal:** Create a high-focus single-step execution stepper with embedded photography, digital countdown scrubber, and precision temperature gauges.
+
+### Feature 35.1: Active Step Focused Hero Stepper
+#### Story 66: Active Cooking Focused Hero Step Card & Auto-Advancing Stepper [EXPERIMENT - POST-MVP] ⏳ [POST-MVP EXPERIMENT]
+**Description:** In the right column, collapse inactive steps into compact pill cards and expand only the current active step as a glowing hero card with embedded photography and `Next Step` button.
+**Acceptance Criteria (Gherkin):**
+- **Given** the user is actively executing cooking steps
+- **When** viewing the "ACTIVE COOKING" column
+- **Then** only the active step (e.g. `Step 3: Sear Ribeye`) is fully expanded with orange card glow, photo, and controls.
+- **And** previous/upcoming steps are collapsed into sleek one-line summary cards.
+- **When** the user clicks `Next Step`
+- **Then** the current step completes and the next step smoothly expands into focus.
+
+**Tasks:**
+- Task 1: Add `activeExecutionStepIndex` to Redux `recipeSlice.ts`.
+- Task 2: Build `<ActiveCookingHeroCard>` and collapsed step components.
+- Task 3: Write unit tests for step transitions and auto-advancing.
+
+### Feature 35.2: In-Card Countdown Scrubber & Precision Heat Gauge
+#### Story 67: In-Card Digital Countdown Scrubber & Precision Heat Gauge [EXPERIMENT - POST-MVP] ⏳ [POST-MVP EXPERIMENT]
+**Description:** Embed a large digital timer display (`01:14 remaining`), draggable orange time scrubber slider, `|| Pause` / `↺ Reset` controls, and precision temperature gauges on the active card.
+**Acceptance Criteria (Gherkin):**
+- **Given** an active step has duration or heat/temp metadata
+- **When** the card is expanded
+- **Then** it renders a large bold countdown timer with an interactive orange scrubber and `Pause/Reset/Next` action buttons.
+- **And** displays precision temperature indicators (e.g. `228°C` target `230°C`) with visual slider.
+
+**Tasks:**
+- Task 1: Build embedded countdown scrubber component with Web Audio chime triggers.
+- Task 2: Build precision heat/temperature slider gauge.
+- Task 3: Write unit tests in `src/components/ActiveCookingHeroCard.test.tsx`.
+
 
 
