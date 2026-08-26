@@ -888,6 +888,9 @@ Every story is rated in terms of **[NECESSARY - MVP]** (critical for a complete,
 # 🍳 INITIATIVE 14: Pro Culinary Stainless & Neon Orange Command Center UI System (Experimental UX)
 **Goal:** (Post-MVP Experiment) Explore an ultra-modern professional kitchen command center aesthetic with brushed stainless steel dark theme, categorized Mise en place panels, and an active cooking hero stepper with digital timer scrubbers.
 
+### 🖼️ Design Reference & UI Mockup
+![Pro Culinary Stainless & Neon Orange UI Reference](./assets/pro_culinary_stainless_ui_mockup.jpg)
+
 ## Epic 34: Metallic Dark Design System & Mise en Place Layout
 **Goal:** Introduce stainless steel & titanium dark tokens and structured 3-category prep organization.
 
