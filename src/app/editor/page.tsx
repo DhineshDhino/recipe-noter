@@ -90,17 +90,17 @@ const RecipeHeader = ({
   onPreview: () => void;
   onPublish: () => void;
 }) => (
-  <header className="space-y-5 border-b border-border-subtle pb-6">
+  <header className="space-y-5 border-b border-white/[0.08] pb-6">
     {/* Breadcrumbs & Status */}
     <div className="flex items-center justify-between text-xs text-text-muted">
       <div className="flex items-center gap-2">
         <span>🍳 What 2 Cook</span>
-        <span>/</span>
+        <span className="text-white/20">/</span>
         <span className="text-accent font-semibold">📝 Noter Studio</span>
-        <span>/</span>
+        <span className="text-white/20">/</span>
         <span className="text-foreground font-medium truncate max-w-[200px]">{name || 'New Recipe'}</span>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
         <span className="w-2 h-2 rounded-full bg-amber-400" />
         <span className="text-amber-300 font-mono text-[11px] font-semibold">Draft Mode</span>
       </div>
@@ -110,30 +110,30 @@ const RecipeHeader = ({
       <div className="flex items-center gap-3">
         <span className="text-3xl">📝</span>
         <div>
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             Recipe Editor
           </h1>
           <p className="text-xs text-text-muted">Modular recipe builder with phase-by-phase authoring</p>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5">
         <button
           onClick={onPreview}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card-bg border border-border-subtle hover:border-accent/50 text-foreground text-xs font-semibold transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground text-xs font-semibold transition-all shadow-xs cursor-pointer"
         >
           <span>👁️</span>
           <span>Live Preview</span>
         </button>
         <button
           onClick={onPublish}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-accent text-background font-bold text-xs hover:bg-accent/80 transition-colors shadow-sm"
+          className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-accent text-background font-bold text-xs hover:bg-accent/80 transition-all shadow-[0_0_15px_rgba(255,109,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span>🚀</span>
           <span>Publish & Cook</span>
         </button>
         <Link
           href="/"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-card-bg border border-border-subtle hover:border-accent/50 text-text-muted hover:text-foreground text-xs font-semibold transition-colors"
+          className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-text-muted hover:text-foreground text-xs font-semibold transition-all shadow-xs"
         >
           <span>📖</span>
           <span>Reader</span>
@@ -152,7 +152,7 @@ const RecipeHeader = ({
           value={name}
           onChange={e => onNameChange(e.target.value)}
           placeholder="e.g., Adai"
-          className="w-full bg-card-bg border border-border-subtle rounded-lg px-4 py-2.5 text-foreground text-lg font-medium outline-none placeholder:text-text-muted/50 focus:border-accent transition-colors"
+          className="w-full bg-card-bg/90 border border-white/[0.08] rounded-xl px-4 py-2.5 text-foreground text-lg font-medium outline-none placeholder:text-text-muted/40 focus:border-accent focus:ring-1 focus:ring-accent/40 transition-all shadow-inner"
         />
       </div>
       <div className="w-32">
@@ -169,7 +169,7 @@ const RecipeHeader = ({
             if (!isNaN(val) && val > 0) onYieldChange(val);
           }}
           placeholder="e.g., 4"
-          className="w-full bg-card-bg border border-border-subtle rounded-lg px-4 py-2.5 text-accent text-lg font-bold text-center outline-none placeholder:text-text-muted/50 focus:border-accent transition-colors tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+          className="w-full bg-card-bg/90 border border-white/[0.08] rounded-xl px-4 py-2.5 text-accent text-lg font-bold text-center outline-none placeholder:text-text-muted/40 focus:border-accent focus:ring-1 focus:ring-accent/40 transition-all tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none shadow-inner"
         />
       </div>
     </div>
@@ -199,11 +199,11 @@ const PhaseTabBar = ({
           aria-controls={`panel-${phase.key}`}
           onClick={() => onSelect(phase.key)}
           className={`
-            flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold
-            transition-all duration-200 cursor-pointer relative
+            flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm font-semibold
+            transition-all duration-200 cursor-pointer relative shadow-xs
             ${isActive
-              ? 'bg-accent/15 text-accent border-2 border-accent shadow-[0_0_20px_rgba(255,109,0,0.15)]'
-              : 'bg-card-bg text-text-muted border border-border-subtle hover:border-accent/40 hover:text-foreground'
+              ? 'bg-accent/15 text-accent border border-accent/50 shadow-[0_0_20px_rgba(255,109,0,0.15)] font-bold'
+              : 'bg-card-bg/90 text-text-muted border border-white/[0.08] hover:border-white/20 hover:text-foreground'
             }
           `}
         >
@@ -211,8 +211,8 @@ const PhaseTabBar = ({
           <span className="hidden sm:inline">{phase.label}</span>
           {count > 0 && (
             <span className={`
-              text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center
-              ${isActive ? 'bg-accent text-background' : 'bg-border-subtle text-text-muted'}
+              text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center
+              ${isActive ? 'bg-accent text-background' : 'bg-white/[0.08] text-text-muted'}
             `}>
               {count}
             </span>

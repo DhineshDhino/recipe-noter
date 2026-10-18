@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/navigation';
 import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,17 +24,22 @@ export default function AppNavbar() {
 
   const { isLocked, toggleWakeLock } = useScreenWakeLock();
 
+  const [mounted, setMounted] = useState(false);
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
   const [isWhatToCookOpen, setIsWhatToCookOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSwitcherOpen, setIsSwitcherOpen] = useState(false);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isEditorRoute = pathname === '/editor';
-  const isDraftMode = isEditorRoute && !editorRecipeName;
-  const currentDisplayName = isEditorRoute
-    ? editorRecipeName || 'New Recipe (Draft)'
-    : activeRecipe?.name || 'Select Recipe';
+  const isDraftMode = mounted ? (isEditorRoute && !editorRecipeName) : isEditorRoute;
+  const currentDisplayName = mounted
+    ? (isEditorRoute ? editorRecipeName || 'New Recipe (Draft)' : activeRecipe?.name || 'Select Recipe')
+    : (isEditorRoute ? 'New Recipe (Draft)' : activeRecipe?.name || 'Select Recipe');
 
   const handleSelectRecipe = (recipe: typeof recipeLibrary[0]) => {
     dispatch(loadRecipe(recipe));
@@ -49,15 +54,15 @@ export default function AppNavbar() {
 
   return (
     <>
-      <nav className="sticky top-0 z-40 w-full border-b border-border-subtle bg-[#121212]/90 backdrop-blur-md px-4 sm:px-8 py-3 transition-all">
+      <nav className="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#0E0F12]/85 backdrop-blur-xl px-4 sm:px-8 py-3 transition-all shadow-[0_4px_24px_rgba(0,0,0,0.4)]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Logo & Branding */}
           <div className="flex items-center gap-6">
             <button
               onClick={() => router.push('/')}
-              className="flex items-center gap-2.5 group text-left cursor-pointer focus:outline-none"
+              className="flex items-center gap-3 group text-left cursor-pointer focus:outline-none"
             >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent to-amber-500 flex items-center justify-center text-xl shadow-lg group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent via-amber-500 to-orange-400 flex items-center justify-center text-xl shadow-[0_0_20px_rgba(255,109,0,0.35)] group-hover:scale-105 transition-transform ring-1 ring-white/20">
                 🍳
               </div>
               <div>
@@ -76,13 +81,13 @@ export default function AppNavbar() {
             </button>
 
             {/* Navigation Tabs */}
-            <div className="flex items-center gap-1 bg-card-bg/80 border border-border-subtle p-1 rounded-xl">
+            <div className="flex items-center gap-1 bg-card-bg/90 border border-white/[0.08] p-1 rounded-xl shadow-inner">
               <button
                 onClick={() => router.push('/')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   pathname === '/'
-                    ? 'bg-accent text-background shadow-sm'
-                    : 'text-text-muted hover:text-foreground hover:bg-background/50'
+                    ? 'bg-accent text-background shadow-md'
+                    : 'text-text-muted hover:text-foreground hover:bg-white/[0.04]'
                 }`}
               >
                 <span>📖</span>
@@ -92,8 +97,8 @@ export default function AppNavbar() {
                 onClick={() => router.push('/editor')}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   pathname === '/editor'
-                    ? 'bg-accent text-background shadow-sm'
-                    : 'text-text-muted hover:text-foreground hover:bg-background/50'
+                    ? 'bg-accent text-background shadow-md'
+                    : 'text-text-muted hover:text-foreground hover:bg-white/[0.04]'
                 }`}
               >
                 <span>📝</span>
@@ -101,11 +106,11 @@ export default function AppNavbar() {
               </button>
               <button
                 onClick={() => setIsLibraryOpen(true)}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-muted hover:text-foreground hover:bg-background/50 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-muted hover:text-foreground hover:bg-white/[0.04] transition-all flex items-center gap-1.5 cursor-pointer"
               >
                 <span>📚</span>
                 <span className="hidden sm:inline">Library</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-border-subtle text-[10px] font-mono text-foreground">
+                <span className="px-1.5 py-0.2 rounded-full bg-white/[0.08] text-[10px] font-mono text-foreground">
                   {recipeLibrary.length}
                 </span>
               </button>
@@ -119,7 +124,7 @@ export default function AppNavbar() {
               </button>
               <button
                 onClick={() => setIsVoiceModalOpen(true)}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-muted hover:text-foreground hover:bg-background/50 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-muted hover:text-foreground hover:bg-white/[0.04] transition-all flex items-center gap-1.5 cursor-pointer"
                 title="Tamil Voice Note to Recipe AI"
               >
                 <span>🎙️</span>
@@ -136,10 +141,10 @@ export default function AppNavbar() {
             {/* Screen Wake Lock Toggle (Story 68) */}
             <button
               onClick={() => toggleWakeLock()}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
                 isLocked
-                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
-                  : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground hover:border-border'
+                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.25)]'
+                  : 'bg-card-bg/90 border-white/[0.08] text-text-muted hover:text-foreground hover:border-white/20'
               }`}
               title={isLocked ? 'Screen Wake Lock Active (Screen will not sleep)' : 'Click to keep screen awake while cooking'}
             >
@@ -153,15 +158,16 @@ export default function AppNavbar() {
             <div className="relative">
               <button
                 onClick={() => setIsSwitcherOpen(!isSwitcherOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer shadow-xs"
                 title={isEditorRoute ? 'Editor Recipe Selector' : 'Switch Active Recipe'}
               >
                 <span
+                  suppressHydrationWarning
                   className={`w-2 h-2 rounded-full ${
                     isDraftMode ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'
                   }`}
                 />
-                <span className="max-w-[130px] truncate">{currentDisplayName}</span>
+                <span className="max-w-[130px] truncate" suppressHydrationWarning>{currentDisplayName}</span>
                 <span className="text-text-muted text-[10px]">▼</span>
               </button>
 
@@ -172,8 +178,8 @@ export default function AppNavbar() {
                     className="fixed inset-0 z-40 bg-transparent"
                     onClick={() => setIsSwitcherOpen(false)}
                   />
-                  <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] bg-[#1A1A1A] border border-border-subtle rounded-2xl shadow-2xl p-2.5 z-50 animate-[fadeIn_120ms_ease-out] ring-1 ring-black/40">
-                    <div className="px-2.5 py-2 text-[10px] font-bold text-text-muted uppercase tracking-wider border-b border-border-subtle/60 mb-1.5 flex items-center justify-between">
+                  <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] bg-[#16171B]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-2.5 z-50 animate-[fadeIn_120ms_ease-out] ring-1 ring-black/60">
+                    <div className="px-2.5 py-2 text-[10px] font-bold text-text-muted uppercase tracking-wider border-b border-white/[0.08] mb-1.5 flex items-center justify-between">
                       <span>{isEditorRoute ? 'Load Recipe into Editor' : 'Select Active Recipe'}</span>
                       <span className="text-[10px] text-accent font-mono">({recipeLibrary.length + 1} options)</span>
                     </div>
@@ -198,7 +204,7 @@ export default function AppNavbar() {
                         </div>
                       </button>
 
-                      <div className="border-t border-border-subtle/50 my-1.5" />
+                      <div className="border-t border-white/[0.08] my-1.5" />
 
                       {recipeLibrary.map(r => {
                         const isCurrent = isEditorRoute ? editorRecipeName === r.name : activeRecipe?.id === r.id;
@@ -209,7 +215,7 @@ export default function AppNavbar() {
                             className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
                               isCurrent
                                 ? 'bg-accent text-background font-bold shadow-sm'
-                                : 'text-foreground hover:bg-card-bg hover:text-accent'
+                                : 'text-foreground hover:bg-white/[0.04] hover:text-accent'
                             }`}
                           >
                             <span className="truncate font-medium">{r.name}</span>
@@ -228,7 +234,7 @@ export default function AppNavbar() {
             {/* New Recipe Button */}
             <button
               onClick={handleNewRecipe}
-              className="px-3.5 py-1.5 rounded-xl bg-accent text-background text-xs font-bold hover:bg-accent/80 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer whitespace-nowrap"
+              className="px-3.5 py-1.5 rounded-xl bg-accent text-background text-xs font-bold hover:bg-accent/80 transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,109,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer whitespace-nowrap"
             >
               <span>➕</span>
               <span className="hidden sm:inline">New Recipe</span>
@@ -237,7 +243,7 @@ export default function AppNavbar() {
             {/* User Profile Avatar / Google Login (Story 42) */}
             <button
               onClick={() => setIsProfileModalOpen(true)}
-              className="flex items-center gap-2 p-1 pl-2 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 transition-all cursor-pointer"
+              className="flex items-center gap-2 p-1 pl-2 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 transition-all cursor-pointer shadow-xs"
               title={currentUser?.isLoggedIn ? `Account: ${currentUser.name}` : 'Sign In with Google'}
             >
               <div className="w-6 h-6 rounded-full overflow-hidden border border-accent/40 bg-background">

@@ -36,11 +36,15 @@ Welcome! This file serves as the operational guide and technical documentation f
 - **State Management**: Redux Toolkit (`@reduxjs/toolkit` + `react-redux`)
   - `recipeSlice.ts`: Reader view, yield scaling, spice/sweet multipliers, pantry inventory, favorites, bookmarks, notes, language.
   - `editorSlice.ts`: Studio editor, meal slots, dietary tags, difficulty, media pool, blocks, editable steps, step metadata, ratio groups.
-- **Styling**: Tailwind CSS v4 using modern theme tokens:
-  - Background: `#121212` / dark canvas (`bg-background`, `bg-card-bg`)
-  - Accent: `#FF6D00` ("Modern Chef" warm orange / `text-accent`, `border-accent`)
-  - Warning/Critical: `#FF3B30` / Amber-Red (`text-warning`, `border-warning`)
-- **Testing**: Jest + React Testing Library (`npx jest`) — 14 test suites, 260+ unit tests with 100% pass rate.
+- **Styling**: Tailwind CSS v4 using modern obsidian tokens:
+  - Base Canvas: `#0E0F12` (`bg-background`)
+  - Elevated Surfaces: `#16171B` (`bg-card-bg`), `#1F2026` (`bg-card-elevated`), `#262730` (`bg-card-surface`)
+  - Borders: `border-white/[0.08]` and subtle `#262732` (`border-subtle`)
+  - Foreground Text: `#EDEDF0` (`text-foreground`), `#9496A1` (`text-text-muted`)
+  - Accent: `#FF6D00` ("Modern Chef" warm orange / `text-accent`, `border-accent`) with glow states
+  - Warning/Critical: `#EF4444` / `#FF3B30` (`text-warning`, `border-warning`)
+  - Success/Timer Active: `#10B981` (`text-emerald-400`, `bg-emerald-500/15`)
+- **Testing**: Jest + React Testing Library (`npx jest`) — 22 test suites, 302 unit tests with 100% pass rate.
 
 ---
 
@@ -140,6 +144,9 @@ recipe-noter/
 - **Client Components**: Pages and components using Redux hooks (`useSelector`, `useDispatch`) or React state must include `'use client';` at the top of the file.
 - **React Hooks Order**: Always declare all hooks at the top level of components before any conditional early returns (`if (!isOpen) return null;`) to avoid hook mismatch errors during re-renders.
 - **Pure Math Functions**: Keep scaling, ratio validation, time formatting, and recommendation math pure and decoupled from React render loops inside `src/lib/utils.ts` and `src/lib/recommendationEngine.ts`.
+- **SSR & Hydration Hygiene**:
+  - Never format dates with system locale like `toLocaleDateString(undefined, ...)`; always pass explicit deterministic locales like `toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })` to avoid SSR/client HTML diffs.
+  - When rendering values that rehydrate from client-side storage (`localStorage` / Redux persistence), use a `mounted` state guard and `suppressHydrationWarning` on the dynamic text node to prevent React hydration errors.
 - **Node vs Browser API Compatibility in Tests**:
   - Web Audio (`AudioContext`), Web Speech (`webkitSpeechRecognition`), and MediaDevices should be guarded with `typeof window !== 'undefined'` or mock fallbacks so unit tests run cleanly in Jest JSDOM environments.
 
@@ -152,3 +159,40 @@ recipe-noter/
   - Formulates structured **Functional & Technical Questions** in a single combined prompt.
   - Translates aligned requirements into standard Agile user stories with Gherkin acceptance criteria.
   - Updates `docs/Implementation_Backlog.md` and roadmap tables with appropriate priority tags (`[MVP]`, `[POLISH]`, `[PERFORMANCE]`, `[POST-MVP]`).
+
+---
+
+## 🎨 8. Senior Front-End & Design System Standards
+
+All components, modals, and layouts in this codebase must adhere strictly to these front-end conventions:
+
+### 1. Multi-Tier Obsidian Color Palette & Elevation
+Avoid flat `#121212` blocks. Use intentional surface elevations:
+- **Base Canvas**: `#0E0F12` (`bg-background`)
+- **Card Containers (Level 1)**: `#16171B` (`bg-card-bg`)
+- **Elevated Surfaces / Modals (Level 2)**: `#1F2026` (`bg-card-elevated`)
+- **Interactive Surfaces (Level 3)**: `#262730` (`bg-card-surface`)
+- **High-Contrast Text**: `#EDEDF0` for primary headings/body, `#9496A1` for secondary metadata.
+
+### 2. Hairline Translucent Borders (Never Opaque Gray)
+- Never use heavy solid borders like `#333333` or `border-neutral-700`.
+- Use translucent white alpha borders: `border-white/[0.08]` (default) and `border-white/[0.15]` (hover).
+- Use `border-subtle` (`#262732`) for interior section dividers.
+- Alpha borders automatically adapt to background colors and maintain crisp 1px delineation.
+
+### 3. Unified Corner Radius Hierarchy
+Follow this strict geometric scale across all components:
+- **Major Containers & Modals**: `rounded-2xl` (16px)
+- **Controls, Steppers, Inputs, Buttons**: `rounded-xl` (12px)
+- **Mini-Tags, Progress Indicators, Badges**: `rounded-full` (9999px)
+
+### 4. Stove-Side Touch Targets & Ergonomics
+- Culinary apps are used hands-free or with messy fingers beside heat sources.
+- **Minimum Interactive Hitbox**: 44×44px touch area for all interactive elements.
+- **Ingredient & Step Rows**: Use `py-2.5 px-3 rounded-xl` with hover feedback (`hover:bg-white/[0.03]`). Avoid tiny `pb-1.5` text-only rows.
+- **Control Bar Envelopes**: Standardize interactive toolbar controls (servings, unit toggles, time pills) to consistent heights (`h-9` or `py-1.5 px-3`).
+
+### 5. Custom Scrollbars & Brand Text Selection
+- Scrollbars must match dark theme styling (transparent track, subtle translucent thumb).
+- Selection highlights must use brand accent orange (`::selection { background-color: rgba(255, 109, 0, 0.3); }`).
+

@@ -65,15 +65,15 @@ export default function GlobalTimersBar() {
       aria-label="Active Kitchen Timers"
       className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-4xl px-4 animate-[slideUp_200ms_ease-out]"
     >
-      <div className="bg-[#18181B]/95 backdrop-blur-xl border border-border-subtle shadow-2xl rounded-2xl p-3 sm:p-4 text-foreground ring-1 ring-white/10">
+      <div className="bg-[#141519]/95 backdrop-blur-2xl border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.6)] rounded-2xl p-3.5 sm:p-4 text-foreground ring-1 ring-white/10">
         {/* Header summary */}
-        <div className="flex items-center justify-between gap-3 mb-2.5 px-1 border-b border-border-subtle/50 pb-2">
+        <div className="flex items-center justify-between gap-3 mb-2.5 px-1 border-b border-white/[0.08] pb-2.5">
           <div className="flex items-center gap-2">
             <span className="text-sm">⏱️</span>
             <h3 className="text-xs font-extrabold uppercase tracking-wider text-foreground">
               Active Kitchen Timers
             </h3>
-            <span className="px-2 py-0.2 rounded-full bg-accent/20 text-accent text-[10px] font-mono font-bold">
+            <span className="px-2 py-0.5 rounded-full bg-accent/20 text-accent text-[10px] font-mono font-bold border border-accent/30 shadow-xs">
               {timersList.length} Active
             </span>
           </div>
@@ -92,18 +92,18 @@ export default function GlobalTimersBar() {
             return (
               <div
                 key={timer.id}
-                className={`p-3 rounded-xl border transition-all relative overflow-hidden flex flex-col justify-between ${
+                className={`p-3.5 rounded-xl border transition-all relative overflow-hidden flex flex-col justify-between shadow-xs ${
                   timer.isCompleted
-                    ? 'bg-emerald-950/30 border-emerald-500/60 shadow-[0_0_16px_rgba(16,185,129,0.2)] animate-pulse'
+                    ? 'bg-emerald-950/30 border-emerald-500/60 shadow-[0_0_20px_rgba(16,185,129,0.25)] animate-pulse'
                     : timer.isRunning
-                    ? 'bg-card-bg border-accent/40 shadow-sm'
-                    : 'bg-card-bg/60 border-border-subtle opacity-90'
+                    ? 'bg-card-bg/95 border-accent/40 shadow-sm'
+                    : 'bg-card-bg/70 border-white/[0.08] opacity-90'
                 }`}
               >
                 {/* Progress bar background */}
                 <div
                   className={`absolute bottom-0 left-0 h-1 transition-all duration-300 ${
-                    timer.isCompleted ? 'bg-emerald-500' : 'bg-accent'
+                    timer.isCompleted ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'bg-accent shadow-[0_0_8px_rgba(255,109,0,0.6)]'
                   }`}
                   style={{ width: `${percentElapsed}%` }}
                 />
@@ -120,7 +120,7 @@ export default function GlobalTimersBar() {
                   </div>
                   <button
                     onClick={() => dispatch(dismissGlobalTimer(timer.id))}
-                    className="text-text-muted hover:text-foreground text-xs p-1 rounded-md hover:bg-background transition-colors cursor-pointer"
+                    className="text-text-muted hover:text-foreground text-xs p-1 rounded-md hover:bg-white/[0.06] transition-colors cursor-pointer"
                     title="Dismiss timer"
                     aria-label={`Dismiss timer for ${timer.label}`}
                   >
@@ -149,7 +149,7 @@ export default function GlobalTimersBar() {
                       timer.isRunning ? (
                         <button
                           onClick={() => dispatch(pauseGlobalTimer(timer.id))}
-                          className="px-2 py-1 rounded-lg bg-card-bg border border-border-subtle hover:border-accent/40 text-[10px] font-bold text-foreground transition-all cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-[10px] font-bold text-foreground transition-all cursor-pointer shadow-xs"
                           title="Pause"
                         >
                           ⏸️ Pause
@@ -157,7 +157,7 @@ export default function GlobalTimersBar() {
                       ) : (
                         <button
                           onClick={() => dispatch(resumeGlobalTimer(timer.id))}
-                          className="px-2 py-1 rounded-lg bg-accent text-background text-[10px] font-bold hover:bg-accent/80 transition-all shadow-xs cursor-pointer"
+                          className="px-2.5 py-1 rounded-lg bg-accent text-background text-[10px] font-bold hover:bg-accent/80 transition-all shadow-[0_0_10px_rgba(255,109,0,0.3)] cursor-pointer"
                           title="Resume"
                         >
                           ▶️ Start
@@ -167,7 +167,7 @@ export default function GlobalTimersBar() {
 
                     <button
                       onClick={() => dispatch(resetGlobalTimer(timer.id))}
-                      className="px-2 py-1 rounded-lg bg-card-bg border border-border-subtle hover:border-accent/40 text-[10px] font-bold text-text-muted hover:text-foreground transition-all cursor-pointer"
+                      className="px-2.5 py-1 rounded-lg bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-[10px] font-bold text-text-muted hover:text-foreground transition-all cursor-pointer shadow-xs"
                       title="Reset"
                     >
                       ↺

@@ -231,19 +231,19 @@ export default function GuidedCookingModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#0F0F0F] text-foreground animate-[fadeIn_150ms_ease-out]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#0B0C0E] text-foreground animate-[fadeIn_150ms_ease-out]">
       {/* Top Header Bar */}
-      <header className="px-6 py-4 border-b border-border-subtle bg-[#161616]/90 backdrop-blur-md flex items-center justify-between gap-4">
+      <header className="px-6 py-4 border-b border-white/[0.08] bg-[#131418]/90 backdrop-blur-xl flex items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-accent text-background flex items-center justify-center font-bold text-lg shadow-md">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent to-amber-500 text-background flex items-center justify-center font-bold text-lg shadow-[0_0_15px_rgba(255,109,0,0.35)]">
             🎯
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-bold text-base sm:text-lg text-foreground truncate max-w-[280px] sm:max-w-md">
+              <h1 className="font-extrabold text-base sm:text-lg text-foreground truncate max-w-[280px] sm:max-w-md">
                 {recipe.name}
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-accent/20 text-accent uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-accent/20 text-accent border border-accent/30 uppercase tracking-wider shadow-xs">
                 Focus Mode
               </span>
             </div>
@@ -254,26 +254,26 @@ export default function GuidedCookingModal({
         </div>
 
         {/* Global Progress Bar in Header */}
-        <div className="hidden md:flex flex-1 max-w-xs items-center gap-2">
-          <div className="flex-1 bg-border-subtle h-2 rounded-full overflow-hidden">
+        <div className="hidden md:flex flex-1 max-w-xs items-center gap-3">
+          <div className="flex-1 bg-white/[0.06] h-2 rounded-full overflow-hidden border border-white/[0.04]">
             <div
-              className="bg-accent h-full transition-all duration-300 rounded-full"
+              className="bg-accent h-full transition-all duration-300 rounded-full shadow-[0_0_8px_rgba(255,109,0,0.5)]"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <span className="text-xs font-mono text-text-muted">{progressPercent}%</span>
+          <span className="text-xs font-mono font-bold text-text-muted">{progressPercent}%</span>
         </div>
 
         {/* Header Right Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {/* Screen Wake Lock Indicator (Story 68) */}
           <button
             type="button"
             onClick={toggleScreenLock}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-xs ${
               isScreenLocked
                 ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
-                : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground hover:border-border'
+                : 'bg-card-bg/90 border-white/[0.08] text-text-muted hover:text-foreground hover:border-white/20'
             }`}
             title={isScreenLocked ? 'Screen Awake Active (Will not sleep while cooking)' : 'Click to keep screen awake'}
           >
@@ -285,10 +285,10 @@ export default function GuidedCookingModal({
           <button
             type="button"
             onClick={voiceNav.toggleListening}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-xs ${
               voiceNav.isListening
                 ? 'bg-red-500/20 text-red-400 border-red-500/50 shadow-[0_0_12px_rgba(239,68,68,0.4)] animate-pulse'
-                : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground hover:border-accent/40'
+                : 'bg-card-bg/90 border-white/[0.08] text-text-muted hover:text-foreground hover:border-accent/40'
             }`}
             title="Hands-free kitchen voice control (Say: Next, Previous, Done, Start Timer)"
           >
@@ -299,7 +299,7 @@ export default function GuidedCookingModal({
           {/* Close / Exit Focus Mode */}
           <button
             onClick={onClose}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground text-xs font-semibold hover:bg-card-bg/80 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground text-xs font-semibold hover:bg-card-bg transition-all cursor-pointer shadow-xs"
             title="Exit Focus Mode (Esc)"
           >
             <span>✕</span>
@@ -377,7 +377,7 @@ export default function GuidedCookingModal({
                   {currentStep.phaseName}
                 </span>
                 <span className="text-xs text-text-muted">➔</span>
-                <span className="text-xs font-semibold text-foreground bg-card-bg px-3 py-1 rounded-full border border-border-subtle">
+                <span className="text-xs font-semibold text-foreground bg-card-bg/90 px-3 py-1 rounded-full border border-white/[0.08] shadow-xs">
                   {currentStep.blockName}
                 </span>
               </div>
@@ -391,15 +391,15 @@ export default function GuidedCookingModal({
             <div
               className={`p-6 sm:p-8 rounded-3xl border transition-all relative overflow-hidden shadow-2xl ${
                 completedStepIds[currentStep.stepKey]
-                  ? 'bg-emerald-950/20 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.1)]'
+                  ? 'bg-emerald-950/25 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/20'
                   : currentStep.step.isCritical
-                  ? 'bg-[#1C1515] border-warning/50 shadow-[0_0_30px_rgba(255,59,48,0.15)]'
-                  : 'bg-card-bg border-border-subtle'
+                  ? 'bg-[#1C1313] border-warning/50 shadow-[0_0_30px_rgba(239,68,68,0.2)] ring-1 ring-warning/20'
+                  : 'bg-card-bg/90 backdrop-blur-xl border-white/[0.08]'
               }`}
             >
               {/* Critical Alert Ribbon */}
               {currentStep.step.isCritical && (
-                <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-warning/20 border border-warning/40 text-warning text-xs font-bold uppercase tracking-wider animate-pulse">
+                <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-warning/20 border border-warning/40 text-warning text-xs font-bold uppercase tracking-wider animate-pulse shadow-xs">
                   <span>⚠️</span>
                   <span>Critical Execution Step</span>
                 </div>
@@ -416,13 +416,13 @@ export default function GuidedCookingModal({
                 {/* Badges Bar (Heat, Duration) */}
                 <div className="flex flex-wrap gap-2 pt-2">
                   {currentStep.step.heat && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold bg-accent/15 text-accent border border-accent/30">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-accent/15 text-accent border border-accent/30 shadow-xs">
                       🔥 {currentStep.step.heat.intensity} Heat
                       {currentStep.step.heat.precisionTemp && ` (${currentStep.step.heat.precisionTemp}°C)`}
                     </span>
                   )}
                   {scaledDuration && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono font-bold bg-background border border-border-subtle text-foreground">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold bg-background/90 border border-white/[0.08] text-foreground shadow-xs">
                       ⏱ {formatTime(scaledDuration)}
                       {currentStep.step.duration?.isYieldDependent && (
                         <span className="text-[10px] text-accent font-sans">⚡ (Scaled for {targetYield} servings)</span>
@@ -591,7 +591,7 @@ export default function GuidedCookingModal({
               <button
                 onClick={handlePrevious}
                 disabled={currentIndex === 0}
-                className="px-4 sm:px-5 py-3 rounded-2xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground font-semibold text-xs sm:text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 sm:px-5 py-3 rounded-2xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground font-semibold text-xs sm:text-sm disabled:opacity-30 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer shadow-xs"
                 title="Go to previous step (Left Arrow)"
               >
                 <span>⬅</span>
@@ -601,10 +601,10 @@ export default function GuidedCookingModal({
               {/* Checkbox toggle status */}
               <button
                 onClick={handleToggleCurrentStep}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-xs ${
                   completedStepIds[currentStep.stepKey]
-                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40 shadow-sm'
-                    : 'bg-card-bg text-text-muted border-border-subtle hover:text-foreground hover:border-accent/40'
+                    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                    : 'bg-card-bg/90 text-text-muted border-white/[0.08] hover:text-foreground hover:border-accent/40'
                 }`}
                 title="Toggle done status for this step"
               >
@@ -616,7 +616,7 @@ export default function GuidedCookingModal({
                 {currentIndex < totalSteps - 1 && (
                   <button
                     onClick={() => handleNext(false)}
-                    className="px-4 py-3 rounded-2xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground font-semibold text-xs sm:text-sm hover:text-accent transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-4 py-3 rounded-2xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground font-semibold text-xs sm:text-sm hover:text-accent transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
                     title="Move to next step without completing (Right Arrow)"
                   >
                     <span>Next</span>
@@ -626,7 +626,7 @@ export default function GuidedCookingModal({
 
                 <button
                   onClick={() => handleNext(true)}
-                  className="px-5 sm:px-7 py-3 rounded-2xl bg-accent text-background font-black text-xs sm:text-sm hover:bg-accent/85 transition-all shadow-[0_0_20px_rgba(255,109,0,0.3)] flex items-center gap-2 cursor-pointer"
+                  className="px-5 sm:px-7 py-3 rounded-2xl bg-accent text-background font-black text-xs sm:text-sm hover:bg-accent/85 transition-all shadow-[0_0_20px_rgba(255,109,0,0.35)] hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
                   title="Mark as done and advance to next step (Space / Enter)"
                 >
                   <span>{currentIndex === totalSteps - 1 ? '🎉 Finish Cooking' : '✓ Complete & Next'}</span>
@@ -636,7 +636,7 @@ export default function GuidedCookingModal({
             </div>
 
             {/* Jump-to-step Mini Carousel Strip */}
-            <div className="p-2 rounded-2xl bg-card-bg/60 border border-border-subtle flex items-center gap-1.5 overflow-x-auto">
+            <div className="p-2 rounded-2xl bg-card-bg/80 backdrop-blur-sm border border-white/[0.08] flex items-center gap-1.5 overflow-x-auto shadow-inner">
               {allSteps.map((s, idx) => {
                 const isCurrent = idx === currentIndex;
                 const isDone = completedStepIds[s.stepKey];
@@ -647,10 +647,10 @@ export default function GuidedCookingModal({
                     onClick={() => handleJumpToStep(idx)}
                     className={`flex-shrink-0 px-3 py-1.5 rounded-xl text-[11px] font-mono font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                       isCurrent
-                        ? 'bg-accent text-background shadow-sm ring-2 ring-accent'
+                        ? 'bg-accent text-background shadow-md ring-2 ring-accent'
                         : isDone
                         ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/40'
-                        : 'bg-background text-text-muted hover:text-foreground border border-border-subtle'
+                        : 'bg-background/80 text-text-muted hover:text-foreground border border-white/[0.06]'
                     }`}
                     title={`${s.phaseName} - ${s.blockName}`}
                   >

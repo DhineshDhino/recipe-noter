@@ -62,9 +62,9 @@ A high-precision, technical web application for culinary execution, smart recipe
 | **Framework** | Next.js 16 (App Router + Turbopack) |
 | **UI Library** | React 19 (Server + Client Components) |
 | **State Management** | Redux Toolkit (`@reduxjs/toolkit` + `react-redux`) |
-| **Styling** | Tailwind CSS v4 ("Modern Chef" Dark Theme `#121212`, `#FF6D00`) |
+| **Styling** | Tailwind CSS v4 (Obsidian Multi-Tier Theme `#0E0F12`, `#16171B`, `#FF6D00`) |
 | **Speech & Audio** | Web Speech API (`SpeechRecognition`) & Web Audio API (`AudioContext`) |
-| **Testing** | Jest + React Testing Library (14 test suites, 260+ unit tests) |
+| **Testing** | Jest + React Testing Library (22 test suites, 302 unit tests, 100% pass) |
 
 ---
 

@@ -34,15 +34,15 @@ export default function RecipeJourneyTimeline({
   const comparedTries = tries.filter(t => selectedForCompare.includes(t.id));
 
   return (
-    <section className="bg-card-bg border border-border-subtle rounded-2xl p-5 sm:p-6 space-y-4">
+    <section className="bg-card-bg/90 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-5 sm:p-6 space-y-4 shadow-xl">
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle/50 pb-4">
-        <div className="flex items-center gap-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+        <div className="flex items-center gap-3">
           <span className="text-xl">📓</span>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-lg font-bold text-foreground">Cooking Journey &amp; Tries</h2>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-accent/15 text-accent border border-accent/30 font-mono">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-accent/15 text-accent border border-accent/30 font-mono shadow-xs">
                 {tries.length} {tries.length === 1 ? 'Attempt' : 'Attempts'}
               </span>
             </div>
@@ -57,7 +57,7 @@ export default function RecipeJourneyTimeline({
             <button
               type="button"
               onClick={() => setShowCompareModal(true)}
-              className="px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500/30 transition-all flex items-center gap-1 cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-bold hover:bg-amber-500/30 transition-all flex items-center gap-1 cursor-pointer shadow-xs"
             >
               <span>⚖️</span>
               <span>Compare ({selectedForCompare.length})</span>
@@ -67,7 +67,7 @@ export default function RecipeJourneyTimeline({
           <button
             type="button"
             onClick={() => setIsLogModalOpen(true)}
-            className="px-3.5 py-1.5 rounded-xl bg-accent text-background text-xs font-bold hover:bg-accent/85 transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl bg-accent text-background text-xs font-bold hover:bg-accent/85 transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,109,0,0.3)] hover:scale-105 active:scale-95 cursor-pointer"
           >
             <span>➕</span>
             <span>Log a Try</span>
@@ -77,7 +77,7 @@ export default function RecipeJourneyTimeline({
 
       {/* Tries Timeline */}
       {tries.length === 0 ? (
-        <div className="py-10 text-center space-y-2 bg-background/40 rounded-xl border border-dashed border-border-subtle">
+        <div className="py-10 text-center space-y-2 bg-background/40 rounded-xl border border-dashed border-white/[0.08]">
           <span className="text-3xl block">👨‍🍳</span>
           <h4 className="text-xs font-bold text-foreground">No cooking attempts logged yet</h4>
           <p className="text-[11px] text-text-muted max-w-xs mx-auto">
@@ -88,7 +88,7 @@ export default function RecipeJourneyTimeline({
         <div className="space-y-3">
           {tries.map((t, idx) => {
             const isComparing = selectedForCompare.includes(t.id);
-            const formattedDate = new Date(t.timestamp).toLocaleDateString(undefined, {
+            const formattedDate = new Date(t.timestamp).toLocaleDateString('en-US', {
               month: 'short',
               day: 'numeric',
               year: 'numeric',
@@ -97,10 +97,10 @@ export default function RecipeJourneyTimeline({
             return (
               <div
                 key={t.id}
-                className={`p-4 rounded-xl border transition-all ${
+                className={`p-4 rounded-xl border transition-all shadow-xs ${
                   isComparing
-                    ? 'bg-accent/10 border-accent'
-                    : 'bg-background border-border-subtle/80 hover:border-accent/30'
+                    ? 'bg-accent/10 border-accent shadow-sm'
+                    : 'bg-background/80 border-white/[0.08] hover:border-white/20 hover:bg-background'
                 }`}
               >
                 <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
@@ -111,7 +111,7 @@ export default function RecipeJourneyTimeline({
                       className={`w-4 h-4 rounded border flex items-center justify-center text-[10px] cursor-pointer transition-colors ${
                         isComparing
                           ? 'bg-accent text-background border-accent font-bold'
-                          : 'border-border-subtle text-transparent hover:border-accent'
+                          : 'border-white/20 text-transparent hover:border-accent'
                       }`}
                       title="Select for side-by-side comparison"
                     >

@@ -165,10 +165,10 @@ export default function GroceryListModal({
   const optionalCount = aggregatedIngredients.filter(i => i.isOptional).length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-[fadeIn_150ms_ease-out]">
-      <div className="bg-[#181818] border border-border-subtle rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-[fadeIn_150ms_ease-out]">
+      <div className="bg-[#141519]/95 backdrop-blur-2xl border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden ring-1 ring-white/10">
         {/* Header */}
-        <div className="p-6 border-b border-border-subtle flex items-center justify-between bg-card-bg">
+        <div className="p-6 border-b border-white/[0.08] flex items-center justify-between bg-card-bg/60">
           <div className="flex items-center gap-3">
             <span className="text-3xl">🛒</span>
             <div>
@@ -180,15 +180,15 @@ export default function GroceryListModal({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-border-subtle/50 text-text-muted hover:text-foreground flex items-center justify-center text-sm cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-text-muted hover:text-foreground flex items-center justify-center text-sm cursor-pointer transition-colors"
           >
             ✕
           </button>
         </div>
 
         {/* Filter Segment Tabs */}
-        <div className="px-6 pt-3 pb-2 bg-background/70 border-b border-border-subtle flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-1.5 bg-card-bg p-1 rounded-xl border border-border-subtle">
+        <div className="px-6 pt-3 pb-2.5 bg-background/50 border-b border-white/[0.06] flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 bg-card-bg/90 p-1 rounded-xl border border-white/[0.08] shadow-xs">
             <button
               type="button"
               onClick={() => setFilterTier('all')}
@@ -205,7 +205,7 @@ export default function GroceryListModal({
               onClick={() => setFilterTier('critical')}
               className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                 filterTier === 'critical'
-                  ? 'bg-amber-500/30 text-amber-300 border border-amber-500/50 shadow-xs'
+                  ? 'bg-amber-500/25 text-amber-300 border border-amber-500/50 shadow-xs'
                   : 'text-text-muted hover:text-foreground'
               }`}
             >
@@ -217,7 +217,7 @@ export default function GroceryListModal({
               onClick={() => setFilterTier('optional')}
               className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
                 filterTier === 'optional'
-                  ? 'bg-blue-500/30 text-blue-300 border border-blue-500/50 shadow-xs'
+                  ? 'bg-blue-500/25 text-blue-300 border border-blue-500/50 shadow-xs'
                   : 'text-text-muted hover:text-foreground'
               }`}
             >
@@ -227,12 +227,12 @@ export default function GroceryListModal({
           </div>
 
           <div className="text-xs text-text-muted">
-            Bought: <strong className="text-foreground">{completedCount} of {totalCount}</strong>
+            Bought: <strong className="text-foreground font-semibold">{completedCount} of {totalCount}</strong>
           </div>
         </div>
 
         {/* Action Toolbar */}
-        <div className="px-6 py-2.5 border-b border-border-subtle bg-background/50 flex flex-wrap items-center justify-between gap-3">
+        <div className="px-6 py-2.5 border-b border-white/[0.06] bg-background/30 flex flex-wrap items-center justify-between gap-3">
           <div className="text-[11px] text-text-muted">
             Showing <span className="text-accent font-semibold">{filteredIngredients.length}</span> items in this view
           </div>
@@ -240,7 +240,7 @@ export default function GroceryListModal({
             <button
               type="button"
               onClick={handleCopy}
-              className="px-3 py-1.5 rounded-lg bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all"
+              className="px-3.5 py-1.5 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
             >
               <span>{copied ? '✅' : '📋'}</span>
               <span>{copied ? 'Copied to Clipboard!' : 'Copy Checklist'}</span>
@@ -248,7 +248,7 @@ export default function GroceryListModal({
             <button
               type="button"
               onClick={handlePrint}
-              className="px-3 py-1.5 rounded-lg bg-accent text-background text-xs font-bold hover:bg-accent/85 flex items-center gap-1.5 cursor-pointer transition-all"
+              className="px-3.5 py-1.5 rounded-xl bg-accent text-background text-xs font-bold hover:bg-accent/85 flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
             >
               <span>🖨️</span>
               <span>Print / PDF</span>
@@ -265,12 +265,12 @@ export default function GroceryListModal({
           ) : (
             Object.entries(categorized).map(([categoryName, items]) => (
               <div key={categoryName} className="space-y-2.5">
-                <h3 className="text-xs font-bold text-accent uppercase tracking-wider border-b border-border-subtle/60 pb-1 flex items-center gap-2">
+                <h3 className="text-xs font-bold text-accent uppercase tracking-wider border-b border-white/[0.08] pb-1.5 flex items-center gap-2">
                   <span>{categoryName}</span>
                   <span className="text-[10px] text-text-muted font-normal">({items.length} items)</span>
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {items.map(item => {
                     const key = `${item.ingredientId}_${item.unit}`;
                     const isChecked = Boolean(checkedItems[key]);
@@ -279,10 +279,10 @@ export default function GroceryListModal({
                       <div
                         key={key}
                         onClick={() => toggleCheck(key)}
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
+                        className={`flex items-center justify-between p-3.5 rounded-xl border transition-all cursor-pointer select-none shadow-xs ${
                           isChecked
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-text-muted opacity-60'
-                            : 'bg-card-bg border-border-subtle hover:border-accent/40 text-foreground'
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-text-muted opacity-60 shadow-inner'
+                            : 'bg-card-bg/90 border-white/[0.08] hover:border-accent/40 text-foreground hover:bg-card-bg'
                         }`}
                       >
                         <div className="flex items-center gap-3 min-w-0">

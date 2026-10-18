@@ -47,14 +47,14 @@ const Badge = ({
   className?: string;
 }) => {
   const base =
-    'inline-flex items-center text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider relative -top-[1px]';
+    'inline-flex items-center text-[10px] px-2 py-0.5 rounded-md font-semibold tracking-wide relative -top-[1px] transition-colors';
   const variants = {
-    critical: 'bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-xs',
-    optional: 'bg-blue-500/20 text-blue-300 border border-blue-500/40',
-    duration: 'bg-border-subtle text-foreground font-mono tabular-nums border border-border-subtle font-semibold tracking-wide',
-    heat: 'bg-accent/10 text-accent border border-accent/20',
-    spice: 'bg-red-500/20 text-red-400 border border-red-500/30',
-    sweet: 'bg-amber-400/20 text-amber-300 border border-amber-400/30',
+    critical: 'bg-red-500/15 text-red-300 border border-red-500/35 shadow-xs font-bold uppercase tracking-wider',
+    optional: 'bg-blue-500/15 text-blue-300 border border-blue-500/35 uppercase tracking-wider',
+    duration: 'bg-white/[0.06] text-foreground font-mono tabular-nums border border-white/10 font-medium tracking-normal',
+    heat: 'bg-accent/15 text-accent border border-accent/30',
+    spice: 'bg-rose-500/15 text-rose-300 border border-rose-500/30',
+    sweet: 'bg-amber-400/15 text-amber-300 border border-amber-400/30',
   };
   return <span className={`${base} ${variants[variant]} ${className}`}>{children}</span>;
 };
@@ -132,7 +132,7 @@ const StepTimer = ({
       <button
         type="button"
         onClick={handleStart}
-        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 transition-colors text-xs font-semibold"
+        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-accent/10 border border-accent/30 text-accent hover:bg-accent/20 hover:border-accent/50 transition-all text-xs font-semibold shadow-xs cursor-pointer"
         title={`Start ${formatTime(durationMinutes)} countdown timer`}
       >
         <span>⏱</span>
@@ -144,12 +144,12 @@ const StepTimer = ({
   return (
     <div
       onClick={e => e.stopPropagation()}
-      className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-mono transition-all ${
+      className={`inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl border text-xs font-mono transition-all backdrop-blur-md shadow-xs ${
         status === 'finished'
-          ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 animate-pulse'
+          ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.3)]'
           : status === 'running'
-          ? 'bg-accent/15 border-accent text-accent shadow-[0_0_12px_rgba(255,109,0,0.25)]'
-          : 'bg-card-bg border-border-subtle text-foreground'
+          ? 'bg-accent/15 border-accent text-accent shadow-[0_0_15px_rgba(255,109,0,0.3)]'
+          : 'bg-card-bg/90 border-white/[0.08] text-foreground'
       }`}
     >
       <span className="text-sm">⏱</span>
@@ -265,14 +265,14 @@ const PhaseIngredientsAccordion = ({
 }) => {
   if (!ingredients || ingredients.length === 0) return null;
   const containerClass = isGlobal
-    ? 'group mb-6 border-2 border-border-subtle rounded-xl bg-card-bg overflow-hidden shadow-sm'
-    : 'group mb-4 bg-background/50 border border-border-subtle rounded-lg overflow-hidden';
+    ? 'group mb-6 border border-white/[0.08] rounded-2xl bg-card-bg/90 backdrop-blur-sm overflow-hidden shadow-lg hover:border-white/[0.14] transition-all'
+    : 'group mb-4 bg-background/60 border border-white/[0.07] rounded-xl overflow-hidden shadow-xs hover:border-white/[0.12] transition-all';
   const summaryClass = isGlobal
-    ? 'cursor-pointer p-4 font-semibold text-sm text-text-muted uppercase tracking-wider flex justify-between items-center outline-none select-none hover:text-accent transition-colors list-none [&::-webkit-details-marker]:hidden'
-    : 'cursor-pointer p-3 font-semibold text-sm text-text-muted uppercase tracking-wider flex justify-between items-center outline-none select-none hover:text-foreground transition-colors list-none [&::-webkit-details-marker]:hidden';
+    ? 'cursor-pointer p-4 font-bold text-xs sm:text-sm text-text-muted uppercase tracking-wider flex justify-between items-center outline-none select-none hover:text-accent transition-colors list-none [&::-webkit-details-marker]:hidden'
+    : 'cursor-pointer p-3.5 font-bold text-xs sm:text-sm text-text-muted uppercase tracking-wider flex justify-between items-center outline-none select-none hover:text-foreground transition-colors list-none [&::-webkit-details-marker]:hidden';
   const contentClass = isGlobal
-    ? 'p-4 pt-0 border-t border-border-subtle/50 mt-2'
-    : 'p-3 pt-0 border-t border-border-subtle mt-1';
+    ? 'p-4 pt-2 border-t border-white/[0.06] bg-black/10'
+    : 'p-3.5 pt-2 border-t border-white/[0.06] bg-black/10';
   const ingId = (ing: any) => ing.id || ing.ingredientId;
 
   return (
@@ -282,10 +282,10 @@ const PhaseIngredientsAccordion = ({
           <span>{title}</span>
           {isGlobal && onLanguageChange && (
             <div
-              className="flex items-center bg-background border border-border-subtle rounded-lg p-0.5 text-xs normal-case tracking-normal"
+              className="flex items-center bg-background/80 border border-white/[0.08] rounded-xl p-0.5 text-xs normal-case tracking-normal shadow-xs"
               onClick={e => e.stopPropagation()}
             >
-              <span className="text-[10px] text-text-muted px-1.5 font-medium">Script:</span>
+              <span className="text-[10px] text-text-muted px-2 font-medium">Script:</span>
               {(['en', 'ta', 'hi'] as SupportedLanguage[]).map(l => (
                 <button
                   key={l}
@@ -294,10 +294,10 @@ const PhaseIngredientsAccordion = ({
                     e.stopPropagation();
                     onLanguageChange(l);
                   }}
-                  className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all cursor-pointer ${
+                  className={`px-2.5 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                     language === l
                       ? 'bg-accent text-background shadow-xs'
-                      : 'text-text-muted hover:text-foreground'
+                      : 'text-text-muted hover:text-foreground hover:bg-white/[0.04]'
                   }`}
                   title={`Show ingredients in ${l === 'en' ? 'English' : l === 'ta' ? 'Tamil' : 'Hindi'}`}
                 >
@@ -307,12 +307,12 @@ const PhaseIngredientsAccordion = ({
             </div>
           )}
         </div>
-        <span className="transition-transform group-open:rotate-180 text-lg leading-none text-accent">
+        <span className="transition-transform duration-200 group-open:rotate-180 text-lg leading-none text-accent">
           ▾
         </span>
       </summary>
       <div className={contentClass}>
-        <ul className="space-y-1.5">
+        <ul className="space-y-1">
           {ingredients.map((ing, i) => {
             const id = ingId(ing);
             const rawQty = ing.amount ?? ing.quantity;
@@ -342,10 +342,10 @@ const PhaseIngredientsAccordion = ({
             return (
               <li
                 key={i}
-                className="text-foreground text-sm flex justify-between items-center border-b border-border-subtle/30 pb-1.5 gap-2"
+                className="text-foreground text-sm flex justify-between items-center border-b border-white/[0.04] last:border-b-0 py-2.5 px-2.5 rounded-xl hover:bg-white/[0.03] transition-colors gap-3"
               >
-                <span className="flex-1 flex flex-wrap items-center gap-1.5">
-                  <span className="font-medium">{loc.primary}</span>
+                <span className="flex-1 flex flex-wrap items-center gap-2">
+                  <span className="font-semibold text-foreground/95">{loc.primary}</span>
                   {loc.secondary && (
                     <span className="text-[11px] text-text-muted">({loc.secondary})</span>
                   )}
@@ -355,7 +355,7 @@ const PhaseIngredientsAccordion = ({
                   {ing.isOptional && <Badge variant="optional">✨ Optional</Badge>}
                   {subs && subs.length > 0 && (
                     <span
-                      className="px-1.5 py-0.2 rounded-md bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-medium cursor-help"
+                      className="px-2 py-0.5 rounded-md bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-semibold cursor-help"
                       title={`Substitutions: ${subs.map((s: any) => `${s.name}${s.ratioNote ? ` (${s.ratioNote})` : ''}`).join(', ')}`}
                     >
                       🔄 Alt: {subs[0].name}
@@ -371,7 +371,7 @@ const PhaseIngredientsAccordion = ({
                     <span className="text-[10px] text-amber-400 font-mono">(overridden)</span>
                   )}
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   {onOverride ? (
                     <input
                       id={`override-${id}`}
@@ -383,10 +383,10 @@ const PhaseIngredientsAccordion = ({
                         const val = parseFloat(e.target.value);
                         if (!isNaN(val) && val >= 0) onOverride(id, val);
                       }}
-                      className="w-16 bg-background border border-border-subtle rounded px-2 py-0.5 text-accent font-mono text-right text-sm outline-none focus:border-accent transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="w-16 bg-background/90 border border-white/10 rounded-lg px-2 py-1 text-accent font-mono text-right text-sm outline-none focus:border-accent focus:ring-1 focus:ring-accent/40 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none shadow-inner"
                     />
                   ) : (
-                    <span className="tabular-nums font-mono text-accent">{converted.formattedQuantity}</span>
+                    <span className="tabular-nums font-mono text-accent font-semibold">{converted.formattedQuantity}</span>
                   )}
                   <span className="text-text-muted text-xs min-w-[28px]">{onOverride ? ing.unit : converted.unit}</span>
                 </div>
@@ -499,10 +499,10 @@ const RecipeStep = ({
 
   return (
     <div
-      className={`flex items-start gap-4 ${padding} rounded-xl border transition-all select-none group ${
+      className={`flex items-start gap-3.5 sm:gap-4.5 ${padding} rounded-2xl border transition-all select-none group shadow-xs ${
         isCompleted
-          ? 'bg-emerald-950/15 border-emerald-500/40 opacity-75'
-          : 'bg-background border-border-subtle hover:border-accent/50'
+          ? 'bg-emerald-950/20 border-emerald-500/35 opacity-75 shadow-inner'
+          : 'bg-card-bg/90 border-white/[0.08] hover:border-accent/40 hover:bg-card-bg hover:shadow-md'
       }`}
     >
       <input
@@ -510,7 +510,7 @@ const RecipeStep = ({
         id={`checkbox-${stepKey}`}
         checked={isCompleted}
         onChange={onToggle}
-        className="mt-1 w-5 h-5 appearance-none border-2 border-border-subtle rounded-md bg-card-bg checked:bg-emerald-500 checked:border-emerald-500 flex-shrink-0 cursor-pointer transition-all relative checked:after:content-['✓'] checked:after:absolute checked:after:text-background checked:after:font-bold checked:after:text-sm checked:after:left-[3px] checked:after:-top-[1px]"
+        className="mt-0.5 w-5 h-5 appearance-none border-2 border-white/20 rounded-md bg-background/90 checked:bg-emerald-500 checked:border-emerald-500 flex-shrink-0 cursor-pointer transition-all relative checked:after:content-['✓'] checked:after:absolute checked:after:text-background checked:after:font-black checked:after:text-xs checked:after:inset-0 checked:after:flex checked:after:items-center checked:after:justify-center shadow-xs focus:ring-2 focus:ring-emerald-500/40"
       />
       <div className="flex-1 space-y-2 min-w-0">
         <label
@@ -542,7 +542,7 @@ const RecipeStep = ({
 
         {/* Visual Guidance Images (While Cooking vs After Step) */}
         {step.images && step.images.length > 0 && !isCompleted && (
-          <div className="flex flex-wrap gap-2.5 pt-1">
+          <div className="flex flex-wrap gap-2.5 pt-1.5">
             {step.images.map((img: any, imgIdx: number) => (
               <button
                 key={img.id || imgIdx}
@@ -551,17 +551,17 @@ const RecipeStep = ({
                   e.stopPropagation();
                   onImageClick?.(img, step.text);
                 }}
-                className={`flex items-center gap-2.5 p-1.5 pr-3 rounded-lg border text-left cursor-pointer transition-all hover:scale-[1.02] shadow-sm ${
+                className={`flex items-center gap-2.5 p-2 pr-3.5 rounded-xl border text-left cursor-pointer transition-all hover:scale-[1.02] shadow-sm ${
                   img.stage === 'while_cooking'
-                    ? 'bg-amber-500/5 border-amber-500/30 hover:border-amber-500/60'
-                    : 'bg-emerald-500/5 border-emerald-500/30 hover:border-emerald-500/60'
+                    ? 'bg-amber-500/10 border-amber-500/30 hover:border-amber-500/60'
+                    : 'bg-emerald-500/10 border-emerald-500/30 hover:border-emerald-500/60'
                 }`}
                 title="Click to view full photo"
               >
                 <img
                   src={img.url}
                   alt={img.caption || 'Step visual guide'}
-                  className="w-10 h-10 object-cover rounded-md flex-shrink-0 border border-border-subtle"
+                  className="w-11 h-11 object-cover rounded-lg flex-shrink-0 border border-white/10"
                 />
                 <div className="flex flex-col min-w-0">
                   <span
@@ -582,7 +582,7 @@ const RecipeStep = ({
 
         {/* Story 25: Interactive Step Countdown Timer with dynamically scaled duration */}
         {scaledDuration && !isCompleted && (
-          <div className="pt-1">
+          <div className="pt-1.5">
             <StepTimer durationMinutes={scaledDuration} stepText={step.text} />
           </div>
         )}
@@ -745,19 +745,19 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-8 font-sans flex flex-col gap-6 max-w-7xl mx-auto">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 font-sans flex flex-col gap-6 sm:gap-8 max-w-7xl mx-auto">
       {/* Header */}
-      <header className="space-y-4 border-b border-border-subtle pb-6">
+      <header className="space-y-5 border-b border-white/[0.08] pb-6">
         {/* Breadcrumbs & Status */}
         <div className="flex items-center justify-between text-xs text-text-muted">
           <div className="flex items-center gap-2">
             <span>🍳 What 2 Cook</span>
-            <span>/</span>
+            <span className="text-white/20">/</span>
             <span className="text-accent font-semibold">📖 Cook Mode</span>
-            <span>/</span>
+            <span className="text-white/20">/</span>
             <span className="text-foreground font-medium truncate max-w-[200px]">{recipe.name}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-emerald-400 font-mono text-[11px] font-semibold">Stove-side Active</span>
           </div>
@@ -766,37 +766,37 @@ export default function Home() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
                 {recipe.name}
               </h1>
               <button
                 type="button"
                 onClick={() => dispatch(toggleFavorite(recipe.id))}
-                className={`text-xl p-1 rounded-lg transition-transform hover:scale-125 cursor-pointer ${
-                  isFavorite ? 'text-red-500' : 'text-text-muted hover:text-red-400'
+                className={`text-xl p-1.5 rounded-xl bg-card-bg/90 border border-white/[0.08] transition-transform hover:scale-110 cursor-pointer shadow-xs ${
+                  isFavorite ? 'text-red-500 border-red-500/30' : 'text-text-muted hover:text-red-400'
                 }`}
                 title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               >
                 {isFavorite ? '❤️' : '🤍'}
               </button>
               {recipe.id !== 'recipe_adai_001' && (
-                <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-accent/15 text-accent border border-accent/30">
+                <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-accent/15 text-accent border border-accent/30 shadow-xs">
                   Custom Recipe
                 </span>
               )}
             </div>
-            <p className="text-text-muted text-xs sm:text-sm mt-1">
+            <p className="text-text-muted text-xs sm:text-sm mt-1.5">
               Version:{' '}
               <span className="text-foreground font-medium">
                 {recipe.versionHistory?.[0]?.versionName || 'Original'}
               </span>
               {recipe.versionHistory?.[0]?.author && (
-                <> • By <span className="text-foreground">{recipe.versionHistory[0].author}</span></>
+                <> • By <span className="text-foreground font-medium">{recipe.versionHistory[0].author}</span></>
               )}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2.5">
             {/* Story 74: Print Recipe Button */}
             <button
               id="print-recipe-btn"
@@ -804,7 +804,7 @@ export default function Home() {
               onClick={() => {
                 if (typeof window !== 'undefined') window.print();
               }}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer shadow-xs"
               title="Print ink-friendly recipe card or export to PDF"
             >
               <span>🖨️</span>
@@ -815,7 +815,7 @@ export default function Home() {
             <button
               type="button"
               onClick={() => setIsGroceryModalOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card-bg/90 border border-white/[0.08] hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer shadow-xs"
               title="Open smart grocery list for this recipe"
             >
               <span>🛒</span>
@@ -834,7 +834,7 @@ export default function Home() {
             <Link
               href="/editor"
               onClick={handleEditInNoter}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-accent/15 text-accent border border-accent/40 hover:bg-accent/25 text-xs font-bold transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-accent/15 text-accent border border-accent/40 hover:bg-accent/25 text-xs font-bold transition-all shadow-xs"
             >
               <span>📝</span>
               <span>Edit in Noter</span>
@@ -846,7 +846,7 @@ export default function Home() {
         <div className="flex flex-wrap gap-x-6 gap-y-3 items-center justify-between">
           <div className="flex flex-wrap gap-3 items-center">
             {/* Servings input */}
-            <div className="flex items-center gap-2 bg-card-bg border border-border-subtle rounded-lg px-3 py-1.5 focus-within:border-accent transition-colors">
+            <div className="flex items-center gap-2 bg-card-bg/90 border border-white/[0.08] rounded-xl px-3.5 py-1.5 focus-within:border-accent transition-all shadow-xs">
               <label htmlFor="yield-input" className="text-text-muted text-sm font-medium whitespace-nowrap">
                 Servings
               </label>
@@ -864,11 +864,11 @@ export default function Home() {
             </div>
 
             {/* Story 70: Unit System Toggle */}
-            <div className="flex items-center bg-card-bg border border-border-subtle rounded-lg p-0.5 text-xs font-semibold">
+            <div className="flex items-center bg-card-bg/90 border border-white/[0.08] rounded-xl p-1 text-xs font-semibold shadow-xs">
               <button
                 type="button"
                 onClick={() => dispatch(setUnitSystem('metric'))}
-                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   unitSystem === 'metric'
                     ? 'bg-accent text-background shadow-xs'
                     : 'text-text-muted hover:text-foreground'
@@ -880,7 +880,7 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => dispatch(setUnitSystem('us_customary'))}
-                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   unitSystem === 'us_customary'
                     ? 'bg-accent text-background shadow-xs'
                     : 'text-text-muted hover:text-foreground'
@@ -892,23 +892,23 @@ export default function Home() {
             </div>
 
             {/* Total time breakdown */}
-            <div className="flex items-center gap-2 bg-card-bg border border-border-subtle rounded-lg px-3 py-1.5 text-xs sm:text-sm">
+            <div className="flex items-center gap-2.5 bg-card-bg/90 border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs sm:text-sm shadow-xs">
               <span className="text-foreground font-semibold">Total: {formatTime(totalTime)}</span>
-              <span className="text-text-muted">|</span>
+              <span className="text-white/20">|</span>
               <span className="text-text-muted">
-                Prep: <span className="text-foreground">{formatTime(totalPrepTime)}</span>
+                Prep: <span className="text-foreground font-medium">{formatTime(totalPrepTime)}</span>
               </span>
               {totalPassiveTime > 0 && (
                 <>
-                  <span className="text-text-muted">•</span>
+                  <span className="text-white/20">•</span>
                   <span className="text-text-muted">
-                    Rest: <span className="text-foreground">{formatTime(totalPassiveTime)}</span>
+                    Rest: <span className="text-foreground font-medium">{formatTime(totalPassiveTime)}</span>
                   </span>
                 </>
               )}
-              <span className="text-text-muted">•</span>
+              <span className="text-white/20">•</span>
               <span className="text-text-muted">
-                Cook: <span className="text-foreground">{formatTime(totalCookTime)}</span>
+                Cook: <span className="text-foreground font-medium">{formatTime(totalCookTime)}</span>
               </span>
             </div>
 
@@ -916,10 +916,10 @@ export default function Home() {
             <button
               id="taste-profile-toggle"
               onClick={() => setShowTasteControls(!showTasteControls)}
-              className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+              className={`px-3.5 py-2 rounded-xl border text-xs font-semibold flex items-center gap-2 transition-all shadow-xs cursor-pointer ${
                 showTasteControls || spiceToleranceMultiplier !== 1.0 || sweetToleranceMultiplier !== 1.0
-                  ? 'bg-accent/15 border-accent text-accent'
-                  : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground'
+                  ? 'bg-accent/15 border-accent text-accent shadow-[0_0_12px_rgba(255,109,0,0.2)]'
+                  : 'bg-card-bg/90 border-white/[0.08] text-text-muted hover:text-foreground hover:border-white/20'
               }`}
             >
               <span>🌶️ / 🍯</span>
@@ -932,16 +932,16 @@ export default function Home() {
 
           {/* Story 24: Cooking Progress Summary */}
           {totalStepsCount > 0 && (
-            <div className="flex items-center gap-3 bg-card-bg border border-border-subtle px-4 py-2 rounded-xl">
+            <div className="flex items-center gap-3 bg-card-bg/90 border border-white/[0.08] px-4 py-2 rounded-xl shadow-xs">
               <div className="text-xs">
                 <span className="font-bold text-foreground">
                   {completedStepsCount}/{totalStepsCount}
                 </span>{' '}
                 <span className="text-text-muted">Steps Done ({progressPercentage}%)</span>
               </div>
-              <div className="w-24 bg-background border border-border-subtle h-2 rounded-full overflow-hidden">
+              <div className="w-24 bg-background border border-white/[0.08] h-2 rounded-full overflow-hidden">
                 <div
-                  className="bg-emerald-500 h-full transition-all duration-300 rounded-full"
+                  className="bg-emerald-500 h-full transition-all duration-300 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                   style={{ width: `${progressPercentage}%` }}
                 />
               </div>
@@ -949,7 +949,7 @@ export default function Home() {
                 <button
                   id="reset-progress-btn"
                   onClick={() => dispatch(resetStepProgress())}
-                  className="text-[11px] text-text-muted hover:text-warning transition-colors font-medium ml-1"
+                  className="text-[11px] text-text-muted hover:text-warning transition-colors font-medium ml-1 cursor-pointer"
                   title="Reset all checked steps"
                 >
                   Reset
@@ -961,7 +961,7 @@ export default function Home() {
 
         {/* Story 26: Taste Profile Adjustment Bar */}
         {showTasteControls && (
-          <div className="p-4 rounded-xl bg-card-bg border border-accent/30 space-y-4 animate-[fadeIn_200ms_ease-out]">
+          <div className="p-5 rounded-2xl bg-card-bg/95 backdrop-blur-md border border-accent/40 space-y-4 animate-[fadeIn_200ms_ease-out] shadow-xl">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-bold uppercase tracking-wider text-accent">
                 Taste Profile Tolerance Adjusters
@@ -1067,7 +1067,7 @@ export default function Home() {
           {/* Prep Phase */}
           {recipe.prepBlocks && recipe.prepBlocks.length > 0 && (
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">{getUiString('prepPhase', language)}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-4">{getUiString('prepPhase', language)}</h2>
               <PhaseIngredientsAccordion
                 ingredients={prepIngredients}
                 title={`${getUiString('prepPhase', language)} ${getUiString('ingredients', language)}`}
@@ -1078,11 +1078,11 @@ export default function Home() {
                 {recipe.prepBlocks.map((block, idx) => (
                   <div
                     key={idx}
-                    className="bg-card-bg border border-border-subtle rounded-xl p-6 shadow-xl"
+                    className="bg-card-bg/90 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-5 sm:p-6 shadow-xl hover:border-white/[0.14] transition-all"
                   >
-                    <h3 className="text-xl font-medium text-accent mb-4">
+                    <h3 className="text-lg sm:text-xl font-bold text-accent mb-4">
                       {block.name}{' '}
-                      <span className="text-sm text-text-muted ml-2">
+                      <span className="text-xs sm:text-sm font-normal text-text-muted ml-2">
                         ({formatTime(calculateBlockDuration(block))})
                       </span>
                     </h3>
@@ -1093,7 +1093,7 @@ export default function Home() {
                       {...accordionProps}
                     />
                     <div>
-                      <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-2">
+                      <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2.5">
                         Steps
                       </h4>
                       <div className="space-y-3">
@@ -1110,7 +1110,7 @@ export default function Home() {
                               onToggle={() => dispatch(toggleStepCompleted({ stepKey }))}
                               onImageClick={(img, stepText) => setLightboxImage({ ...img, stepText })}
                               textSize="text-sm"
-                              padding="p-3"
+                              padding="p-3.5 sm:p-4"
                               masterIngredients={recipe.masterIngredients}
                             />
                           );
@@ -1126,16 +1126,16 @@ export default function Home() {
           {/* Passive Phase */}
           {recipe.passiveBlocks && recipe.passiveBlocks.length > 0 && (
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">{getUiString('restPhase', language)}</h2>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground mb-4">{getUiString('restPhase', language)}</h2>
               <div className="space-y-6">
                 {recipe.passiveBlocks.map((block, idx) => (
                   <div
                     key={idx}
-                    className="bg-card-bg border border-border-subtle rounded-xl p-6 shadow-xl opacity-90 hover:opacity-100 transition-opacity"
+                    className="bg-card-bg/90 backdrop-blur-sm border border-white/[0.08] rounded-2xl p-5 sm:p-6 shadow-xl opacity-90 hover:opacity-100 hover:border-white/[0.14] transition-all"
                   >
-                    <h3 className="text-xl font-medium text-foreground mb-4">
+                    <h3 className="text-lg sm:text-xl font-bold text-foreground mb-4">
                       {block.name}{' '}
-                      <span className="text-sm text-text-muted ml-2">
+                      <span className="text-xs sm:text-sm font-normal text-text-muted ml-2">
                         ({formatTime(calculateBlockDuration(block))})
                       </span>
                     </h3>
@@ -1159,7 +1159,7 @@ export default function Home() {
                             onToggle={() => dispatch(toggleStepCompleted({ stepKey }))}
                             onImageClick={(img, stepText) => setLightboxImage({ ...img, stepText })}
                             textSize="text-sm"
-                            padding="p-3"
+                            padding="p-3.5 sm:p-4"
                             masterIngredients={recipe.masterIngredients}
                           />
                         );
@@ -1176,8 +1176,8 @@ export default function Home() {
         {recipe.cookBlocks && recipe.cookBlocks.length > 0 && (
           <div className="flex flex-col gap-8">
             <section className="lg:sticky lg:top-8">
-              <h2 className="text-2xl font-semibold text-accent mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-accent mb-4 flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
                 {getUiString('cookPhase', language)}
               </h2>
               <PhaseIngredientsAccordion
@@ -1190,12 +1190,12 @@ export default function Home() {
                 {recipe.cookBlocks.map((block, idx) => (
                   <div
                     key={idx}
-                    className="bg-card-bg border-2 border-border-subtle rounded-xl p-6 shadow-2xl relative overflow-hidden"
+                    className="bg-card-bg/95 backdrop-blur-sm border border-accent/35 rounded-2xl p-5 sm:p-6 shadow-2xl relative overflow-hidden ring-1 ring-accent/15"
                   >
-                    <div className="absolute top-0 left-0 w-1 h-full bg-accent" />
-                    <h3 className="text-xl font-medium text-accent mb-4">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-accent to-amber-500" />
+                    <h3 className="text-lg sm:text-xl font-bold text-accent mb-4 pl-1">
                       {block.name}{' '}
-                      <span className="text-sm text-text-muted ml-2">
+                      <span className="text-xs sm:text-sm font-normal text-text-muted ml-2">
                         ({formatTime(calculateBlockDuration(block))})
                       </span>
                     </h3>
@@ -1206,7 +1206,7 @@ export default function Home() {
                       {...accordionProps}
                     />
                     <div>
-                      <h4 className="text-sm font-semibold text-text-muted uppercase tracking-wider mb-2">
+                      <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2.5 pl-1">
                         Execution
                       </h4>
                       <div className="space-y-3">
@@ -1223,7 +1223,7 @@ export default function Home() {
                               onToggle={() => dispatch(toggleStepCompleted({ stepKey }))}
                               onImageClick={(img, stepText) => setLightboxImage({ ...img, stepText })}
                               textSize="text-base"
-                              padding="p-4"
+                              padding="p-4 sm:p-4.5"
                               masterIngredients={recipe.masterIngredients}
                             />
                           );

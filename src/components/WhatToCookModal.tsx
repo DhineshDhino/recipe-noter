@@ -137,17 +137,17 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-[fadeIn_150ms_ease-out]">
-      <div className="bg-[#141414] border border-border-subtle rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden">
+      <div className="bg-[#141519]/95 backdrop-blur-2xl border border-white/10 rounded-2xl w-full max-w-5xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden ring-1 ring-white/10">
         {/* Header */}
-        <div className="p-5 border-b border-border-subtle bg-card-bg flex flex-wrap items-center justify-between gap-4">
+        <div className="p-5 border-b border-white/[0.08] bg-card-bg/60 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-accent text-background flex items-center justify-center text-xl font-bold shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-accent to-amber-500 text-background flex items-center justify-center text-xl font-bold shadow-[0_0_15px_rgba(255,109,0,0.3)]">
               🍽️
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg sm:text-xl font-bold text-foreground">What to Cook</h2>
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-accent/20 text-accent border border-accent/40 uppercase">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-accent/20 text-accent border border-accent/40 uppercase shadow-xs">
                   Circadian Matcher
                 </span>
               </div>
@@ -161,7 +161,7 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
             <button
               type="button"
               onClick={handleSurpriseMe}
-              className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
               title="Pick a random recipe matching your constraints"
             >
               <span>🎲</span>
@@ -170,7 +170,7 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
             <button
               type="button"
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-border-subtle/50 text-text-muted hover:text-foreground flex items-center justify-center text-sm cursor-pointer"
+              className="w-8 h-8 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-text-muted hover:text-foreground flex items-center justify-center text-sm cursor-pointer transition-colors"
             >
               ✕
             </button>
@@ -178,7 +178,7 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
         </div>
 
         {/* Circadian Meal Slot Pill Bar (Story 33) */}
-        <div className="px-5 py-3 border-b border-border-subtle bg-background/50 flex flex-wrap items-center gap-2">
+        <div className="px-5 py-3 border-b border-white/[0.06] bg-background/50 flex flex-wrap items-center gap-2">
           <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted mr-1">Meal Time:</span>
           {[
             { id: 'all', label: 'All Meals', emoji: '✨' },
@@ -196,10 +196,10 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
                 key={slot.id}
                 type="button"
                 onClick={() => setActiveMealSlot(slot.id as any)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
                   isSelected
                     ? 'bg-accent text-background font-bold border-accent shadow-sm'
-                    : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground hover:border-accent/40'
+                    : 'bg-card-bg/90 border-white/[0.08] text-text-muted hover:text-foreground hover:border-accent/40'
                 }`}
               >
                 <span>{slot.emoji}</span>
@@ -213,11 +213,11 @@ export default function WhatToCookModal({ isOpen, onClose }: WhatToCookModalProp
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="px-5 py-3 border-b border-border-subtle bg-card-bg/60 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="px-5 py-3 border-b border-white/[0.06] bg-card-bg/40 flex flex-wrap items-center justify-between gap-3 text-xs">
           {/* Quick Filters */}
           <div className="flex flex-wrap items-center gap-2">
             {/* 3-Tier Scope Switcher (Story 45) */}
-            <div className="flex items-center bg-background border border-border-subtle rounded-lg p-0.5">
+            <div className="flex items-center bg-background/80 border border-white/[0.08] rounded-xl p-0.5 shadow-xs">
               <button
                 type="button"
                 onClick={() => setScope('authored')}

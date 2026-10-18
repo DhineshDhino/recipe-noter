@@ -8,19 +8,33 @@ This is a sleek, premium dark mode aesthetic. It uses deep charcoals with a vibr
 
 ---
 
-## 2. Color Palette
-* **Primary Background:** Deep Charcoal and True Black (e.g., `#121212`, `#1E1E1E`). Helps reduce screen glare in bright kitchens.
-* **Text Color:** High contrast soft white/light grey (`#E0E0E0`) for primary readability; muted grey (`#9E9E9E`) for secondary data.
-* **Accent Color:** "Stove-Flame" Orange (`#FF6D00`). Used strictly to highlight active steps, timers, interactive inputs, and scaled quantity values.
-* **Warning/Alert Color:** Vibrant Red (`#FF3B30`) for "Ratio Mismatch" warnings and critical step callouts.
+## 2. Color Palette & Elevation Architecture
+* **Multi-Tier Obsidian Elevation:**
+  * **Base Background:** Deep Obsidian Black (`#0E0F12`). Prevents harsh screen glare in bright kitchens while maintaining true contrast.
+  * **Level 1 Card Surfaces:** Deep Charcoal (`#16171B`). Used for core phase blocks and content containers.
+  * **Level 2 Elevated Surfaces:** Charcoal Tint (`#1F2026`). Used for modal sheets, sticky floating bars, and popovers.
+  * **Level 3 Interactive Controls:** Surface Grey (`#262730`). Used for active buttons and nested sub-cards.
+* **Translucent Hairline Borders:** Strictly avoid opaque `#333333`. Use translucent white borders (`border-white/[0.08]` default, `border-white/[0.15]` on hover) and `#262732` (`border-subtle`) for inner dividers.
+* **Text Contrast:** High-contrast off-white (`#EDEDF0`) for primary readability; muted grey (`#9496A1`) for secondary metadata and units.
+* **Accent Color:** "Stove-Flame" Warm Orange (`#FF6D00` / `#FF7D1A`). Used strictly to highlight active steps, timers, interactive inputs, and scaled quantity values, accompanied by subtle ambient glows (`rgba(255, 109, 0, 0.12)`).
+* **Warning/Alert Color:** Vibrant Red (`#EF4444` / `#FF3B30`) for "Ratio Mismatch" warnings and critical step callouts.
+* **Success/Active State:** Emerald (`#10B981`) for completed steps, wake lock indicators, and completed timers.
 * **Optional/Caution Color:** Amber (`#F59E0B`) for optional ingredient badges and non-blocking warnings.
 
 ---
 
-## 3. Typography
+## 3. Typography & Touch Ergonomics
 * **Headings:** Modern, geometric sans-serif (Inter) for a clean, sharp look.
 * **Body Text:** Highly readable sans-serif, optimized for quick scanning from a distance.
 * **Numbers & Quantities:** Monospaced / tabular numerals are **mandatory** for all precision metrics (e.g., `12.55 g`, `03:45`). Values must align vertically.
+* **Stove-Side Touch Ergonomics:**
+  * **Minimum Hitbox:** 44×44px touch area for all interactive elements.
+  * **Ingredient & Step Rows:** Expanded `py-2.5 px-3 rounded-xl` with interactive hover pseudo-states (`hover:bg-white/[0.03]`).
+  * **Control Envelopes:** Standardized height (`h-9` or `py-1.5 px-3`) across servings inputs, unit toggles, and metadata pills.
+* **Corner Radius Geometry:**
+  * Containers & Modals: `rounded-2xl` (16px)
+  * Controls & Inputs: `rounded-xl` (12px)
+  * Badges & Indicators: `rounded-full` (9999px)
 
 ---
 
@@ -30,14 +44,15 @@ This is a sleek, premium dark mode aesthetic. It uses deep charcoals with a vibr
 * **Two-column grid** on large screens: Prep/Passive on the left, Active Cooking on the right.
 * **Single stacked column** on mobile, ordered: Prep → Passive → Cook.
 * The Active Cooking column is `sticky` on desktop so stove-side steps are always visible during scroll.
+* Sticky headers and floating toolbars use frosted glassmorphism (`backdrop-blur-xl bg-[#0E0F12]/85`).
 
 ### 4.2 Cards & Blocks
-* Component blocks use rounded dark cards with subtle borders and elevation shadow.
-* Active Cook blocks have an accent-colored left-edge `stripe` (1px bar on the left side).
+* Component blocks use `rounded-2xl` dark cards with hairline translucent borders (`border-white/[0.08]`) and elevation shadow.
+* Active Cook blocks have an accent-colored left-edge `stripe` (gradient bar on the left side).
 
 ### 4.3 Checkboxes & Steps
 * Custom styled to blend with the dark theme. Native bright white browser checkboxes are strictly forbidden.
-* Must be sleek dark squares that illuminate with the Accent Color when checked.
+* Must be sleek dark squares (`rounded-lg`, `w-5 h-5`) with custom checkmarks that illuminate with the Accent Color when checked.
 
 ### 4.4 Badges & Tags (Inline Rule)
 All badges and tags must render **inline** alongside their associated text — never stacked below:
