@@ -8,6 +8,8 @@ import { toggleStepCompleted } from '@/store/recipeSlice';
 import { formatTime, calculateScaledQuantity, calculateScaledDuration, formatIngredientName, playTimerChime } from '@/lib/utils';
 import { useVoiceNavigation } from '@/lib/useVoiceNavigation';
 import { formatLocalizedIngredient, SupportedLanguage } from '@/lib/conversions';
+import { useScreenWakeLock } from '@/lib/useScreenWakeLock';
+import InteractiveStepText from '@/components/InteractiveStepText';
 
 interface GuidedCookingModalProps {
   isOpen: boolean;
@@ -43,6 +45,10 @@ export default function GuidedCookingModal({
 }: GuidedCookingModalProps) {
   const dispatch = useDispatch();
   const completedStepIds = useSelector((state: RootState) => state.recipe.completedStepIds);
+
+  const { isLocked: isScreenLocked, toggleWakeLock: toggleScreenLock } = useScreenWakeLock({
+    autoRequest: isOpen,
+  });
 
   // Flatten all steps across prep, passive, and cook blocks
   const allSteps: FlattenedStep[] = useMemo(() => {
@@ -260,6 +266,21 @@ export default function GuidedCookingModal({
 
         {/* Header Right Actions */}
         <div className="flex items-center gap-2">
+          {/* Screen Wake Lock Indicator (Story 68) */}
+          <button
+            type="button"
+            onClick={toggleScreenLock}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+              isScreenLocked
+                ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.3)]'
+                : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground hover:border-border'
+            }`}
+            title={isScreenLocked ? 'Screen Awake Active (Will not sleep while cooking)' : 'Click to keep screen awake'}
+          >
+            <span className={isScreenLocked ? 'animate-pulse' : 'opacity-60'}>💡</span>
+            <span className="hidden sm:inline">{isScreenLocked ? 'Screen Awake' : 'Awake Off'}</span>
+          </button>
+
           {/* Hands-Free Voice Control Toggle (Story 22) */}
           <button
             type="button"
@@ -386,9 +407,11 @@ export default function GuidedCookingModal({
 
               {/* Step Text (Large Stove-side Typography) */}
               <div className="space-y-4">
-                <p className="text-xl sm:text-2xl md:text-3xl font-medium text-foreground leading-snug">
-                  {currentStep.step.text}
-                </p>
+                <InteractiveStepText
+                  text={currentStep.step.text}
+                  masterIngredients={recipe.masterIngredients}
+                  className="text-xl sm:text-2xl md:text-3xl font-medium text-foreground leading-snug block"
+                />
 
                 {/* Badges Bar (Heat, Duration) */}
                 <div className="flex flex-wrap gap-2 pt-2">

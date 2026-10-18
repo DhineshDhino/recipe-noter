@@ -43,3 +43,71 @@ body {
   to   { opacity: 1; }
 }
 
+/* Story 74: Ink-Friendly 1-Page Printable Recipe Card & PDF Stylesheet */
+@media print {
+  @page {
+    margin: 1.2cm;
+    size: auto;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  /* Hide navigation, floating HUDs, action buttons, modals, audio controls */
+  nav,
+  header button,
+  button,
+  .no-print,
+  #global-timers-bar,
+  #focus-mode-btn,
+  #taste-profile-toggle,
+  #print-recipe-btn,
+  .discussion-section,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  /* Card and section background overrides for crisp ink saving */
+  .bg-card-bg,
+  .bg-background,
+  div[class*="bg-card-bg"],
+  div[class*="bg-background"] {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border-color: #cccccc !important;
+    color: #111111 !important;
+  }
+
+  p, span, h1, h2, h3, h4, li {
+    color: #111111 !important;
+  }
+
+  .text-accent,
+  .text-text-muted,
+  .text-emerald-400,
+  .text-amber-300 {
+    color: #222222 !important;
+    font-weight: 600 !important;
+  }
+
+  /* Ensure phase accordions are forced open during printing */
+  details {
+    display: block !important;
+  }
+
+  details > div {
+    display: block !important;
+  }
+
+  /* Page break rules */
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+
+  section, .break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

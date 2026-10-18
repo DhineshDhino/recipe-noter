@@ -95,7 +95,7 @@ const createDefaultBlock = (phase: PhaseKey): EditableBlock => ({
 
 // --- Initial State ---
 
-const initialState: EditorState = {
+export const initialEditorState: EditorState = {
   recipeName: '',
   baseYield: 4,
   requiredEquipment: [],
@@ -119,7 +119,7 @@ const initialState: EditorState = {
 
 export const editorSlice = createSlice({
   name: 'editor',
-  initialState,
+  initialState: initialEditorState,
   reducers: {
     /** Switch the active phase tab */
     setActivePhase: (state, action: PayloadAction<PhaseKey>) => {
@@ -740,7 +740,12 @@ export const editorSlice = createSlice({
 
     addMasterIngredient: (
       state,
-      action: PayloadAction<{ id?: string; defaultName: string; translations?: { language: string; name: string }[] }>
+      action: PayloadAction<{
+        id?: string;
+        defaultName: string;
+        translations?: { language: string; name: string }[];
+        substitutions?: { name: string; ratioNote?: string }[];
+      }>
     ) => {
       const defaultName = action.payload.defaultName.trim();
       if (!defaultName) return;
@@ -750,18 +755,25 @@ export const editorSlice = createSlice({
           id,
           defaultName,
           translations: action.payload.translations || [],
+          substitutions: action.payload.substitutions || [],
         });
       }
     },
 
     updateMasterIngredient: (
       state,
-      action: PayloadAction<{ id: string; defaultName: string; translations?: { language: string; name: string }[] }>
+      action: PayloadAction<{
+        id: string;
+        defaultName: string;
+        translations?: { language: string; name: string }[];
+        substitutions?: { name: string; ratioNote?: string }[];
+      }>
     ) => {
       const ing = state.masterIngredients.find(m => m.id === action.payload.id);
       if (ing) {
         if (action.payload.defaultName?.trim()) ing.defaultName = action.payload.defaultName.trim();
         if (action.payload.translations) ing.translations = action.payload.translations;
+        if (action.payload.substitutions) ing.substitutions = action.payload.substitutions;
       }
     },
 

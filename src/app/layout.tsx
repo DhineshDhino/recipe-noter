@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "@/store/StoreProvider";
 import AppNavbar from "@/components/AppNavbar";
+import GlobalTimersBar from "@/components/GlobalTimersBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
         <StoreProvider>
           <AppNavbar />
           <div className="flex-1">{children}</div>
+          <GlobalTimersBar />
         </StoreProvider>
       </body>
     </html>

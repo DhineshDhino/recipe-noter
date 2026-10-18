@@ -14,6 +14,19 @@ export interface RatioMismatch {
   expectedQuantities: Record<string, number>;
 }
 
+// Story 69: Parallel Multi-Timer tracking
+export interface ActiveTimer {
+  id: string;
+  label: string;
+  stepKey: string;
+  blockName?: string;
+  phase?: 'prep' | 'passive' | 'cook';
+  totalDurationSeconds: number;
+  remainingSeconds: number;
+  isRunning: boolean;
+  isCompleted: boolean;
+}
+
 export interface RecipeState {
   recipe: Recipe | null;
   targetYield: number;
@@ -41,6 +54,10 @@ export interface RecipeState {
   currentUser: UserProfile;
   // Story 44: Custom user collections (e.g., "Sunday Brunch" -> [recipe IDs])
   customCollections: Record<string, string[]>;
+  // Story 69: Active Parallel Multi-Timers
+  activeTimers: Record<string, ActiveTimer>;
+  // Story 70: Metric vs US Customary Units
+  unitSystem: 'metric' | 'us_customary';
 }
 
 const defaultUser: UserProfile = {
@@ -51,7 +68,7 @@ const defaultUser: UserProfile = {
   isLoggedIn: true,
 };
 
-const initialState: RecipeState = {
+export const initialRecipeState: RecipeState = {
   recipe: mockAdaiRecipe,
   targetYield: mockAdaiRecipe.baseYield,
   spiceToleranceMultiplier: 1.0,
@@ -112,11 +129,13 @@ const initialState: RecipeState = {
     'Sunday Brunch': ['recipe_adai_001', 'recipe_upma_003'],
     'Royal Dinner': ['recipe_pbm_002'],
   },
+  activeTimers: {},
+  unitSystem: 'metric',
 };
 
 export const recipeSlice = createSlice({
   name: 'recipe',
-  initialState,
+  initialState: initialRecipeState,
   reducers: {
     /**
      * Story 12.1: Load a new active recipe into Reader View
@@ -407,6 +426,97 @@ export const recipeSlice = createSlice({
         state.customCollections[collectionName].push(recipeId);
       }
     },
+
+    /**
+     * Story 69: Start or restart a global timer
+     */
+    startGlobalTimer: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        label: string;
+        durationSeconds: number;
+        stepKey: string;
+        blockName?: string;
+        phase?: 'prep' | 'passive' | 'cook';
+      }>
+    ) => {
+      const { id, label, durationSeconds, stepKey, blockName, phase } = action.payload;
+      state.activeTimers[id] = {
+        id,
+        label,
+        stepKey,
+        blockName,
+        phase,
+        totalDurationSeconds: durationSeconds,
+        remainingSeconds: durationSeconds,
+        isRunning: true,
+        isCompleted: false,
+      };
+    },
+
+    /**
+     * Story 69: Pause an active timer
+     */
+    pauseGlobalTimer: (state, action: PayloadAction<string>) => {
+      const timer = state.activeTimers[action.payload];
+      if (timer) {
+        timer.isRunning = false;
+      }
+    },
+
+    /**
+     * Story 69: Resume a paused timer
+     */
+    resumeGlobalTimer: (state, action: PayloadAction<string>) => {
+      const timer = state.activeTimers[action.payload];
+      if (timer && timer.remainingSeconds > 0) {
+        timer.isRunning = true;
+        timer.isCompleted = false;
+      }
+    },
+
+    /**
+     * Story 69: Reset a timer back to full duration
+     */
+    resetGlobalTimer: (state, action: PayloadAction<string>) => {
+      const timer = state.activeTimers[action.payload];
+      if (timer) {
+        timer.remainingSeconds = timer.totalDurationSeconds;
+        timer.isRunning = false;
+        timer.isCompleted = false;
+      }
+    },
+
+    /**
+     * Story 69: Dismiss / remove a timer from the HUD
+     */
+    dismissGlobalTimer: (state, action: PayloadAction<string>) => {
+      delete state.activeTimers[action.payload];
+    },
+
+    /**
+     * Story 69: Tick all running active timers down by 1 second
+     */
+    tickGlobalTimers: (state) => {
+      Object.values(state.activeTimers).forEach((timer) => {
+        if (timer.isRunning && timer.remainingSeconds > 0) {
+          timer.remainingSeconds -= 1;
+          if (timer.remainingSeconds <= 0) {
+            timer.remainingSeconds = 0;
+            timer.isRunning = false;
+            timer.isCompleted = true;
+          }
+        }
+      });
+    },
+
+    /**
+     * Story 70: Set active unit system
+     */
+    setUnitSystem: (state, action: PayloadAction<'metric' | 'us_customary'>) => {
+      state.unitSystem = action.payload;
+    },
   },
 });
 
@@ -436,6 +546,13 @@ export const {
   logoutUser,
   createCollection,
   toggleRecipeInCollection,
+  startGlobalTimer,
+  pauseGlobalTimer,
+  resumeGlobalTimer,
+  resetGlobalTimer,
+  dismissGlobalTimer,
+  tickGlobalTimers,
+  setUnitSystem,
 } = recipeSlice.actions;
 
 export default recipeSlice.reducer;

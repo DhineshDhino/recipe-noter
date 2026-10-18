@@ -12,6 +12,7 @@ import RecipeLibraryModal from './RecipeLibraryModal';
 import TamilVoiceNoteModal from './TamilVoiceNoteModal';
 import WhatToCookModal from './WhatToCookModal';
 import UserProfileModal from './UserProfileModal';
+import { useScreenWakeLock } from '@/lib/useScreenWakeLock';
 
 export default function AppNavbar() {
   const pathname = usePathname();
@@ -20,6 +21,8 @@ export default function AppNavbar() {
   const activeRecipe = useSelector((state: RootState) => state.recipe.recipe);
   const editorRecipeName = useSelector((state: RootState) => state.editor.recipeName);
   const currentUser = useSelector((state: RootState) => state.recipe.currentUser);
+
+  const { isLocked, toggleWakeLock } = useScreenWakeLock();
 
   const [isLibraryOpen, setIsLibraryOpen] = useState(false);
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false);
@@ -130,6 +133,22 @@ export default function AppNavbar() {
 
           {/* Right Action Toolbar: Quick Switcher & New Recipe */}
           <div className="flex items-center gap-2.5">
+            {/* Screen Wake Lock Toggle (Story 68) */}
+            <button
+              onClick={() => toggleWakeLock()}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all cursor-pointer ${
+                isLocked
+                  ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.2)]'
+                  : 'bg-card-bg border-border-subtle text-text-muted hover:text-foreground hover:border-border'
+              }`}
+              title={isLocked ? 'Screen Wake Lock Active (Screen will not sleep)' : 'Click to keep screen awake while cooking'}
+            >
+              <span className={isLocked ? 'animate-pulse' : 'opacity-60'}>💡</span>
+              <span className="hidden xl:inline text-[11px] font-medium">
+                {isLocked ? 'Awake' : 'Screen'}
+              </span>
+            </button>
+
             {/* Quick Switcher Dropdown */}
             <div className="relative">
               <button

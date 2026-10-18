@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 import { Recipe, ScopedIngredient } from '@/lib/types';
 import { calculateScaledQuantity } from '@/lib/utils';
-import { formatLocalizedIngredient, SupportedLanguage } from '@/lib/conversions';
+import { formatLocalizedIngredient, SupportedLanguage, getConvertedIngredientDisplay, UnitSystem } from '@/lib/conversions';
 
 interface GroceryListModalProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ export default function GroceryListModal({
   sweetMultiplier = 1.0,
   language = 'en',
 }: GroceryListModalProps) {
+  const unitSystem = useSelector((state: RootState) => state.recipe.unitSystem || 'metric');
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [copied, setCopied] = useState(false);
   const [filterTier, setFilterTier] = useState<CriticalityFilter>('all');
@@ -312,9 +315,14 @@ export default function GroceryListModal({
                             )}
                           </div>
                         </div>
-                        <span className="text-xs font-mono font-bold text-accent whitespace-nowrap ml-2">
-                          {item.totalQty} {item.unit}
-                        </span>
+                        {(() => {
+                          const converted = getConvertedIngredientDisplay(item.totalQty, item.unit, item.ingredientId, unitSystem);
+                          return (
+                            <span className="text-xs font-mono font-bold text-accent whitespace-nowrap ml-2">
+                              {converted.formattedQuantity} {converted.unit}
+                            </span>
+                          );
+                        })()}
                       </div>
                     );
                   })}

@@ -1,6 +1,7 @@
 import { IngredientRegistry } from './types';
 
 export type SupportedLanguage = 'en' | 'ta' | 'hi';
+export type UnitSystem = 'metric' | 'us_customary';
 
 export interface UnitDensity {
   gramsPerCup: number;
@@ -41,7 +42,7 @@ export const ingredientDensities: Record<string, number> = {
 };
 
 // Base volume conversions to milliliters (ml)
-const volumeToMl: Record<string, number> = {
+export const volumeToMl: Record<string, number> = {
   ml: 1,
   l: 1000,
   liter: 1000,
@@ -55,7 +56,7 @@ const volumeToMl: Record<string, number> = {
 };
 
 // Base weight conversions to grams (g)
-const weightToGrams: Record<string, number> = {
+export const weightToGrams: Record<string, number> = {
   g: 1,
   gram: 1,
   grams: 1,
@@ -118,6 +119,122 @@ export const convertUnitQuantity = (
   }
 
   return { quantity, unit: fromUnit, isConverted: false };
+};
+
+/**
+ * Formats a numeric culinary quantity into natural kitchen vulgar fractions (e.g., ½, ¾, 1 ⅓).
+ */
+export const formatCulinaryFraction = (quantity: number, unit?: string): string => {
+  if (isNaN(quantity) || quantity <= 0) return '0';
+
+  const cleanUnit = (unit || '').toLowerCase().trim();
+
+  // For metric gram / ml / count measurements, keep integer or clean 1-decimal format
+  if (['g', 'gram', 'grams', 'ml', 'count', 'piece', 'pieces', 'clove', 'cloves'].includes(cleanUnit)) {
+    if (Math.abs(quantity - Math.round(quantity)) < 0.01) {
+      return Math.round(quantity).toString();
+    }
+    return (Math.round(quantity * 10) / 10).toString();
+  }
+
+  const integerPart = Math.floor(quantity);
+  const fractionalPart = quantity - integerPart;
+
+  const fractionThreshold = 0.04;
+  let fractionSymbol = '';
+
+  if (Math.abs(fractionalPart - 0.125) <= fractionThreshold) fractionSymbol = '⅛';
+  else if (Math.abs(fractionalPart - 0.25) <= fractionThreshold) fractionSymbol = '¼';
+  else if (Math.abs(fractionalPart - 0.333) <= fractionThreshold || Math.abs(fractionalPart - 0.33) <= fractionThreshold) fractionSymbol = '⅓';
+  else if (Math.abs(fractionalPart - 0.5) <= fractionThreshold) fractionSymbol = '½';
+  else if (Math.abs(fractionalPart - 0.666) <= fractionThreshold || Math.abs(fractionalPart - 0.67) <= fractionThreshold) fractionSymbol = '⅔';
+  else if (Math.abs(fractionalPart - 0.75) <= fractionThreshold) fractionSymbol = '¾';
+  else if (Math.abs(fractionalPart - 0.875) <= fractionThreshold) fractionSymbol = '⅞';
+  else if (fractionalPart >= 0.96) {
+    return (integerPart + 1).toString();
+  } else if (fractionalPart <= 0.04) {
+    return integerPart > 0 ? integerPart.toString() : '0';
+  } else {
+    // If not a standard fraction, return clean 2-decimal number
+    return (Math.round(quantity * 100) / 100).toString();
+  }
+
+  if (integerPart > 0) {
+    return fractionSymbol ? `${integerPart} ${fractionSymbol}` : integerPart.toString();
+  }
+  return fractionSymbol || (Math.round(quantity * 100) / 100).toString();
+};
+
+/**
+ * Returns converted quantity and unit string according to user's selected UnitSystem ('metric' | 'us_customary').
+ */
+export const getConvertedIngredientDisplay = (
+  rawQuantity: number,
+  rawUnit: string,
+  ingredientId?: string,
+  unitSystem: UnitSystem = 'metric'
+): { formattedQuantity: string; unit: string; displayString: string } => {
+  const normUnit = rawUnit.toLowerCase().trim();
+
+  // If US Customary requested and current unit is Metric (g / ml)
+  if (unitSystem === 'us_customary') {
+    if (['g', 'gram', 'grams'].includes(normUnit)) {
+      if (rawQuantity >= 30) {
+        // Convert to cups
+        const res = convertUnitQuantity(rawQuantity, 'g', 'cup', ingredientId);
+        const formatted = formatCulinaryFraction(res.quantity, 'cup');
+        const unitLabel = res.quantity > 1.1 ? 'cups' : 'cup';
+        return { formattedQuantity: formatted, unit: unitLabel, displayString: `${formatted} ${unitLabel}` };
+      } else if (rawQuantity >= 12) {
+        // Convert to tbsp
+        const res = convertUnitQuantity(rawQuantity, 'g', 'tbsp', ingredientId);
+        const formatted = formatCulinaryFraction(res.quantity, 'tbsp');
+        return { formattedQuantity: formatted, unit: 'tbsp', displayString: `${formatted} tbsp` };
+      } else {
+        // Convert to tsp
+        const res = convertUnitQuantity(rawQuantity, 'g', 'tsp', ingredientId);
+        const formatted = formatCulinaryFraction(res.quantity, 'tsp');
+        return { formattedQuantity: formatted, unit: 'tsp', displayString: `${formatted} tsp` };
+      }
+    } else if (['ml', 'milliliter'].includes(normUnit)) {
+      if (rawQuantity >= 60) {
+        const res = convertUnitQuantity(rawQuantity, 'ml', 'cup', ingredientId);
+        const formatted = formatCulinaryFraction(res.quantity, 'cup');
+        const unitLabel = res.quantity > 1.1 ? 'cups' : 'cup';
+        return { formattedQuantity: formatted, unit: unitLabel, displayString: `${formatted} ${unitLabel}` };
+      } else if (rawQuantity >= 15) {
+        const res = convertUnitQuantity(rawQuantity, 'ml', 'tbsp', ingredientId);
+        const formatted = formatCulinaryFraction(res.quantity, 'tbsp');
+        return { formattedQuantity: formatted, unit: 'tbsp', displayString: `${formatted} tbsp` };
+      } else {
+        const res = convertUnitQuantity(rawQuantity, 'ml', 'tsp', ingredientId);
+        const formatted = formatCulinaryFraction(res.quantity, 'tsp');
+        return { formattedQuantity: formatted, unit: 'tsp', displayString: `${formatted} tsp` };
+      }
+    }
+  }
+
+  // If Metric requested and current unit is US Customary (cup / tbsp / tsp)
+  if (unitSystem === 'metric') {
+    if (['cup', 'cups'].includes(normUnit)) {
+      const res = convertUnitQuantity(rawQuantity, 'cup', 'g', ingredientId);
+      const formatted = formatCulinaryFraction(res.quantity, 'g');
+      return { formattedQuantity: formatted, unit: 'g', displayString: `${formatted}g` };
+    } else if (['tbsp', 'tablespoon'].includes(normUnit)) {
+      const res = convertUnitQuantity(rawQuantity, 'tbsp', 'g', ingredientId);
+      const formatted = formatCulinaryFraction(res.quantity, 'g');
+      return { formattedQuantity: formatted, unit: 'g', displayString: `${formatted}g` };
+    } else if (['tsp', 'teaspoon'].includes(normUnit)) {
+      const res = convertUnitQuantity(rawQuantity, 'tsp', 'g', ingredientId);
+      const formatted = formatCulinaryFraction(res.quantity, 'g');
+      return { formattedQuantity: formatted, unit: 'g', displayString: `${formatted}g` };
+    }
+  }
+
+  // Default display
+  const formatted = formatCulinaryFraction(rawQuantity, rawUnit);
+  const displayString = `${formatted} ${rawUnit}`.trim();
+  return { formattedQuantity: formatted, unit: rawUnit, displayString };
 };
 
 /**

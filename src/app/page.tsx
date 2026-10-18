@@ -29,10 +29,11 @@ import GuidedCookingModal from '@/components/GuidedCookingModal';
 import GroceryListModal from '@/components/GroceryListModal';
 import RecipeJourneyTimeline from '@/components/RecipeJourneyTimeline';
 import RecipeDiscussionSection from '@/components/RecipeDiscussionSection';
-import { SupportedLanguage, formatLocalizedIngredient } from '@/lib/conversions';
+import { SupportedLanguage, formatLocalizedIngredient, UnitSystem, getConvertedIngredientDisplay, formatCulinaryFraction } from '@/lib/conversions';
 import { getUiString } from '@/lib/translations';
 import { IngredientRegistry } from '@/lib/types';
-import { setLanguage, toggleFavorite, setRecipeNote } from '@/store/recipeSlice';
+import { setLanguage, toggleFavorite, setRecipeNote, setUnitSystem } from '@/store/recipeSlice';
+import InteractiveStepText from '@/components/InteractiveStepText';
 
 // --- SUB-COMPONENTS ---
 
@@ -246,6 +247,7 @@ const PhaseIngredientsAccordion = ({
   language = 'en',
   masterIngredients,
   onLanguageChange,
+  unitSystem = 'metric',
 }: {
   ingredients: any[];
   title?: string;
@@ -259,6 +261,7 @@ const PhaseIngredientsAccordion = ({
   language?: SupportedLanguage;
   masterIngredients?: IngredientRegistry[];
   onLanguageChange?: (lang: SupportedLanguage) => void;
+  unitSystem?: UnitSystem;
 }) => {
   if (!ingredients || ingredients.length === 0) return null;
   const containerClass = isGlobal
@@ -332,6 +335,9 @@ const PhaseIngredientsAccordion = ({
             const displayQty = overriddenQty ?? scaledQty;
             const isOverridden = overriddenQty !== undefined;
             const loc = formatLocalizedIngredient(id, language, masterIngredients);
+            const converted = getConvertedIngredientDisplay(displayQty, ing.unit, id, unitSystem);
+            const master = masterIngredients?.find(m => m.id === id);
+            const subs = ing.substitutions || master?.substitutions;
 
             return (
               <li
@@ -347,6 +353,14 @@ const PhaseIngredientsAccordion = ({
                     <Badge variant="critical">⚡ Critical</Badge>
                   )}
                   {ing.isOptional && <Badge variant="optional">✨ Optional</Badge>}
+                  {subs && subs.length > 0 && (
+                    <span
+                      className="px-1.5 py-0.2 rounded-md bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-medium cursor-help"
+                      title={`Substitutions: ${subs.map((s: any) => `${s.name}${s.ratioNote ? ` (${s.ratioNote})` : ''}`).join(', ')}`}
+                    >
+                      🔄 Alt: {subs[0].name}
+                    </span>
+                  )}
                   {isSpice && spiceMultiplier !== 1.0 && (
                     <Badge variant="spice">🌶️ {Math.round(spiceMultiplier * 100)}%</Badge>
                   )}
@@ -372,9 +386,9 @@ const PhaseIngredientsAccordion = ({
                       className="w-16 bg-background border border-border-subtle rounded px-2 py-0.5 text-accent font-mono text-right text-sm outline-none focus:border-accent transition-colors [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                   ) : (
-                    <span className="tabular-nums font-mono text-accent">{displayQty}</span>
+                    <span className="tabular-nums font-mono text-accent">{converted.formattedQuantity}</span>
                   )}
-                  <span className="text-text-muted text-xs w-6">{ing.unit}</span>
+                  <span className="text-text-muted text-xs min-w-[28px]">{onOverride ? ing.unit : converted.unit}</span>
                 </div>
               </li>
             );
@@ -460,6 +474,7 @@ const RecipeStep = ({
   onImageClick,
   textSize = 'text-sm',
   padding = 'p-3',
+  masterIngredients,
 }: {
   step: any;
   stepKey: string;
@@ -470,6 +485,7 @@ const RecipeStep = ({
   onImageClick?: (img: any, stepText: string) => void;
   textSize?: string;
   padding?: string;
+  masterIngredients?: IngredientRegistry[];
 }) => {
   const scaledDuration = step.duration?.value
     ? calculateScaledDuration(
@@ -501,12 +517,12 @@ const RecipeStep = ({
           htmlFor={`checkbox-${stepKey}`}
           className="cursor-pointer block"
         >
-          <p
+          <div
             className={`text-foreground ${textSize} leading-relaxed transition-colors ${
               isCompleted ? 'line-through text-text-muted' : 'group-hover:text-foreground'
             }`}
           >
-            {step.text}
+            <InteractiveStepText text={step.text} masterIngredients={masterIngredients} />
             <span className="inline-flex flex-wrap items-center gap-2 ml-2">
               {step.isCritical && <Badge variant="critical">Critical</Badge>}
               {step.duration && !isCompleted && (
@@ -521,7 +537,7 @@ const RecipeStep = ({
               )}
               {step.heat && <Badge variant="heat">🔥 {step.heat.intensity} Heat</Badge>}
             </span>
-          </p>
+          </div>
         </label>
 
         {/* Visual Guidance Images (While Cooking vs After Step) */}
@@ -589,6 +605,7 @@ export default function Home() {
     language = 'en',
     favorites = [],
     recipeNotes = {},
+    unitSystem = 'metric',
   } = useSelector((state: RootState) => state.recipe);
 
   const [showTasteControls, setShowTasteControls] = useState(false);
@@ -724,6 +741,7 @@ export default function Home() {
     language,
     masterIngredients: recipe.masterIngredients,
     onLanguageChange: (l: SupportedLanguage) => dispatch(setLanguage(l)),
+    unitSystem,
   };
 
   return (
@@ -779,6 +797,20 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            {/* Story 74: Print Recipe Button */}
+            <button
+              id="print-recipe-btn"
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') window.print();
+              }}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-card-bg border border-border-subtle hover:border-accent/40 text-foreground text-xs font-semibold transition-all cursor-pointer"
+              title="Print ink-friendly recipe card or export to PDF"
+            >
+              <span>🖨️</span>
+              <span className="hidden sm:inline">Print / PDF</span>
+            </button>
+
             {/* Smart Grocery List Button (Story 23) */}
             <button
               type="button"
@@ -829,6 +861,34 @@ export default function Home() {
               {targetYield !== baseYield && (
                 <span className="text-[10px] text-text-muted font-mono">(base: {baseYield})</span>
               )}
+            </div>
+
+            {/* Story 70: Unit System Toggle */}
+            <div className="flex items-center bg-card-bg border border-border-subtle rounded-lg p-0.5 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => dispatch(setUnitSystem('metric'))}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                  unitSystem === 'metric'
+                    ? 'bg-accent text-background shadow-xs'
+                    : 'text-text-muted hover:text-foreground'
+                }`}
+                title="Display measurements in Metric (grams & milliliters)"
+              >
+                Metric (g)
+              </button>
+              <button
+                type="button"
+                onClick={() => dispatch(setUnitSystem('us_customary'))}
+                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                  unitSystem === 'us_customary'
+                    ? 'bg-accent text-background shadow-xs'
+                    : 'text-text-muted hover:text-foreground'
+                }`}
+                title="Display measurements in US Customary (cups, tbsp, tsp)"
+              >
+                US (Cups)
+              </button>
             </div>
 
             {/* Total time breakdown */}
@@ -1051,6 +1111,7 @@ export default function Home() {
                               onImageClick={(img, stepText) => setLightboxImage({ ...img, stepText })}
                               textSize="text-sm"
                               padding="p-3"
+                              masterIngredients={recipe.masterIngredients}
                             />
                           );
                         })}
@@ -1099,6 +1160,7 @@ export default function Home() {
                             onImageClick={(img, stepText) => setLightboxImage({ ...img, stepText })}
                             textSize="text-sm"
                             padding="p-3"
+                            masterIngredients={recipe.masterIngredients}
                           />
                         );
                       })}
@@ -1162,6 +1224,7 @@ export default function Home() {
                               onImageClick={(img, stepText) => setLightboxImage({ ...img, stepText })}
                               textSize="text-base"
                               padding="p-4"
+                              masterIngredients={recipe.masterIngredients}
                             />
                           );
                         })}

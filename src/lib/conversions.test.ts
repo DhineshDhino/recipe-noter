@@ -1,4 +1,11 @@
-import { convertUnitQuantity, getLocalizedIngredientName, formatLocalizedIngredient, ingredientDensities } from './conversions';
+import {
+  convertUnitQuantity,
+  getLocalizedIngredientName,
+  formatLocalizedIngredient,
+  formatCulinaryFraction,
+  getConvertedIngredientDisplay,
+  ingredientDensities,
+} from './conversions';
 import { IngredientRegistry } from './types';
 
 const mockIngredient: IngredientRegistry = {
@@ -10,7 +17,7 @@ const mockIngredient: IngredientRegistry = {
   ],
 };
 
-describe('Epic 6: Conversions & Translations Engine', () => {
+describe('Epic 6 & Epic 37: Conversions, Vulgar Fractions & Translations Engine', () => {
   describe('Unit Conversions', () => {
     it('converts weight to weight (e.g. kg to g)', () => {
       const result = convertUnitQuantity(1.5, 'kg', 'g');
@@ -37,6 +44,49 @@ describe('Epic 6: Conversions & Translations Engine', () => {
       const result = convertUnitQuantity(100, 'g', 'g');
       expect(result.quantity).toBe(100);
       expect(result.isConverted).toBe(false);
+    });
+  });
+
+  describe('Story 71: Vulgar Fractions Formatter', () => {
+    it('formats pure fractions correctly', () => {
+      expect(formatCulinaryFraction(0.5, 'cup')).toBe('½');
+      expect(formatCulinaryFraction(0.25, 'cup')).toBe('¼');
+      expect(formatCulinaryFraction(0.33, 'cup')).toBe('⅓');
+      expect(formatCulinaryFraction(0.66, 'cup')).toBe('⅔');
+      expect(formatCulinaryFraction(0.75, 'tbsp')).toBe('¾');
+      expect(formatCulinaryFraction(0.125, 'tsp')).toBe('⅛');
+    });
+
+    it('formats mixed fractions correctly', () => {
+      expect(formatCulinaryFraction(1.5, 'cup')).toBe('1 ½');
+      expect(formatCulinaryFraction(2.25, 'cup')).toBe('2 ¼');
+      expect(formatCulinaryFraction(1.33, 'cup')).toBe('1 ⅓');
+      expect(formatCulinaryFraction(3.75, 'tbsp')).toBe('3 ¾');
+    });
+
+    it('formats integer and metric values cleanly', () => {
+      expect(formatCulinaryFraction(250, 'g')).toBe('250');
+      expect(formatCulinaryFraction(12.5, 'g')).toBe('12.5');
+      expect(formatCulinaryFraction(2, 'count')).toBe('2');
+    });
+  });
+
+  describe('Story 70: Metric vs US Customary Ingredient Display', () => {
+    it('converts grams to cups/tbsp/tsp when US Customary is requested', () => {
+      // 200g Toor Dal -> 1 cup
+      const cupDisplay = getConvertedIngredientDisplay(200, 'g', 'ing_toor_dal', 'us_customary');
+      expect(cupDisplay.formattedQuantity).toBe('1');
+      expect(cupDisplay.unit).toBe('cup');
+
+      // 10g Salt -> ~2 tsp
+      const tspDisplay = getConvertedIngredientDisplay(10, 'g', 'ing_salt', 'us_customary');
+      expect(tspDisplay.unit).toBe('tsp');
+    });
+
+    it('converts cups to grams when Metric is requested', () => {
+      const metricDisplay = getConvertedIngredientDisplay(1, 'cup', 'ing_toor_dal', 'metric');
+      expect(metricDisplay.formattedQuantity).toBe('200');
+      expect(metricDisplay.unit).toBe('g');
     });
   });
 

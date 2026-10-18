@@ -11,10 +11,16 @@ export interface IngredientTranslation {
   name: string;
 }
 
+export interface IngredientSubstitution {
+  name: string;
+  ratioNote?: string; // e.g., "1:1 equivalent" or "use 10% more water"
+}
+
 export interface IngredientRegistry {
   id: string;
   defaultName: string;
   translations: IngredientTranslation[];
+  substitutions?: IngredientSubstitution[];
 }
 
 export type MealSlot = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'late_night' | 'anytime';
@@ -93,6 +99,7 @@ export interface ScopedIngredient {
   isOptional: boolean; // If true, fixed quantity + scaling warning
   isCritical?: boolean; // If true, non-negotiable structural core ingredient (⚡)
   allowedSubstitutes?: string[]; // Array of ingredient IDs allowed as substitutes for this block
+  substitutions?: IngredientSubstitution[];
   tags: ("spice" | "sweet")[];
 }
 
